@@ -147,7 +147,7 @@ export default async function CourseDetailPage({
                   <div>
                     <p className="font-semibold text-gray-900">{unit.title}</p>
                     <p className="text-xs text-gray-500">
-                      {lessonCountMap.get(unit.id) || 0} lessons
+                      {(lessonCountMap.get(unit.id) as number) || 0} lessons
                     </p>
                   </div>
                 </div>

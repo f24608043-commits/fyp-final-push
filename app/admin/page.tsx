@@ -71,8 +71,8 @@ export default async function AdminDashboard() {
                 </span>
               </div>
               <div className="mt-3 flex gap-4 text-xs text-gray-500">
-                <span>{unitMap.get(course.id) || 0} units</span>
-                <span>{lessonMap.get(course.id) || 0} lessons</span>
+                <span>{(unitMap.get(course.id) as number) || 0} units</span>
+                <span>{(lessonMap.get(course.id) as number) || 0} lessons</span>
               </div>
               <p className="mt-3 text-xs font-semibold text-blue-600 group-hover:underline">
                 Manage →
