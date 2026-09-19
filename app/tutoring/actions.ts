@@ -120,7 +120,8 @@ export async function getTutorAvailability(tutorId: string) {
     .select()
     .from(tutorAvailability)
     .where(and(eq(tutorAvailability.tutorId, tutorId), eq(tutorAvailability.isActive, true)))
-    .orderBy(tutorAvailability.dayOfWeek);
+    .orderBy(tutorAvailability.dayOfWeek)
+    .limit(50);
 
   return availability;
 }
@@ -467,7 +468,8 @@ export async function getMySessions() {
     .select()
     .from(tutorSessions)
     .where(or(eq(tutorSessions.tutorId, user.id), eq(tutorSessions.learnerId, user.id)))
-    .orderBy(desc(tutorSessions.scheduledAt));
+    .orderBy(desc(tutorSessions.scheduledAt))
+    .limit(50);
 
   return sessions;
 }
@@ -496,7 +498,8 @@ export async function getPendingRequests() {
     .from(sessionRequests)
     .innerJoin(profiles, eq(sessionRequests.learnerId, profiles.id))
     .where(and(eq(sessionRequests.tutorId, user.id), eq(sessionRequests.status, "pending")))
-    .orderBy(desc(sessionRequests.createdAt));
+    .orderBy(desc(sessionRequests.createdAt))
+    .limit(50);
 
   return requests;
 }

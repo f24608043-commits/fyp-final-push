@@ -1,5 +1,9 @@
 import { getAllUsers, changeUserRole } from "./actions";
 import { createClient } from "@/utils/supabase/server";
+import { db } from "@/db";
+import { profiles } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 export default async function AdminUsersPage({
   searchParams,
@@ -10,12 +14,18 @@ export default async function AdminUsersPage({
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
-    return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Admin Users</h1>
-        <p>Please sign in to access admin features.</p>
-      </div>
-    );
+    redirect("/sign-in");
+  }
+
+  // Check if user has admin role
+  const [userProfile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  if (!userProfile || userProfile.role !== 'admin') {
+    redirect("/path");
   }
 
   const searchQuery = searchParams.q || "";

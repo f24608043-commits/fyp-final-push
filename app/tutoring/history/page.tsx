@@ -18,9 +18,12 @@ export default async function SessionHistoryPage() {
   const upcomingSessions = mySessions.filter((s: any) => new Date(s.scheduledAt) > now);
   const pastSessions = mySessions.filter((s: any) => new Date(s.scheduledAt) <= now);
 
-  // Get notes for past sessions
+  // Limit past sessions for performance and get notes
+  const limitedPastSessions = pastSessions.slice(0, 20);
+  
+  // Get notes for past sessions (limited)
   const sessionsWithNotes = await Promise.all(
-    pastSessions.map(async (session: any) => {
+    limitedPastSessions.map(async (session: any) => {
       const notes = await getSessionNotes(session.id);
       return { ...session, notes };
     })

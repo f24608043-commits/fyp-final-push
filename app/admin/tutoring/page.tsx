@@ -4,37 +4,28 @@ import { eq, desc, and } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
 import { updateTutorProfile } from "@/app/tutoring/actions";
 import { updateSessionStatus } from "@/app/tutoring/actions";
+import { redirect } from "next/navigation";
 
 export default async function AdminTutoringPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
-    return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Admin Tutoring</h1>
-        <p>Please sign in to access admin features.</p>
-      </div>
-    );
+    redirect("/sign-in");
   }
 
   // Check if user is admin
   const [profile] = await db
-    .select()
+    .select({ role: profiles.role })
     .from(profiles)
     .where(eq(profiles.id, user.id))
     .limit(1);
 
-  if (profile?.role !== "admin") {
-    return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Admin Tutoring</h1>
-        <p className="text-red-600">Access denied. Admin privileges required.</p>
-      </div>
-    );
+  if (!profile || profile.role !== "admin") {
+    redirect("/path");
   }
 
-  // Get all tutor profiles
+  // Get all tutor profiles (limited for performance)
   const allTutors = await db
     .select({
       id: tutorProfiles.tutorId,
@@ -50,7 +41,8 @@ export default async function AdminTutoringPage() {
     })
     .from(tutorProfiles)
     .innerJoin(profiles, eq(tutorProfiles.tutorId, profiles.id))
-    .orderBy(desc(tutorProfiles.createdAt));
+    .orderBy(desc(tutorProfiles.createdAt))
+    .limit(50);
 
   // Get all sessions for oversight
   const allSessions = await db

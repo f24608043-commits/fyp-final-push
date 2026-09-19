@@ -1,18 +1,28 @@
 import { getAllCourses, createCourse, createUnit, createLesson, getCourseUnits, getUnitLessons } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { db } from "@/db";
+import { profiles } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 export default async function AdminCoursesPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
-    return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Admin Courses</h1>
-        <p>Please sign in to access admin features.</p>
-      </div>
-    );
+    redirect("/sign-in");
+  }
+
+  // Check if user has admin role
+  const [userProfile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  if (!userProfile || userProfile.role !== 'admin') {
+    redirect("/path");
   }
 
   const courses = await getAllCourses();

@@ -97,7 +97,7 @@ export async function createLesson(data: {
 
 export async function getAllCourses() {
   await verifyAdmin();
-  return await db.select().from(courses).orderBy(courses.title);
+  return await db.select().from(courses).orderBy(courses.title).limit(50);
 }
 
 export async function getCourseUnits(courseId: string) {

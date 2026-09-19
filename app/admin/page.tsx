@@ -14,6 +14,17 @@ export default async function AdminDashboard() {
     redirect("/sign-in");
   }
 
+  // Check if user has admin role
+  const [userProfile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  if (!userProfile || userProfile.role !== 'admin') {
+    redirect("/path");
+  }
+
   // Optimize: Only fetch stats, defer course list to separate component if needed
   const [totalUsers, totalTutors, totalSessions, totalBadges, allCourses] = await Promise.all([
     db.select({ count: count() }).from(profiles),

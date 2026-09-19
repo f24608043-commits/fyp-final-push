@@ -30,7 +30,7 @@ async function verifyAdmin() {
 
 export async function getAllBadges() {
   await verifyAdmin();
-  return await db.select().from(badges).orderBy(badges.name);
+  return await db.select().from(badges).orderBy(badges.name).limit(50);
 }
 
 export async function createBadge(data: {
