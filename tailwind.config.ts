@@ -10,9 +10,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Claymorphism Color Palette
+        "primary": "#58CC02",
+        "primary-dark": "#3C9A00",
+        "secondary": "#FF9600",
+        "tertiary": "#8B5CF6",
+        "success": "#22C55E",
+        "error": "#FF6B6B",
+        "background": "#FFF8F0",
+        "surface": "#FFFFFF",
+        "surface-border": "#F5EFE6",
+        "text-primary": "#2D2A26",
+        "text-muted": "#8B8578",
+        "locked": "#D1D5DB",
+        
+        // Legacy tokens (will be phased out)
         "on-primary-fixed-variant": "#005321",
         "on-error": "#ffffff",
-        "background": "#faf8ff",
         "on-secondary-fixed": "#2a1700",
         "tertiary-fixed": "#d8e2ff",
         "on-primary-fixed": "#002109",
@@ -22,13 +36,10 @@ const config: Config = {
         "on-background": "#131b2e",
         "on-surface-variant": "#3d4a3d",
         "surface-dim": "#d2d9f4",
-        "primary": "#006e2f",
         "secondary-container": "#fea619",
-        "secondary": "#855300",
         "outline-variant": "#bccbb9",
         "on-tertiary": "#ffffff",
         "inverse-surface": "#283044",
-        "error": "#ba1a1a",
         "on-secondary-container": "#684000",
         "surface-container": "#eaedff",
         "tertiary-container": "#82abff",
@@ -62,6 +73,8 @@ const config: Config = {
         "DEFAULT": "0.25rem",
         "lg": "0.5rem",
         "xl": "0.75rem",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
         "full": "9999px",
       },
       fontFamily: {
@@ -76,6 +89,19 @@ const config: Config = {
         "body-sm": ["var(--font-nunito-sans)", "sans-serif"],
       },
       boxShadow: {
+        // Claymorphism shadows
+        "clay-primary": "0 8px 24px rgba(92, 154, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
+        "clay-primary-pressed": "0 2px 8px rgba(92, 154, 0, 0.2), inset 0 2px 8px rgba(92, 154, 0, 0.15)",
+        "clay-secondary": "0 8px 24px rgba(255, 150, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
+        "clay-secondary-pressed": "0 2px 8px rgba(255, 150, 0, 0.2), inset 0 2px 8px rgba(255, 150, 0, 0.15)",
+        "clay-tertiary": "0 8px 24px rgba(139, 92, 246, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
+        "clay-tertiary-pressed": "0 2px 8px rgba(139, 92, 246, 0.2), inset 0 2px 8px rgba(139, 92, 246, 0.15)",
+        "clay-surface": "0 8px 24px rgba(45, 42, 38, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.6)",
+        "clay-surface-pressed": "0 2px 8px rgba(45, 42, 38, 0.05), inset 0 2px 8px rgba(45, 42, 38, 0.03)",
+        "clay-success": "0 8px 24px rgba(34, 197, 94, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
+        "clay-error": "0 8px 24px rgba(255, 107, 107, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
+        
+        // Legacy shadows
         "subtle": "0 1px 8px rgba(0,0,0,0.04)",
         "glow": "0 2px 0 0 #22c55e",
       },

@@ -32,30 +32,39 @@ export default function UnifiedShell({
       return;
     }
 
+    let mounted = true;
     async function loadUserData() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const response = await fetch(`/api/profile/${user.id}`);
-        if (response.ok) {
-          const profile = await response.json();
-          setXp(profile.xp || 0);
-          setStreak(profile.streak_count || 0);
-          setDisplayName(profile.display_name || "");
-          setLevel(Math.floor(Math.sqrt((profile.xp || 0) / 100)) + 1);
+      if (user && mounted) {
+        try {
+          const response = await fetch(`/api/profile/${user.id}`, { 
+            cache: 'no-store' // Ensure fresh data but don't block
+          });
+          if (response.ok && mounted) {
+            const profile = await response.json();
+            setXp(profile.xp || 0);
+            setStreak(profile.streak_count || 0);
+            setDisplayName(profile.display_name || "");
+            setLevel(Math.floor(Math.sqrt((profile.xp || 0) / 100)) + 1);
+          }
+        } catch (error) {
+          console.error('Failed to load user data:', error);
         }
       }
     }
     loadUserData();
+    return () => { mounted = false; };
   }, [initialXp, initialDisplayName]);
 
   // Role-specific configuration
   const isLearner = role === "learner";
-  const isTutor = role === "tutor" || role === "admin";
+  const isTutor = role === "tutor";
+  const isAdmin = role === "admin";
   
-  const logoIcon = isLearner ? "terminal" : "school";
-  const roleLabel = isLearner ? "Learner Desk" : "Tutor Portal";
-  const headerLabel = isLearner ? "Python Fundamentals" : "Tutoring Hub";
+  const logoIcon = isLearner ? "terminal" : isAdmin ? "admin_panel_settings" : "school";
+  const roleLabel = isLearner ? "Learner Desk" : isAdmin ? "Admin Panel" : "Tutor Portal";
+  const headerLabel = isLearner ? "Python Fundamentals" : isAdmin ? "Admin Dashboard" : "Tutoring Hub";
   const userRoleLabel = role.toUpperCase();
 
   const navItems = isLearner 
@@ -65,6 +74,14 @@ export default function UnifiedShell({
         { path: "/tutoring", label: "Class", icon: "groups" },
         { path: "/friends", label: "Friends", icon: "diversity_3" },
       ]
+    : isAdmin
+    ? [
+        { path: "/admin", label: "Dashboard", icon: "dashboard" },
+        { path: "/admin/users", label: "Users", icon: "people" },
+        { path: "/admin/courses", label: "Courses", icon: "school" },
+        { path: "/admin/badges", label: "Badges", icon: "military_tech" },
+        { path: "/admin/tutoring", label: "Tutoring", icon: "groups" },
+      ]
     : [
         { path: "/tutoring/dashboard", label: "Dashboard", icon: "dashboard" },
         { path: "/tutoring/history", label: "History", icon: "history" },
@@ -72,30 +89,30 @@ export default function UnifiedShell({
       ];
 
   const crossRoleLink = isLearner
-    ? null // Learners don't see tutor portal link
+    ? null // Learners don't see tutor/admin portal link
     : { path: "/path", label: "Learner View", icon: "home" };
 
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-subtle">
+      <aside className="fixed left-0 top-0 h-full w-64 bg-surface z-50 flex flex-col justify-between shadow-clay-surface border-r border-surface-border">
         <div className="flex flex-col">
           {/* Logo */}
           <div className="h-16 px-6 flex items-center gap-2">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLearner ? 'bg-primary-container text-on-primary-container' : 'bg-secondary-container text-on-secondary-container'}`}>
+            <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
               <span className="material-symbols-outlined text-[22px]">{logoIcon}</span>
             </div>
             <div className="flex flex-col leading-none">
-              <span className={`font-label-lg tracking-tight font-extrabold uppercase ${isLearner ? 'text-primary' : 'text-secondary'}`}>LEGO</span>
-              <span className="font-label-sm text-on-surface-variant font-bold tracking-wide">Learn And Go</span>
+              <span className={`font-label-lg tracking-tight font-extrabold uppercase ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LEGO</span>
+              <span className="font-label-sm text-text-muted font-bold tracking-wide">Learn And Go</span>
             </div>
           </div>
 
           {/* Role Badge */}
           <div className="px-4 py-2">
-            <div className="px-4 py-1 bg-surface-container rounded-full flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isLearner ? 'bg-primary-container' : 'bg-secondary-container'}`}></span>
-              <span className="font-label-sm uppercase tracking-wider text-on-surface-variant font-bold">{roleLabel}</span>
+            <div className={`px-4 py-1 rounded-full flex items-center gap-2 shadow-clay-surface ${isLearner ? 'bg-primary/10' : isAdmin ? 'bg-error/10' : 'bg-secondary/10'}`}>
+              <span className={`w-2 h-2 rounded-full ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}></span>
+              <span className="font-label-sm uppercase tracking-wider text-text-primary font-bold">{roleLabel}</span>
             </div>
           </div>
 
@@ -105,10 +122,10 @@ export default function UnifiedShell({
               <Link
                 key={item.path}
                 href={item.path}
-                className={`flex items-center gap-4 px-4 py-2 rounded-xl transition-all ${
+                className={`flex items-center gap-4 px-4 py-2 rounded-2xl transition-all ${
                   pathname === item.path
-                    ? `bg-surface-container-high font-bold shadow-glow ${isLearner ? 'text-primary' : 'text-secondary'}`
-                    : "text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-label-md"
+                    ? `bg-primary text-white font-bold shadow-clay-primary`
+                    : "text-text-muted hover:bg-surface-border hover:text-text-primary font-label-md"
                 }`}
               >
                 <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
@@ -117,10 +134,10 @@ export default function UnifiedShell({
             ))}
             {crossRoleLink && (
               <>
-                <div className="my-2 border-t border-surface-container"></div>
+                <div className="my-2 border-t border-surface-border"></div>
                 <Link
                   href={crossRoleLink.path}
-                  className={`flex items-center gap-4 px-4 py-2 rounded-xl font-label-md hover:bg-surface-container-low transition-all ${isLearner ? 'text-secondary' : 'text-primary'}`}
+                  className={`flex items-center gap-4 px-4 py-2 rounded-2xl font-label-md hover:bg-surface-border hover:text-text-primary transition-all text-text-muted`}
                 >
                   <span className="material-symbols-outlined text-[20px]">{crossRoleLink.icon}</span>
                   <span>{crossRoleLink.label}</span>
@@ -134,7 +151,7 @@ export default function UnifiedShell({
         <div className="flex flex-col gap-1 px-4 pb-6">
           <Link
             href="/settings"
-            className="flex items-center gap-4 px-4 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-label-md"
+            className="flex items-center gap-4 px-4 py-2 rounded-2xl text-text-muted hover:bg-surface-border hover:text-text-primary transition-all font-label-md"
           >
             <span className="material-symbols-outlined text-[20px]">settings</span>
             <span>Settings</span>
@@ -145,46 +162,38 @@ export default function UnifiedShell({
       {/* Main Content */}
       <div className="pl-64 flex-1">
         {/* Top Header */}
-        <header className="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-subtle z-40 flex items-center justify-between px-6">
+        <header className="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-clay-surface z-40 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors" type="button">
-              <span className={`w-2.5 h-2.5 rounded-full ${isLearner ? 'bg-primary-container' : 'bg-secondary-container'}`}></span>
-              <span className="font-label-md text-on-surface">{headerLabel}</span>
-              <span className="material-symbols-outlined text-on-surface-variant text-[18px]">arrow_drop_down</span>
+            <button className="flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-surface-border hover:bg-surface transition-colors shadow-clay-surface" type="button">
+              <span className={`w-2.5 h-2.5 rounded-full ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}></span>
+              <span className="font-label-md text-text-primary">{headerLabel}</span>
+              <span className="material-symbols-outlined text-text-muted text-[18px]">arrow_drop_down</span>
             </button>
           </div>
           <div className="flex items-center gap-6">
             {/* Stats */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-md">
-                {isLearner ? (
-                  <span className="text-secondary-container">🔥</span>
-                ) : (
-                  <span className="material-symbols-outlined text-secondary text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-                )}
+              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full shadow-clay-secondary font-label-md ${isLearner ? 'bg-secondary text-white' : isAdmin ? 'bg-tertiary text-white' : 'bg-surface text-text-primary'}`}>
+                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
                 <span>{streak}</span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-md">
-                {isLearner ? (
-                  <span className="text-tertiary-container">⚡</span>
-                ) : (
-                  <span className="material-symbols-outlined text-secondary text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>stars</span>
-                )}
+              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full shadow-clay-primary font-label-md ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-tertiary text-white' : 'bg-surface text-text-primary'}`}>
+                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
                 <span>{xp.toLocaleString()}</span>
               </div>
             </div>
             {/* User Info */}
             <div className="flex items-center gap-2">
               <div className="flex flex-col text-right">
-                <span className="font-label-md text-on-surface leading-tight">{displayName || (isLearner ? "Learner" : "Tutor")}</span>
+                <span className="font-label-md text-text-primary leading-tight">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
                 <div className="flex items-center justify-end gap-1">
-                  <span className={`font-label-sm font-extrabold ${isLearner ? 'text-primary' : 'text-secondary'}`}>LVL {level}</span>
-                  <span className="font-label-sm text-on-surface-variant">•</span>
-                  <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">{userRoleLabel}</span>
+                  <span className={`font-label-sm font-extrabold ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LVL {level}</span>
+                  <span className="font-label-sm text-text-muted">•</span>
+                  <span className="font-label-sm text-text-muted uppercase tracking-wider font-bold">{userRoleLabel}</span>
                 </div>
               </div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isLearner ? 'bg-primary text-on-primary' : 'bg-secondary text-on-secondary'}`}>
-                <span className="material-symbols-outlined text-[18px]">{isLearner ? "person" : "supervised_user_circle"}</span>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
+                <span className="material-symbols-outlined text-[18px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
               </div>
             </div>
           </div>

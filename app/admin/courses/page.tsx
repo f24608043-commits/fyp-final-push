@@ -1,5 +1,6 @@
 import { getAllCourses, createCourse, createUnit, createLesson, getCourseUnits, getUnitLessons } from "./actions";
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
 
 export default async function AdminCoursesPage() {
   const supabase = await createClient();
@@ -17,15 +18,15 @@ export default async function AdminCoursesPage() {
   const courses = await getAllCourses();
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="w-full px-6 py-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Course Management</h1>
-        <p className="text-gray-600">Create and manage courses, units, and lessons</p>
+        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">Course Management</h1>
+        <p className="font-body-md text-text-muted">Create and manage courses, units, and lessons</p>
       </div>
 
       {/* Create Course Form */}
-      <div className="bg-white rounded-lg shadow border p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Create New Course</h2>
+      <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+        <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Create New Course</h2>
         <form action={async (formData) => {
           "use server";
           const data = {
@@ -34,42 +35,45 @@ export default async function AdminCoursesPage() {
             category: formData.get("category") as string,
           };
           await createCourse(data);
-        }}>
+        }} suppressHydrationWarning={true}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Course Name</label>
+              <label className="block font-label-md text-text-primary font-semibold mb-1">Course Name</label>
               <input
                 type="text"
                 name="name"
                 required
-                className="w-full px-3 py-2 border rounded"
+                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
                 placeholder="Course name"
+                suppressHydrationWarning={true}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
+              <label className="block font-label-md text-text-primary font-semibold mb-1">Category</label>
               <input
                 type="text"
                 name="category"
                 required
-                className="w-full px-3 py-2 border rounded"
+                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
                 placeholder="Programming"
+                suppressHydrationWarning={true}
               />
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block font-label-md text-text-primary font-semibold mb-1">Description</label>
             <textarea
               name="description"
               required
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
               rows={2}
               placeholder="Course description"
+              suppressHydrationWarning={true}
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            className="px-4 py-2 bg-error text-white rounded-xl font-label-md font-bold shadow-clay-error hover:bg-error-dark transition-all"
           >
             Create Course
           </button>
@@ -77,33 +81,33 @@ export default async function AdminCoursesPage() {
       </div>
 
       {/* Courses List */}
-      <div className="bg-white rounded-lg shadow border overflow-hidden">
+      <div className="rounded-2xl bg-surface shadow-clay-surface border border-surface-border overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-surface-border border-b border-surface-border">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Name</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Category</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Description</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
             </tr>
           </thead>
           <tbody>
             {courses.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={4} className="px-6 py-8 text-center text-text-muted">
                   No courses found. Create your first course above.
                 </td>
               </tr>
             ) : (
               courses.map((course: any) => (
-                <tr key={course.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium">{course.name}</td>
-                  <td className="px-6 py-4">{course.category}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{course.description}</td>
+                <tr key={course.id} className="border-b border-surface-border hover:bg-surface-border">
+                  <td className="px-6 py-4 font-label-md font-semibold text-text-primary">{course.name}</td>
+                  <td className="px-6 py-4 font-body-sm text-text-primary">{course.category}</td>
+                  <td className="px-6 py-4 font-body-sm text-text-muted">{course.description}</td>
                   <td className="px-6 py-4">
-                    <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                    <Link href={`/admin/courses/${course.id}`} className="px-3 py-1 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-dark transition-all">
                       Manage Units
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))
@@ -112,7 +116,7 @@ export default async function AdminCoursesPage() {
         </table>
       </div>
 
-      <div className="mt-4 text-sm text-gray-600">
+      <div className="mt-4 font-body-sm text-text-primary">
         Total courses: {courses.length}
       </div>
     </div>

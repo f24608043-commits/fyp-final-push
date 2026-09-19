@@ -73,9 +73,20 @@ export default async function TutorDashboard() {
             <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Set Up Your Tutor Profile</h2>
           </div>
           <p className="font-body-md text-on-secondary-container mb-4">Complete your profile to start accepting students.</p>
-          <button className="rounded-xl bg-secondary-container text-on-secondary-container px-4 py-2 font-label-md font-bold shadow-glow hover:bg-secondary transition-all active:translate-y-[2px]">
-            Create Profile
-          </button>
+          <form action={async () => {
+            "use server";
+            const { createTutorProfile } = await import("../actions");
+            await createTutorProfile({
+              bio: "I am an experienced tutor ready to help you learn!",
+              subjects: ["Math", "Science"],
+              hourlyRate: 25,
+              timezone: "UTC"
+            });
+          }}>
+            <button className="rounded-xl bg-secondary-container text-on-secondary-container px-4 py-2 font-label-md font-bold shadow-glow hover:bg-secondary transition-all active:translate-y-[2px]">
+              Create Profile
+            </button>
+          </form>
         </div>
       ) : (
         <div className="mb-6 rounded-2xl bg-surface-container-lowest p-6 shadow-md">
@@ -288,9 +299,21 @@ export default async function TutorDashboard() {
             </div>
           ))}
         </div>
-        <button className="rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
-          Edit Availability
-        </button>
+        <form action={async () => {
+          "use server";
+          const { setAvailability } = await import("../actions");
+          await setAvailability([
+            { dayOfWeek: 1, startTime: "09:00", endTime: "17:00" },
+            { dayOfWeek: 2, startTime: "09:00", endTime: "17:00" },
+            { dayOfWeek: 3, startTime: "09:00", endTime: "17:00" },
+            { dayOfWeek: 4, startTime: "09:00", endTime: "17:00" },
+            { dayOfWeek: 5, startTime: "09:00", endTime: "17:00" }
+          ]);
+        }}>
+          <button className="rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
+            Edit Availability
+          </button>
+        </form>
       </div>
     </div>
   );

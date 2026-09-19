@@ -217,7 +217,7 @@ export default async function TutoringPage() {
                     "use server";
                     const { requestSession } = await import("./actions");
                     await requestSession({
-                      tutorId: tutor.id,
+                      tutorId: tutor.tutorId,
                       requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
                       message: "I would like to book a session"
                     });

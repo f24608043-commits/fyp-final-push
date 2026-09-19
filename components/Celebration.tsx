@@ -31,7 +31,7 @@ export default function Celebration({
   onReturnToPath,
 }: CelebrationProps) {
   useEffect(() => {
-    // Generate confetti pieces
+    // Generate confetti pieces - optimized with requestAnimationFrame
     const field = document.getElementById("confetti-field");
     if (!field) return;
 
@@ -44,27 +44,33 @@ export default function Celebration({
       "bg-secondary-container",
     ];
 
-    for (let i = 0; i < 30; i++) {
-      const piece = document.createElement("div");
-      const size = Math.floor(Math.random() * 8) + 6;
-      const left = Math.floor(Math.random() * 96) + 2;
-      const top = Math.floor(Math.random() * 85) + 5;
-      const rot = Math.floor(Math.random() * 360);
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      
-      piece.className = `absolute rounded-sm ${color} opacity-80 pointer-events-none animate-bounce`;
-      piece.style.width = `${size}px`;
-      piece.style.height = `${size * 1.5}px`;
-      piece.style.left = `${left}%`;
-      piece.style.top = `${top}%`;
-      piece.style.transform = `rotate(${rot}deg)`;
-      piece.style.animationDelay = `${Math.random() * 2}s`;
-      piece.style.animationDuration = `${Math.random() * 2 + 1}s`;
-      field.appendChild(piece);
-    }
+    requestAnimationFrame(() => {
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < 30; i++) {
+        const piece = document.createElement("div");
+        const size = Math.floor(Math.random() * 8) + 6;
+        const left = Math.floor(Math.random() * 96) + 2;
+        const top = Math.floor(Math.random() * 85) + 5;
+        const rot = Math.floor(Math.random() * 360);
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        piece.className = `absolute rounded-sm ${color} opacity-80 pointer-events-none animate-bounce`;
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size * 1.5}px`;
+        piece.style.left = `${left}%`;
+        piece.style.top = `${top}%`;
+        piece.style.transform = `rotate(${rot}deg)`;
+        piece.style.animationDelay = `${Math.random() * 2}s`;
+        piece.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        fragment.appendChild(piece);
+      }
+      field.appendChild(fragment);
+    });
 
     return () => {
-      field.innerHTML = "";
+      if (field) {
+        field.innerHTML = "";
+      }
     };
   }, []);
 
