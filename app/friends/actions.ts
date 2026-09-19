@@ -234,26 +234,7 @@ export async function getFriendList() {
 
   const userId = user.id;
 
-  // Get all accepted friendships
-  const friendRelationships = await db
-    .select()
-    .from(friendships)
-    .where(
-      and(
-        eq(friendships.status, "accepted"),
-        or(eq(friendships.requesterId, userId), eq(friendships.addresseeId, userId))
-      )
-    );
-
-  // Get friend profiles
-  const friendIds = friendRelationships.map((f) =>
-    f.requesterId === userId ? f.addresseeId : f.requesterId
-  );
-
-  if (friendIds.length === 0) {
-    return [];
-  }
-
+  // Optimized: Get friend profiles in a single query with joins
   const friendProfiles = await db
     .select({
       id: profiles.id,
@@ -263,7 +244,11 @@ export async function getFriendList() {
       avatarUrl: profiles.avatarUrl,
     })
     .from(profiles)
-    .where(inArray(profiles.id, friendIds));
+    .innerJoin(friendships, or(
+      and(eq(friendships.requesterId, userId), eq(friendships.addresseeId, profiles.id)),
+      and(eq(friendships.addresseeId, userId), eq(friendships.requesterId, profiles.id))
+    ))
+    .where(eq(friendships.status, "accepted"));
 
   return friendProfiles;
 }
@@ -278,35 +263,29 @@ export async function getPendingRequests() {
 
   const userId = user.id;
 
-  // Get pending requests where user is the addressee
+  // Optimized: Get pending requests with requester profiles in a single query
   const pendingRequests = await db
     .select({
       id: friendships.id,
       requesterId: friendships.requesterId,
       createdAt: friendships.createdAt,
+      profileId: profiles.id,
+      requesterDisplayName: profiles.displayName,
+      requesterAvatarUrl: profiles.avatarUrl,
     })
     .from(friendships)
+    .innerJoin(profiles, eq(friendships.requesterId, profiles.id))
     .where(and(eq(friendships.addresseeId, userId), eq(friendships.status, "pending")));
 
-  // Get requester profiles
-  const requesterIds = pendingRequests.map((r) => r.requesterId);
-  
-  if (requesterIds.length === 0) {
-    return [];
-  }
-
-  const requesterProfiles = await db
-    .select({
-      id: profiles.id,
-      displayName: profiles.displayName,
-      avatarUrl: profiles.avatarUrl,
-    })
-    .from(profiles)
-    .where(inArray(profiles.id, requesterIds));
-
   return pendingRequests.map((request) => ({
-    ...request,
-    requester: requesterProfiles.find((p) => p.id === request.requesterId),
+    id: request.id,
+    requesterId: request.requesterId,
+    createdAt: request.createdAt,
+    requester: {
+      id: request.profileId,
+      displayName: request.requesterDisplayName,
+      avatarUrl: request.requesterAvatarUrl,
+    },
   }));
 }
 

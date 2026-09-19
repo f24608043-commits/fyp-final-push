@@ -56,7 +56,7 @@ export default function AppShell({ children, user }: AppShellProps) {
   const navItems = isAdmin ? adminNav : isTutor ? tutorNav : learnerNav;
 
   return (
-    <div className="flex min-h-screen bg-[var(--background)]">
+    <div className="flex min-h-screen bg-background">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -67,41 +67,41 @@ export default function AppShell({ children, user }: AppShellProps) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[var(--background-card)] border-r border-[var(--border)] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-surface-container-lowest border-r border-outline-variant transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center gap-3 p-6 border-b border-[var(--border)]">
+          <div className="flex items-center gap-3 p-6 border-b border-outline-variant">
             <div className="text-3xl">🧱</div>
             <div>
-              <h1 className="text-xl font-bold text-[var(--foreground)]">LEGO</h1>
-              <p className="text-xs text-[var(--foreground-secondary)]">Learn And Go</p>
+              <h1 className="text-xl font-bold text-on-surface">LEGO</h1>
+              <p className="text-xs text-on-surface-variant">Learn And Go</p>
             </div>
           </div>
 
           {/* User Stats */}
-          <div className="p-4 border-b border-[var(--border)] bg-[var(--background-secondary)]">
+          <div className="p-4 border-b border-outline-variant bg-surface-container">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[var(--brand-primary)] flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">
                 {user.displayName?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-[var(--foreground)] truncate">
+                <p className="font-medium text-on-surface truncate">
                   {user.displayName || user.email.split("@")[0]}
                 </p>
-                <p className="text-xs text-[var(--foreground-secondary)] capitalize">{user.role}</p>
+                <p className="text-xs text-on-surface-variant capitalize">{user.role}</p>
               </div>
             </div>
             <div className="flex gap-4 mt-3 text-sm">
               <div className="flex items-center gap-1">
                 <span className="text-yellow-500">⚡</span>
-                <span className="text-[var(--foreground)]">{user.xp} XP</span>
+                <span className="text-on-surface">{user.xp} XP</span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-orange-500">🔥</span>
-                <span className="text-[var(--foreground)]">{user.streakCount} day streak</span>
+                <span className="text-on-surface">{user.streakCount} day streak</span>
               </div>
             </div>
           </div>
@@ -117,8 +117,8 @@ export default function AppShell({ children, user }: AppShellProps) {
                       href={item.href}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                         isActive
-                          ? "bg-[var(--brand-primary)] text-white"
-                          : "text-[var(--foreground-secondary)] hover:bg-[var(--background-secondary)] hover:text-[var(--foreground)]"
+                          ? "bg-primary text-on-primary"
+                          : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
                       }`}
                       onClick={() => setSidebarOpen(false)}
                     >
@@ -132,7 +132,7 @@ export default function AppShell({ children, user }: AppShellProps) {
           </nav>
 
           {/* Sign Out */}
-          <div className="p-4 border-t border-[var(--border)]">
+          <div className="p-4 border-t border-outline-variant">
             <form
               action={async () => {
                 await signOut();
@@ -140,7 +140,7 @@ export default function AppShell({ children, user }: AppShellProps) {
             >
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-[var(--error)] hover:bg-[var(--error-light)] transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-error hover:bg-error-container transition-colors"
               >
                 <span>🚪</span>
                 <span className="font-medium">Sign Out</span>
@@ -153,10 +153,10 @@ export default function AppShell({ children, user }: AppShellProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
-        <header className="lg:hidden flex items-center justify-between p-4 bg-[var(--background-card)] border-b border-[var(--border)]">
+        <header className="lg:hidden flex items-center justify-between p-4 bg-surface-container-lowest border-b border-outline-variant">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-[var(--background-secondary)]"
+            className="p-2 rounded-lg hover:bg-surface-container"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -164,7 +164,7 @@ export default function AppShell({ children, user }: AppShellProps) {
           </button>
           <div className="flex items-center gap-2">
             <span className="text-2xl">🧱</span>
-            <span className="font-bold text-[var(--foreground)]">LEGO</span>
+            <span className="font-bold text-on-surface">LEGO</span>
           </div>
           <div className="w-10" />
         </header>

@@ -48,30 +48,43 @@ export default async function LessonPage({
     notFound();
   }
 
-  // 2. Fetch unit and course in parallel
-  const [unitResult, courseResult] = await Promise.all([
-    db.select().from(units).where(eq(units.id, lesson.unitId)).limit(1),
-    db.select().from(courses).where(eq(courses.id, lesson.unitId)).limit(1)
-  ]);
-
+  // 2. Fetch unit first (needed to get courseId)
+  const unitResult = await db.select().from(units).where(eq(units.id, lesson.unitId)).limit(1);
   const unit = unitResult[0];
-  const course = courseResult[0];
 
   if (!unit) {
     notFound();
   }
 
+  // 3. Fetch course using unit.courseId
+  const courseResult = await db.select().from(courses).where(eq(courses.id, unit.courseId)).limit(1);
+  const course = courseResult[0];
+
+  if (!course) {
+    notFound();
+  }
+
   // 4. Server-Side Progression Gating: Verify lesson is unlocked for this learner
-  const [courseUnits, allProgress] = await Promise.all([
+  // Fetch course units, progress, and challenges in parallel for speed
+  const [courseUnits, allProgress, lessonChallenges] = await Promise.all([
     db.select().from(units).where(eq(units.courseId, course.id)).orderBy(asc(units.orderIndex)),
-    db.select().from(userProgress).where(eq(userProgress.userId, user.id))
+    db.select().from(userProgress).where(eq(userProgress.userId, user.id)),
+    db.select().from(challenges).where(and(eq(challenges.lessonId, lesson.id), eq(challenges.isPublished, true))).orderBy(asc(challenges.orderIndex))
   ]);
 
-  const allLessons = await db
-    .select()
-    .from(lessons)
-    .where(inArray(lessons.unitId, courseUnits.map((u) => u.id)))
-    .orderBy(asc(lessons.orderIndex));
+  const challengeIds = lessonChallenges.map((c) => c.id);
+
+  // Fetch all lessons and options in parallel
+  const [allLessons, rawOptions] = await Promise.all([
+    db.select().from(lessons).where(inArray(lessons.unitId, courseUnits.map((u) => u.id))).orderBy(asc(lessons.orderIndex)),
+    challengeIds.length > 0
+      ? db.select({
+          id: challengeOptions.id,
+          challengeId: challengeOptions.challengeId,
+          optionText: challengeOptions.optionText,
+        }).from(challengeOptions).where(inArray(challengeOptions.challengeId, challengeIds)).orderBy(asc(challengeOptions.orderIndex))
+      : Promise.resolve([])
+  ]);
 
   const progressMap = new Map(allProgress.map((p) => [p.lessonId, p.status]));
 
@@ -102,28 +115,6 @@ export default async function LessonPage({
   if (!isUnlocked) {
     redirect("/path?error=This lesson is locked. Complete earlier levels first.");
   }
-
-  // 5. Fetch challenges and options in parallel
-  const lessonChallenges = await db
-    .select()
-    .from(challenges)
-    .where(and(eq(challenges.lessonId, lesson.id), eq(challenges.isPublished, true)))
-    .orderBy(asc(challenges.orderIndex));
-
-  const challengeIds = lessonChallenges.map((c) => c.id);
-
-  const rawOptions = challengeIds.length > 0
-    ? await db
-        .select({
-          id: challengeOptions.id,
-          challengeId: challengeOptions.challengeId,
-          optionText: challengeOptions.optionText,
-          // Intentionally do NOT select isCorrect to prevent client-side inspection
-        })
-        .from(challengeOptions)
-        .where(inArray(challengeOptions.challengeId, challengeIds))
-        .orderBy(asc(challengeOptions.orderIndex))
-    : [];
 
   const sanitizedChallenges = lessonChallenges.map((c) => ({
     id: c.id,

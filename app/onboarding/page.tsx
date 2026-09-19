@@ -4,6 +4,7 @@ import { courses, profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { completeOnboarding } from "./actions";
+import Mascot from "@/components/Mascot";
 
 export default async function OnboardingPage({
   searchParams,
@@ -34,23 +35,26 @@ export default async function OnboardingPage({
   const params = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--background)] p-4">
-      <div className="w-full max-w-2xl rounded-2xl border border-[var(--border)] bg-[var(--background-card)] p-8 shadow-sm">
-        {/* Header */}
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="w-full max-w-2xl rounded-2xl bg-surface-container-lowest p-8 shadow-md">
+        {/* Header with Mascot */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary-light)] px-4 py-1.5 text-xs font-semibold text-[var(--brand-primary)]">
+          <div className="relative w-24 h-24 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+            <Mascot pose="celebrate" size={80} />
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary-container/20 px-4 py-1.5 font-label-sm font-semibold text-primary">
             <span>👋</span>
             <span>Welcome, {userProfile?.displayName || user.email?.split("@")[0]}!</span>
           </div>
-          <h1 className="mt-4 text-3xl font-extrabold text-[var(--foreground)]">Personalize Your Path</h1>
-          <p className="mt-2 text-sm text-[var(--foreground-secondary)]">
+          <h1 className="mt-4 font-headline-xl text-on-surface tracking-tight font-extrabold">Personalize Your Path</h1>
+          <p className="mt-2 font-body-md text-on-surface-variant">
             Set up your learning goals and select the subjects you want to master.
           </p>
         </div>
 
         {/* Error Message */}
         {params.error && (
-          <div className="mb-6 rounded-xl border border-[var(--error)] bg-[var(--error-light)] p-4 text-sm text-[var(--error)]">
+          <div className="mb-6 rounded-xl border border-error bg-error-container p-4 text-sm text-on-error-container">
             {params.error}
           </div>
         )}
@@ -58,24 +62,24 @@ export default async function OnboardingPage({
         <form action={completeOnboarding} className="space-y-8">
           {/* 1. Course Selection */}
           <div>
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">1. Select Your Courses</h2>
-            <p className="text-xs text-[var(--foreground-secondary)]">Pick one or more courses to add to your library.</p>
+            <h2 className="font-headline-md text-on-surface font-extrabold">1. Select Your Courses</h2>
+            <p className="font-body-sm text-on-surface-variant">Pick one or more courses to add to your library.</p>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {publishedCourses.map((c, index) => (
                 <label
                   key={c.id}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border)] p-4 hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)] has-checked:border-[var(--brand-primary)] has-checked:bg-[var(--brand-primary-light)] transition-all"
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-outline-variant bg-surface-container p-4 hover:border-primary hover:bg-surface-container-high has-checked:border-primary has-checked:bg-surface-container-high transition-all"
                 >
                   <input
                     type="checkbox"
                     name="courseIds"
                     value={c.id}
                     defaultChecked={index === 0}
-                    className="mt-1 h-4 w-4 rounded border-[var(--border)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                    className="mt-1 h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary"
                   />
                   <div>
-                    <div className="font-medium text-[var(--foreground)]">{c.title}</div>
-                    <div className="mt-1 text-xs text-[var(--foreground-secondary)] line-clamp-2">{c.description}</div>
+                    <div className="font-label-md text-on-surface font-semibold">{c.title}</div>
+                    <div className="mt-1 font-body-sm text-on-surface-variant line-clamp-2">{c.description}</div>
                   </div>
                 </label>
               ))}
@@ -84,8 +88,8 @@ export default async function OnboardingPage({
 
           {/* 2. Placement Assessment */}
           <div>
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">2. What is your coding background?</h2>
-            <p className="text-xs text-[var(--foreground-secondary)]">Helps us recommend pacing and practice challenges.</p>
+            <h2 className="font-headline-md text-on-surface font-extrabold">2. What is your coding background?</h2>
+            <p className="font-body-sm text-on-surface-variant">Helps us recommend pacing and practice challenges.</p>
             <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {[
                 { id: "beginner", title: "Complete Beginner", desc: "Never written code before" },
@@ -94,19 +98,19 @@ export default async function OnboardingPage({
               ].map((level) => (
                 <label
                   key={level.id}
-                  className="flex cursor-pointer flex-col rounded-xl border border-[var(--border)] p-4 hover:border-[var(--brand-primary)] has-checked:border-[var(--brand-primary)] has-checked:bg-[var(--brand-primary-light)] transition-all"
+                  className="flex cursor-pointer flex-col rounded-xl border border-outline-variant bg-surface-container p-4 hover:border-primary has-checked:border-primary has-checked:bg-surface-container-high transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-[var(--foreground)]">{level.title}</span>
+                    <span className="font-label-md text-on-surface font-semibold">{level.title}</span>
                     <input
                       type="radio"
                       name="placementAnswer"
                       value={level.id}
                       defaultChecked={level.id === "beginner"}
-                      className="h-4 w-4 text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                      className="h-4 w-4 text-primary focus:ring-primary"
                     />
                   </div>
-                  <span className="mt-1 text-xs text-[var(--foreground-secondary)]">{level.desc}</span>
+                  <span className="mt-1 font-body-sm text-on-surface-variant">{level.desc}</span>
                 </label>
               ))}
             </div>
@@ -114,8 +118,8 @@ export default async function OnboardingPage({
 
           {/* 3. Daily Goal Picker */}
           <div>
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">3. Set Your Daily Time Goal</h2>
-            <p className="text-xs text-[var(--foreground-secondary)]">Consistent daily practice builds your learning streak.</p>
+            <h2 className="font-headline-md text-on-surface font-extrabold">3. Set Your Daily Time Goal</h2>
+            <p className="font-body-sm text-on-surface-variant">Consistent daily practice builds your learning streak.</p>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
                 { mins: 10, label: "Casual", time: "10 mins/day" },
@@ -125,19 +129,19 @@ export default async function OnboardingPage({
               ].map((goal) => (
                 <label
                   key={goal.mins}
-                  className="flex cursor-pointer flex-col items-center rounded-xl border border-[var(--border)] p-3 text-center hover:border-[var(--brand-primary)] has-checked:border-[var(--brand-primary)] has-checked:bg-[var(--brand-primary-light)] transition-all"
+                  className="flex cursor-pointer flex-col items-center rounded-xl border border-outline-variant bg-surface-container p-3 text-center hover:border-primary has-checked:border-primary has-checked:bg-surface-container-high transition-all"
                 >
                   <input
                     type="radio"
                     name="dailyGoalMinutes"
                     value={goal.mins}
                     defaultChecked={goal.mins === 15}
-                    className="mb-2 h-4 w-4 text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                    className="mb-2 h-4 w-4 text-primary focus:ring-primary"
                   />
-                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
+                  <span className="font-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                     {goal.label}
                   </span>
-                  <span className="mt-0.5 text-sm font-semibold text-[var(--foreground)]">{goal.time}</span>
+                  <span className="mt-0.5 font-label-md font-semibold text-on-surface">{goal.time}</span>
                 </label>
               ))}
             </div>
@@ -145,7 +149,7 @@ export default async function OnboardingPage({
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-[var(--brand-primary)] py-3 text-base font-semibold text-white shadow-md hover:bg-[var(--brand-primary-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+            className="w-full rounded-full bg-primary-container text-on-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-lg hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all active:translate-y-[2px]"
           >
             Start My Learning Journey →
           </button>

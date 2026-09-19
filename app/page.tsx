@@ -12,18 +12,18 @@ export default async function Home() {
   console.log(`[PERF] Home page server render time: ${endTime - startTime}ms`);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--background)] p-6 text-center">
-      <div className="max-w-md w-full rounded-2xl border border-[var(--border)] bg-[var(--background-card)] p-8 shadow-sm">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 text-center">
+      <div className="max-w-md w-full rounded-2xl border border-outline-variant bg-surface-container-lowest p-8 shadow-sm">
         {/* Logo */}
         <div className="mb-6 flex justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--brand-primary)] text-4xl shadow-lg">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-container text-4xl shadow-lg">
             🧱
           </div>
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-extrabold text-[var(--foreground)] mb-2">LEGO</h1>
-        <p className="text-sm text-[var(--foreground-secondary)] mb-8">
+        <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold mb-2">LEGO</h1>
+        <p className="font-body-md text-on-surface-variant mb-8">
           Learn And Go — AI-powered, gamified learning with video lessons, quizzes, and live tutoring.
         </p>
 
@@ -31,13 +31,13 @@ export default async function Home() {
         <div className="space-y-3">
           {user ? (
             <div className="space-y-4">
-              <div className="rounded-xl border border-[var(--success)] bg-[var(--success-light)] p-4 text-sm text-[var(--success)]">
+              <div className="rounded-xl border border-primary bg-primary-container/20 p-4 text-sm text-primary">
                 <p className="font-semibold">Welcome back!</p>
                 <p className="text-xs mt-1">Signed in as {user.email}</p>
               </div>
               <Link
                 href="/path"
-                className="block w-full rounded-xl bg-[var(--brand-primary)] px-6 py-3 text-sm font-semibold text-white hover:bg-[var(--brand-primary-dark)] shadow transition-colors"
+                className="block w-full rounded-full bg-primary-container px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary shadow-lg transition-all active:translate-y-[2px]"
               >
                 Continue Learning →
               </Link>
@@ -46,13 +46,13 @@ export default async function Home() {
             <div className="flex flex-col gap-3">
               <Link
                 href="/sign-up"
-                className="block w-full rounded-xl bg-[var(--brand-primary)] px-6 py-3 text-sm font-semibold text-white hover:bg-[var(--brand-primary-dark)] shadow transition-colors"
+                className="block w-full rounded-full bg-primary-container px-6 py-3 text-sm font-semibold text-on-primary hover:bg-primary shadow-lg transition-all active:translate-y-[2px]"
               >
                 Get Started Free
               </Link>
               <Link
                 href="/sign-in"
-                className="block w-full rounded-xl border border-[var(--border)] px-6 py-3 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--background-secondary)] transition-colors"
+                className="block w-full rounded-full border border-outline-variant px-6 py-3 text-sm font-medium text-on-surface hover:bg-surface-container transition-all"
               >
                 Sign In
               </Link>
@@ -61,19 +61,19 @@ export default async function Home() {
         </div>
 
         {/* Features */}
-        <div className="mt-8 pt-8 border-t border-[var(--border-light)]">
+        <div className="mt-8 pt-8 border-t border-outline-variant">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-2xl mb-1">📚</div>
-              <p className="text-xs font-semibold text-[var(--foreground)]">Video Lessons</p>
+              <p className="text-xs font-semibold text-on-surface">Video Lessons</p>
             </div>
             <div>
               <div className="text-2xl mb-1">🎯</div>
-              <p className="text-xs font-semibold text-[var(--foreground)]">Interactive Quizzes</p>
+              <p className="text-xs font-semibold text-on-surface">Interactive Quizzes</p>
             </div>
             <div>
               <div className="text-2xl mb-1">👨‍🏫</div>
-              <p className="text-xs font-semibold text-[var(--foreground)]">Live Tutoring</p>
+              <p className="text-xs font-semibold text-on-surface">Live Tutoring</p>
             </div>
           </div>
         </div>

@@ -36,12 +36,12 @@ export default function Celebration({
     if (!field) return;
 
     const colors = [
-      "bg-[var(--brand-primary)]",
-      "bg-[var(--brand-secondary)]",
-      "bg-[var(--brand-tertiary)]",
-      "bg-[var(--error)]",
-      "bg-[var(--success)]",
-      "bg-[var(--warning)]",
+      "bg-primary",
+      "bg-secondary",
+      "bg-tertiary",
+      "bg-error",
+      "bg-primary-container",
+      "bg-secondary-container",
     ];
 
     for (let i = 0; i < 30; i++) {
@@ -69,32 +69,32 @@ export default function Celebration({
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[var(--background)]/95 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-background/95 flex items-center justify-center p-4 z-50">
       <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center">
         {/* Confetti Field */}
         <div
           id="confetti-field"
           className="absolute inset-0 pointer-events-none overflow-hidden"
         >
-          <div className="absolute top-10 left-12 w-3 h-6 bg-[var(--brand-secondary)] rounded-sm rotate-45 animate-bounce" />
-          <div className="absolute top-20 right-16 w-4 h-4 bg-[var(--brand-primary)] rounded-full animate-ping" />
-          <div className="absolute top-36 left-1/4 w-3 h-5 bg-[var(--brand-tertiary)] rounded-sm -rotate-12 animate-pulse" />
-          <div className="absolute top-14 right-1/3 w-4 h-2 bg-[var(--error)] rounded-sm rotate-45" />
-          <div className="absolute top-48 right-1/4 w-3 h-3 bg-[var(--brand-secondary)] rounded-full" />
-          <div className="absolute top-28 left-1/3 w-2 h-6 bg-[var(--brand-primary)] rotate-12" />
-          <div className="absolute top-64 right-12 w-5 h-2 bg-[var(--brand-tertiary)] rounded-sm rotate-45" />
-          <div className="absolute top-56 left-10 w-3 h-3 bg-[var(--brand-primary)] rounded-full" />
+          <div className="absolute top-10 left-12 w-3 h-6 bg-secondary rounded-sm rotate-45 animate-bounce" />
+          <div className="absolute top-20 right-16 w-4 h-4 bg-primary rounded-full animate-ping" />
+          <div className="absolute top-36 left-1/4 w-3 h-5 bg-tertiary rounded-sm -rotate-12 animate-pulse" />
+          <div className="absolute top-14 right-1/3 w-4 h-2 bg-error rounded-sm rotate-45" />
+          <div className="absolute top-48 right-1/4 w-3 h-3 bg-secondary rounded-full" />
+          <div className="absolute top-28 left-1/3 w-2 h-6 bg-primary rotate-12" />
+          <div className="absolute top-64 right-12 w-5 h-2 bg-tertiary rounded-sm rotate-45" />
+          <div className="absolute top-56 left-10 w-3 h-3 bg-primary rounded-full" />
         </div>
 
         <div className="w-full flex flex-col items-center text-center relative z-10">
           {/* Mascot */}
           <div className="relative mb-6 group cursor-pointer">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--brand-primary)] via-[var(--brand-secondary)] to-[var(--brand-tertiary)] rounded-full blur-2xl opacity-60 animate-pulse" />
-            <div className="relative w-44 h-44 rounded-full bg-[var(--background-card)] flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-105">
-              <div className="relative w-36 h-36 rounded-full bg-[var(--background)] flex items-center justify-center overflow-hidden">
+            <div className="absolute -inset-4 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-full blur-2xl opacity-60 animate-pulse" />
+            <div className="relative w-44 h-44 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-105">
+              <div className="relative w-36 h-36 rounded-full bg-background flex items-center justify-center overflow-hidden">
                 {/* LEGO Mascot SVG */}
                 <svg
-                  className="w-28 h-28 text-[var(--brand-primary)]"
+                  className="w-28 h-28 text-primary"
                   fill="none"
                   viewBox="0 0 100 100"
                   xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ export default function Celebration({
                   />
                 </svg>
               </div>
-              <div className="absolute -top-1 -right-1 bg-[var(--brand-secondary)] text-[var(--on-brand-secondary)] px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+              <div className="absolute -top-1 -right-1 bg-secondary text-on-secondary px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
                 <span className="text-lg">⭐</span>
                 <span className="text-sm font-semibold">LVL UP!</span>
               </div>
@@ -178,21 +178,21 @@ export default function Celebration({
           </div>
 
           {/* Lesson Tag */}
-          <div className="inline-flex items-center gap-2 bg-[var(--background-card)] px-4 py-1 rounded-full mb-4 shadow-sm">
-            <span className="text-[var(--brand-primary)] text-lg">✓</span>
-            <span className="text-sm uppercase tracking-wider text-[var(--foreground-secondary)]">
+          <div className="inline-flex items-center gap-2 bg-surface-container-lowest px-4 py-1 rounded-full mb-4 shadow-sm">
+            <span className="text-primary text-lg">✓</span>
+            <span className="text-sm uppercase tracking-wider text-on-surface-variant">
               {lessonTitle}
             </span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight leading-tight mb-2">
+          <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold tracking-tight leading-tight mb-2">
             Lesson Complete! 🎉
           </h1>
 
-          <p className="text-lg text-[var(--foreground-secondary)] max-w-lg mb-8">
+          <p className="font-body-lg text-on-surface-variant max-w-lg mb-8">
             You mastered this lesson with a{" "}
-            <span className="font-semibold text-[var(--brand Primary)]">
+            <span className="font-semibold text-primary">
               {accuracy}% accuracy
             </span>
             !
@@ -201,22 +201,22 @@ export default function Celebration({
           {/* Stats Grid */}
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-left">
             {/* XP Card */}
-            <div className="bg-[var(--background-card)] rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-[var(--foreground-secondary)]">
+                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
                   Experience
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-[var(--brand-primary-light)] flex items-center justify-center text-[var(--brand-primary)] shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-primary shadow-sm">
                   <span className="text-xl">⚡</span>
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[var(--brand-primary)] leading-none mb-1">
+                <div className="font-headline-xl text-headline-xl text-primary font-extrabold leading-none mb-1">
                   +{xpEarned} XP
                 </div>
-                <div className="text-sm text-[var(--foreground-secondary)]">
+                <div className="text-sm text-on-surface-variant">
                   Total:{" "}
-                  <span className="font-semibold text-[var(--foreground)]">
+                  <span className="font-semibold text-on-surface">
                     {totalXP} XP
                   </span>
                 </div>
@@ -224,22 +224,22 @@ export default function Celebration({
             </div>
 
             {/* Lessons Card */}
-            <div className="bg-[var(--background-card)] rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-[var(--foreground-secondary)]">
+                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
                   Curriculum
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
                   <span className="text-xl">📚</span>
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[var(--brand-primary)] leading-none mb-1">
+                <div className="font-headline-xl text-headline-xl text-primary font-extrabold leading-none mb-1">
                   +1 Lesson
                 </div>
-                <div className="text-sm text-[var(--foreground-secondary)]">
+                <div className="text-sm text-on-surface-variant">
                   Mastered (
-                  <span className="font-semibold text-[var(--foreground)]">
+                  <span className="font-semibold text-on-surface">
                     {lessonsCompleted} Total
                   </span>
                   )
@@ -248,40 +248,40 @@ export default function Celebration({
             </div>
 
             {/* Accuracy Card */}
-            <div className="bg-[var(--background-card)] rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-[var(--foreground-secondary)]">
+                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
                   Accuracy
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-[var(--brand-secondary)] flex items-center justify-center text-[var(--on-brand-secondary)] shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
                   <span className="text-xl">🎯</span>
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[var(--brand-secondary)] leading-none mb-1">
+                <div className="font-headline-xl text-headline-xl text-secondary font-extrabold leading-none mb-1">
                   {accuracy}%
                 </div>
-                <div className="text-sm text-[var(--foreground-secondary)]">
+                <div className="text-sm text-on-surface-variant">
                   Perfect Score!
                 </div>
               </div>
             </div>
 
             {/* Streak Card */}
-            <div className="bg-[var(--background-card)] rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-[var(--foreground-secondary)]">
+                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
                   Daily Streak
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-[var(--error)] flex items-center justify-center text-white shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-error flex items-center justify-center text-on-error shadow-sm">
                   <span className="text-xl">🔥</span>
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[var(--error)] leading-none mb-1">
+                <div className="font-headline-xl text-headline-xl text-error font-extrabold leading-none mb-1">
                   {streakDays} Days
                 </div>
-                <div className="text-sm text-[var(--foreground-secondary)]">
+                <div className="text-sm text-on-surface-variant">
                   Streak Maintained!
                 </div>
               </div>
@@ -290,29 +290,29 @@ export default function Celebration({
 
           {/* Badge Card */}
           {badge && (
-            <div className="w-full bg-gradient-to-r from-[var(--brand-secondary)] to-[var(--brand-secondary-light)] rounded-xl p-6 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-left">
+            <div className="w-full bg-gradient-to-r from-secondary to-secondary-container rounded-xl p-6 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-left">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-[var(--background-card)] flex items-center justify-center text-[var(--brand-secondary)] shadow-md shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-surface-container-lowest flex items-center justify-center text-secondary shadow-md shrink-0">
                   <span className="text-4xl">🏆</span>
                 </div>
                 <div className="flex flex-col">
                   <div className="inline-flex items-center gap-2 mb-1">
-                    <span className="text-lg font-semibold text-[var(--on-brand-secondary)]">
+                    <span className="text-lg font-semibold text-on-secondary">
                       {badge.name}
                     </span>
                     <span className="text-xl">🏅</span>
-                    <span className="bg-[var(--background-card)] text-[var(--brand-secondary)] text-xs px-2 py-0.5 rounded-full uppercase font-semibold">
+                    <span className="bg-surface-container-lowest text-secondary text-xs px-2 py-0.5 rounded-full uppercase font-semibold">
                       Unlocked
                     </span>
                   </div>
-                  <p className="text-sm text-[var(--on-brand-secondary)]">
+                  <p className="text-sm text-on-secondary">
                     {badge.description}
                   </p>
                 </div>
               </div>
               <div className="shrink-0">
                 <button
-                  className="px-4 py-2 rounded-lg bg-[var(--background-card)] text-[var(--brand-secondary)] font-semibold shadow-sm hover:bg-[var(--background)] transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-surface-container-lowest text-secondary font-semibold shadow-sm hover:bg-surface-container transition-all cursor-pointer"
                   type="button"
                 >
                   View Trophy
@@ -325,7 +325,7 @@ export default function Celebration({
           <div className="w-full max-w-md flex flex-col items-center gap-3">
             <button
               onClick={onNextLesson}
-              className="w-full py-4 px-6 rounded-xl bg-[var(--brand-primary)] text-white font-semibold shadow-lg hover:bg-[var(--brand-primary-dark)] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+              className="w-full py-4 px-6 rounded-full bg-primary text-on-primary font-label-lg font-bold uppercase tracking-wider shadow-lg hover:bg-primary-container transition-all flex items-center justify-center gap-2 cursor-pointer group active:translate-y-[2px]"
               type="button"
             >
               <span>Continue to Next Lesson</span>
@@ -335,15 +335,15 @@ export default function Celebration({
             </button>
             <button
               onClick={onReview}
-              className="w-full py-3 px-4 rounded-xl bg-[var(--background-card)] text-[var(--foreground)] font-semibold shadow-sm hover:bg-[var(--border)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-4 rounded-full bg-surface-container-lowest text-on-surface font-label-md font-semibold shadow-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2 cursor-pointer"
               type="button"
             >
-              <span className="text-lg text-[var(--foreground-secondary)]">📝</span>
+              <span className="text-lg text-on-surface-variant">📝</span>
               <span>Review Lesson Notes</span>
             </button>
             <button
               onClick={onReturnToPath}
-              className="mt-2 inline-flex items-center gap-2 text-sm text-[var(--foreground-secondary)] hover:text-[var(--brand-primary)] transition-colors cursor-pointer"
+              className="mt-2 inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
             >
               <span className="text-lg">←</span>
               <span>Return to Learning Path</span>

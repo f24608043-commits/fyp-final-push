@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { submitPracticeQuiz, type PracticeSubmissionResult } from "./actions";
 import type { GeneratedQuestion } from "@/lib/ai/generateQuiz";
 import Link from "next/link";
+import Mascot from "@/components/Mascot";
 
 interface PracticeClientProps {
   lessonId: string;
@@ -45,66 +46,88 @@ export default function PracticeClient({
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pb-16">
-      <header className="border-b border-[var(--border)] bg-[var(--background-card)]">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/lesson/${lessonId}`}
-              className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--background-secondary)] transition-colors"
-            >
-              ← Back to Lesson
-            </Link>
-            <div>
-              <span className="text-xs font-semibold uppercase text-[var(--brand-primary)]">
-                Practice Mode
-              </span>
-              <h1 className="text-sm font-bold text-[var(--foreground)]">{lessonTitle}</h1>
+    <div className="w-full px-6 py-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <Link
+          href={`/lesson/${lessonId}`}
+          className="inline-flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors group"
+        >
+          <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+          <span>Back to Lesson</span>
+        </Link>
+        <span className="rounded-full bg-primary-container/20 px-3 py-1 font-label-sm font-bold text-primary">
+          Bonus XP Quiz
+        </span>
+      </div>
+
+      {/* Main Header Card */}
+      <div className="relative w-full rounded-3xl bg-surface-container-lowest p-6 md:p-8 shadow-xl overflow-hidden mb-6">
+        {/* Decorative background gradients */}
+        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary-fixed/25 blur-3xl pointer-events-none"></div>
+        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          {/* Left: Header info */}
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-0.5 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm tracking-wider uppercase">Practice Mode</span>
+              <span className="text-outline text-label-sm">•</span>
+              <span className="px-3 py-0.5 rounded-lg bg-primary-container/20 text-primary font-label-sm text-label-sm">AI-Generated</span>
+            </div>
+            <h1 className="font-headline-xl text-headline-xl text-on-surface tracking-tight leading-none">
+              {lessonTitle}
+            </h1>
+            <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+              These questions are freshly generated just for extra practice. Pass to earn bonus XP! (Provider: {provider})
+            </p>
+          </div>
+
+          {/* Right: Mascot */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+            <div className="relative max-w-xs bg-surface-container-lowest p-4 rounded-2xl shadow-lg border-b-4 border-surface-container-high order-2 sm:order-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Bonus Challenge</span>
+              </div>
+              <p className="font-headline-md text-label-md text-on-surface font-bold leading-snug">
+                "Earn extra XP by mastering these practice questions!"
+              </p>
+            </div>
+            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2">
+              <Mascot pose="encouraging" size={128} />
             </div>
           </div>
-          <span className="rounded-full bg-[var(--brand-primary-light)] px-3 py-1 text-xs font-bold text-[var(--brand-primary)]">
-            Bonus XP Quiz
-          </span>
         </div>
-      </header>
+      </div>
 
-      <main className="mx-auto max-w-3xl px-4 pt-8">
+      <main className="mx-auto max-w-3xl">
         {!result ? (
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--background-card)] p-6 shadow-sm sm:p-8">
-            <div className="mb-6 rounded-xl border border-[var(--brand-primary-light)] bg-[var(--brand-primary-light)] p-4">
-              <p className="text-sm font-semibold text-[var(--brand-primary)]">
-                🎯 Practice Quiz — AI-Generated
-              </p>
-              <p className="mt-1 text-xs text-[var(--brand-primary)]">
-                These questions are freshly generated just for extra practice. Pass to earn
-                bonus XP! (Provider: {provider})
-              </p>
-            </div>
-
+          <div className="rounded-2xl bg-surface-container-lowest p-6 shadow-md">
             {errorMsg && (
-              <div className="mb-4 rounded-lg border border-[var(--error)] bg-[var(--error-light)] p-3 text-sm text-[var(--error)]">
+              <div className="mb-6 rounded-xl border border-error bg-error-container p-4 text-sm text-on-error-container">
                 {errorMsg}
               </div>
             )}
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {questions.map((q, qIdx) => (
                 <div
                   key={qIdx}
-                  className="rounded-xl border border-[var(--border)] bg-[var(--background-secondary)] p-5"
+                  className="rounded-xl border border-outline-variant bg-surface-container p-5"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
                       Question {qIdx + 1} of {questions.length}
                     </span>
-                    <span className="text-xs font-medium text-[var(--foreground-muted)]">
+                    <span className="font-label-sm font-medium text-on-surface-variant">
                       {q.points} {q.points === 1 ? "point" : "points"}
                     </span>
                   </div>
-                  <h3 className="mt-2 text-base font-semibold text-[var(--foreground)]">
+                  <h3 className="font-label-md text-on-surface mb-4">
                     {q.questionText}
                   </h3>
-                  <div className="mt-4 space-y-2">
+                  <div className="space-y-3">
                     {q.options.map((opt, oIdx) => {
                       const isSelected = selectedAnswers[qIdx] === oIdx;
                       return (
@@ -112,18 +135,18 @@ export default function PracticeClient({
                           key={oIdx}
                           type="button"
                           onClick={() => handleSelect(qIdx, oIdx)}
-                          className={`flex w-full items-center justify-between rounded-lg border p-3.5 text-left text-sm font-medium transition-all ${
+                          className={`flex w-full items-center justify-between rounded-xl border p-4 text-left font-label-md transition-all ${
                             isSelected
-                              ? "border-[var(--brand-primary)] bg-[var(--brand-primary-light)] text-[var(--brand-primary)] ring-2 ring-[var(--brand-primary)]"
-                              : "border-[var(--border)] bg-[var(--background-card)] text-[var(--foreground)] hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]"
+                              ? "border-primary bg-surface-container-high text-primary shadow-glow"
+                              : "border-outline-variant bg-surface-container-lowest text-on-surface hover:border-primary hover:bg-surface-container"
                           }`}
                         >
                           <span>{opt.optionText}</span>
                           <span
                             className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
                               isSelected
-                                ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white"
-                                : "border-[var(--border)]"
+                                ? "border-primary bg-primary text-on-primary"
+                                : "border-outline-variant"
                             }`}
                           >
                             {isSelected ? "✓" : ""}
@@ -136,42 +159,43 @@ export default function PracticeClient({
               ))}
             </div>
 
-            <div className="mt-8 flex justify-end border-t border-[var(--border-light)] pt-6">
+            <div className="mt-8 flex justify-end border-t border-outline-variant pt-6">
               <button
                 type="button"
                 disabled={isPending}
                 onClick={handleSubmit}
-                className="w-full rounded-xl bg-[var(--brand-primary)] px-6 py-3 text-sm font-bold text-white shadow hover:bg-[var(--brand-primary-dark)] disabled:opacity-50 sm:w-auto transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-on-primary font-label-lg font-bold uppercase tracking-wider shadow-lg hover:bg-primary disabled:opacity-50 transition-all active:translate-y-[2px]"
               >
-                {isPending ? "Grading…" : "Submit Practice Quiz →"}
+                {isPending ? "Grading…" : "Submit Practice Quiz"}
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </button>
             </div>
           </div>
         ) : (
           /* Result Screen */
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--background-card)] p-6 text-center shadow-sm sm:p-10">
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full text-4xl shadow-inner">
+          <div className="rounded-2xl bg-surface-container-lowest p-8 shadow-md text-center">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-surface-container text-5xl">
               {result.passed ? "🌟" : "💪"}
             </div>
 
-            <h2 className="text-2xl font-extrabold text-[var(--foreground)]">
+            <h2 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">
               {result.passed ? "Great Practice!" : "Keep Practicing!"}
             </h2>
 
-            <p className="mt-1 text-sm text-[var(--foreground-secondary)]">
+            <p className="mt-2 font-body-md text-on-surface-variant">
               {result.passed
                 ? `You scored ${result.score}% (${result.correctCount}/${result.totalQuestions} correct).`
                 : `You scored ${result.score}%. You need 50% to earn bonus XP.`}
             </p>
 
-            <div className="my-6 inline-flex items-center gap-6 rounded-2xl border border-[var(--border)] bg-[var(--background-secondary)] px-6 py-4">
+            <div className="my-8 inline-flex items-center gap-8 rounded-2xl bg-surface-container px-8 py-6 border border-outline-variant">
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
+                <div className="font-label-sm uppercase tracking-wider text-on-surface-variant font-bold">
                   Score
                 </div>
                 <div
-                  className={`text-3xl font-extrabold ${
-                    result.passed ? "text-[var(--success)]" : "text-[var(--warning)]"
+                  className={`font-headline-xl text-headline-xl font-extrabold ${
+                    result.passed ? "text-primary-container" : "text-secondary"
                   }`}
                 >
                   {result.score}%
@@ -179,12 +203,12 @@ export default function PracticeClient({
               </div>
               {result.passed && (
                 <>
-                  <div className="h-8 w-px bg-[var(--border-light)]" />
+                  <div className="h-12 w-px bg-outline-variant" />
                   <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-[var(--foreground-muted)]">
+                    <div className="font-label-sm uppercase tracking-wider text-on-surface-variant font-bold">
                       Bonus XP
                     </div>
-                    <div className="text-3xl font-extrabold text-[var(--warning)]">
+                    <div className="font-headline-xl text-headline-xl font-extrabold text-secondary-container">
                       +{result.bonusXpAwarded}
                     </div>
                   </div>
@@ -192,22 +216,24 @@ export default function PracticeClient({
               )}
             </div>
 
-            <p className="mb-6 text-xs text-[var(--foreground-muted)]">
+            <p className="mb-6 font-body-sm text-on-surface-variant">
               Your lesson progress is unchanged — practice mode is bonus only.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href={`/lesson/${lessonId}/practice`}
-                className="rounded-xl bg-[var(--brand-primary)] px-6 py-3 text-sm font-bold text-white shadow hover:bg-[var(--brand-primary-dark)] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-on-primary font-label-lg font-bold uppercase tracking-wider shadow-lg hover:bg-primary transition-all active:translate-y-[2px]"
               >
                 Practice Again
+                <span className="material-symbols-outlined text-[20px]">refresh</span>
               </Link>
               <Link
                 href="/path"
-                className="rounded-xl border border-[var(--border)] px-6 py-3 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--background-secondary)] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-outline-variant font-label-md font-semibold text-on-surface hover:bg-surface-container transition-all"
               >
                 Back to Path
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </Link>
             </div>
           </div>

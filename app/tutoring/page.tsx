@@ -1,6 +1,7 @@
 import { getTutors, getMySessions, getPendingRequests } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Mascot from "@/components/Mascot";
 
 export default async function TutoringPage() {
   const supabase = await createClient();
@@ -17,42 +18,74 @@ export default async function TutoringPage() {
   ]);
 
   return (
-    <div className="p-6 lg:p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--foreground)]">Tutoring</h1>
-        <p className="mt-1 text-sm text-[var(--foreground-secondary)]">
-          Connect with expert tutors for personalized learning sessions
-        </p>
+    <div className="w-full px-6 py-6">
+      {/* Header with Mascot */}
+      <div className="relative w-full rounded-3xl bg-surface-container-lowest p-6 md:p-8 shadow-xl overflow-hidden mb-6">
+        {/* Decorative background gradients */}
+        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary-fixed/25 blur-3xl pointer-events-none"></div>
+        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          {/* Left: Header info */}
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-0.5 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm tracking-wider uppercase">Tutoring</span>
+              <span className="text-outline text-label-sm">•</span>
+              <span className="px-3 py-0.5 rounded-lg bg-primary-container/20 text-primary font-label-sm text-label-sm">Expert Help</span>
+            </div>
+            <h1 className="font-headline-xl text-headline-xl text-on-surface tracking-tight leading-none">
+              Tutoring Hub
+            </h1>
+            <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+              Connect with expert tutors for personalized learning sessions
+            </p>
+          </div>
+
+          {/* Right: Mascot */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+            <div className="relative max-w-xs bg-surface-container-lowest p-4 rounded-2xl shadow-lg border-b-4 border-surface-container-high order-2 sm:order-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Learn Together</span>
+              </div>
+              <p className="font-headline-md text-label-md text-on-surface font-bold leading-snug">
+                "Get personalized help from expert tutors to accelerate your learning!"
+              </p>
+            </div>
+            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2">
+              <Mascot pose="encouraging" size={128} />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Pending Requests (for tutors) */}
       {pendingRequests.length > 0 && (
-        <div className="mb-8 rounded-xl border border-[var(--warning)] bg-[var(--warning-light)] p-6">
+        <div className="mb-6 rounded-2xl bg-secondary-fixed p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">🔔</span>
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">
+            <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
+            <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">
               Pending Session Requests ({pendingRequests.length})
             </h2>
           </div>
           <div className="space-y-3">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-4 shadow-sm">
+              <div key={request.id} className="rounded-2xl bg-surface-container-lowest p-4 shadow-md">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white font-bold text-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-on-primary font-bold text-lg">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
                   <div>
-                    <p className="font-semibold text-[var(--foreground)]">
+                    <p className="font-label-md text-on-surface font-semibold">
                       {request.learner.displayName || "Unknown"}
                     </p>
-                    <p className="text-xs text-[var(--foreground-muted)]">
+                    <p className="font-body-sm text-on-surface-variant">
                       Requested {new Date(request.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 {request.message && (
-                  <p className="text-sm text-[var(--foreground-secondary)] mb-3 italic">
+                  <p className="font-body-sm text-on-surface-variant mb-3 italic">
                     "{request.message}"
                   </p>
                 )}
@@ -62,7 +95,7 @@ export default async function TutoringPage() {
                     const { acceptSessionRequest } = await import("./actions");
                     await acceptSessionRequest(request.id, 0);
                   }}>
-                    <button className="rounded-lg bg-[var(--success)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--success)]/90 transition-colors">
+                    <button className="rounded-full bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
                       Accept
                     </button>
                   </form>
@@ -71,7 +104,7 @@ export default async function TutoringPage() {
                     const { declineSessionRequest } = await import("./actions");
                     await declineSessionRequest(request.id);
                   }}>
-                    <button className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--background-secondary)] transition-colors">
+                    <button className="rounded-xl border border-outline-variant bg-surface-container text-on-surface px-4 py-2 font-label-md font-semibold hover:bg-surface-container-high transition-all">
                       Decline
                     </button>
                   </form>
@@ -83,30 +116,35 @@ export default async function TutoringPage() {
       )}
 
       {/* My Sessions */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-4">My Sessions</h2>
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="material-symbols-outlined text-primary text-[24px]">event</span>
+          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">My Sessions</h2>
+        </div>
         {mySessions.length === 0 ? (
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--background-secondary)] p-8 text-center">
-            <div className="text-4xl mb-3">📅</div>
-            <p className="text-[var(--foreground-secondary)]">No sessions yet. Find a tutor to get started!</p>
+          <div className="rounded-2xl bg-surface-container-lowest p-8 text-center shadow-md">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+              <Mascot pose="empty" size={64} />
+            </div>
+            <p className="font-body-md text-on-surface-variant">No sessions yet. Find a tutor to get started!</p>
           </div>
         ) : (
           <div className="space-y-3">
             {mySessions.map((session: any) => (
-              <div key={session.id} className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-5 shadow-sm">
+              <div key={session.id} className="rounded-2xl bg-surface-container-lowest p-5 shadow-md">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-semibold text-[var(--foreground)]">
+                    <p className="font-label-md text-on-surface font-semibold">
                       {new Date(session.scheduledAt).toLocaleString()}
                     </p>
-                    <p className="text-sm text-[var(--foreground-secondary)] mt-1">
+                    <p className="font-body-sm text-on-surface-variant mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
-                    <span className={`inline-block mt-2 rounded-full px-3 py-1 text-xs font-semibold ${
-                      session.status === "confirmed" ? "bg-[var(--success-light)] text-[var(--success)]" :
-                      session.status === "completed" ? "bg-[var(--info-light)] text-[var(--info)]" :
-                      session.status === "cancelled" ? "bg-[var(--error-light)] text-[var(--error)]" :
-                      "bg-[var(--background-secondary)] text-[var(--foreground-muted)]"
+                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold ${
+                      session.status === "confirmed" ? "bg-primary-container/20 text-primary" :
+                      session.status === "completed" ? "bg-tertiary-fixed text-on-tertiary-fixed" :
+                      session.status === "cancelled" ? "bg-error-container text-on-error-container" :
+                      "bg-surface-container-high text-on-surface-variant"
                     }`}>
                       {session.status}
                     </span>
@@ -116,11 +154,9 @@ export default async function TutoringPage() {
                       href={`https://meet.jit.si/${session.jitsiRoomId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brand-primary-dark)] transition-colors"
+                      className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
+                      <span className="material-symbols-outlined text-[20px]">videocam</span>
                       Join Session
                     </a>
                   )}
@@ -133,48 +169,63 @@ export default async function TutoringPage() {
 
       {/* Tutor Directory */}
       <div>
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-4">Find a Tutor</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="material-symbols-outlined text-primary text-[24px]">people</span>
+          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Find a Tutor</h2>
+        </div>
         {tutors.length === 0 ? (
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--background-secondary)] p-8 text-center">
-            <div className="text-4xl mb-3">👨‍🏫</div>
-            <p className="text-[var(--foreground-secondary)]">No tutors available yet.</p>
+          <div className="rounded-2xl bg-surface-container-lowest p-8 text-center shadow-md">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+              <Mascot pose="empty" size={64} />
+            </div>
+            <p className="font-body-md text-on-surface-variant">No tutors available yet.</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tutors.map((tutor: any) => (
-              <div key={tutor.id} className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-5 shadow-sm hover:shadow-md transition-shadow">
+              <div key={tutor.id} className="rounded-2xl bg-surface-container-lowest p-5 shadow-md hover:shadow-lg transition-shadow">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white font-bold text-xl">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-container text-on-primary font-bold text-xl">
                     {tutor.displayName?.[0] || "?"}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-[var(--foreground)] truncate">
+                    <p className="font-label-md text-on-surface font-semibold truncate">
                       {tutor.displayName || "Unknown"}
                     </p>
-                    <div className="flex items-center gap-1 text-sm text-[var(--foreground-secondary)]">
-                      <span>⭐</span>
-                      <span>{tutor.rating}/5</span>
-                      <span className="text-[var(--foreground-muted)]">({tutor.totalSessions} sessions)</span>
+                    <div className="flex items-center gap-1 font-body-sm text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                      <span className="font-bold text-secondary">{tutor.rating}/5</span>
+                      <span className="text-on-surface-variant">({tutor.totalSessions} sessions)</span>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-[var(--foreground-secondary)] mb-3 line-clamp-2">
+                <p className="font-body-sm text-on-surface-variant mb-3 line-clamp-2">
                   {tutor.bio || "No bio available"}
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {tutor.subjects?.map((subject: string, idx: number) => (
-                    <span key={idx} className="rounded-full bg-purple-100 px-2 py-1 text-xs font-semibold text-purple-800">
+                    <span key={idx} className="rounded-full bg-tertiary-fixed text-on-tertiary-fixed px-2 py-1 font-label-sm font-semibold">
                       {subject}
                     </span>
                   ))}
                 </div>
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[var(--foreground)]">
+                  <p className="font-label-sm font-semibold text-on-surface">
                     {tutor.hourlyRate ? `$${tutor.hourlyRate}/hour` : "Free"}
                   </p>
-                  <button className="rounded-lg bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brand-primary-dark)] transition-colors">
-                    Book Session
-                  </button>
+                  <form action={async () => {
+                    "use server";
+                    const { requestSession } = await import("./actions");
+                    await requestSession({
+                      tutorId: tutor.id,
+                      requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
+                      message: "I would like to book a session"
+                    });
+                  }}>
+                    <button className="rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
+                      Book Session
+                    </button>
+                  </form>
                 </div>
               </div>
             ))}

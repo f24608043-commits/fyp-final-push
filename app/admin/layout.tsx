@@ -25,36 +25,36 @@ export default async function AdminLayout({
     .where(eq(profiles.id, user.id))
     .limit(1);
 
-  if (!profile || profile.role !== "admin") {
+  if (!profile || (profile.role !== "admin" && profile.role !== "tutor")) {
     redirect("/?error=admin_only");
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white shadow-sm">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-outline-variant bg-surface-container-lowest shadow-subtle">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-extrabold text-blue-700">🎓 LEGO Admin</span>
+            <span className="text-lg font-extrabold text-primary">🎓 LEGO Admin</span>
             <nav className="hidden items-center gap-4 sm:flex">
-              <Link href="/admin/users" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+              <Link href="/admin/users" className="font-label-sm font-medium text-on-surface-variant hover:text-primary">
                 Users
               </Link>
-              <Link href="/admin/badges" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+              <Link href="/admin/badges" className="font-label-sm font-medium text-on-surface-variant hover:text-primary">
                 Badges
               </Link>
-              <Link href="/admin/courses" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+              <Link href="/admin/courses" className="font-label-sm font-medium text-on-surface-variant hover:text-primary">
                 Courses
               </Link>
-              <Link href="/admin/tutoring" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+              <Link href="/admin/tutoring" className="font-label-sm font-medium text-on-surface-variant hover:text-primary">
                 Tutoring
               </Link>
-              <Link href="/" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+              <Link href="/" className="font-label-sm font-medium text-on-surface-variant hover:text-primary">
                 ← Back to App
               </Link>
             </nav>
           </div>
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
-            Admin Mode
+          <span className="rounded-full bg-primary-container/20 px-3 py-1 font-label-sm font-bold text-primary">
+            {profile.role === "admin" ? "Admin Mode" : "Tutor Mode"}
           </span>
         </div>
       </header>

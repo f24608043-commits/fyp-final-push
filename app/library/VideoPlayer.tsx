@@ -24,14 +24,14 @@ export default function VideoPlayer({ videoUrl, lessonId }: VideoPlayerProps) {
 
   return (
     <div className="aspect-video bg-black rounded-xl overflow-hidden">
-      <video
-        controls
+      <iframe
         className="w-full h-full"
-        src={`https://www.youtube.com/watch?v=${videoUrl}`}
-        onPlay={handlePlay}
-      >
-        Your browser does not support the video tag.
-      </video>
+        src={`https://www.youtube.com/embed/${videoUrl}`}
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        onLoad={handlePlay}
+      />
     </div>
   );
 }

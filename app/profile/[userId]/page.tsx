@@ -3,6 +3,7 @@ import { profiles, userProgress, userBadges, badges, friendships } from "@/db/sc
 import { eq, and, desc, or, inArray } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
 import { sendFriendRequest } from "@/app/friends/actions";
+import Mascot from "@/components/Mascot";
 
 export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const supabase = await createClient();
@@ -12,9 +13,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
 
   if (!targetUserId) {
     return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Invalid User ID</h1>
-        <p>User ID is required to view a profile.</p>
+      <div className="w-full px-6 py-6">
+        <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">Invalid User ID</h1>
+        <p className="font-body-md text-on-surface-variant">User ID is required to view a profile.</p>
       </div>
     );
   }
@@ -28,15 +29,15 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
 
   if (!profile) {
     return (
-      <div className="container mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">User Not Found</h1>
-        <p>This user profile does not exist.</p>
+      <div className="w-full px-6 py-6">
+        <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">User Not Found</h1>
+        <p className="font-body-md text-on-surface-variant">This user profile does not exist.</p>
       </div>
     );
   }
 
-  // Get user's completed lessons count, earned badges, and all badges in parallel
-  const [completedLessons, userBadgesData, allBadges] = await Promise.all([
+  // Get user's completed lessons count, earned badges, all badges, and friendship status in parallel for speed
+  const [completedLessons, userBadgesData, allBadges, friendship] = await Promise.all([
     db
       .select({ count: userProgress.lessonId })
       .from(userProgress)
@@ -63,16 +64,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
         criteriaType: badges.criteriaType,
         criteriaValue: badges.criteriaValue,
       })
-      .from(badges)
-  ]);
-
-  const earnedBadgeIds = userBadgesData.map((b: any) => b.id);
-  const lockedBadges = allBadges.filter((b: any) => !earnedBadgeIds.includes(b.id));
-
-  // Check friendship status
-  let friendshipStatus = null;
-  if (currentUser) {
-    const [friendship] = await db
+      .from(badges),
+    currentUser ? db
       .select()
       .from(friendships)
       .where(
@@ -87,122 +80,165 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
           )
         )
       )
-      .limit(1);
+      .limit(1) : Promise.resolve([])
+  ]);
 
-    if (friendship) {
-      friendshipStatus = friendship.status;
-    }
+  const earnedBadgeIds = userBadgesData.map((b: any) => b.id);
+  const lockedBadges = allBadges.filter((b: any) => !earnedBadgeIds.includes(b.id));
+
+  let friendshipStatus = null;
+  if (friendship && friendship.length > 0) {
+    friendshipStatus = friendship[0].status;
   }
 
   const isOwnProfile = currentUser?.id === targetUserId;
 
   return (
-    <div className="p-6 lg:p-8">
-      {/* Profile Header */}
-      <div className="bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-dark)] text-white p-8 rounded-2xl mb-6 shadow-lg">
-        <div className="flex items-center gap-6">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-4xl text-[var(--brand-primary)] shadow-lg">
-            {profile.displayName?.[0] || "?"}
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold">{profile.displayName || "Anonymous"}</h1>
-            <p className="text-lg opacity-90">{profile.xp} XP • 🔥 {profile.streakCount} day streak</p>
-            <p className="text-sm opacity-75">Role: {profile.role}</p>
+    <div className="w-full px-6 py-6">
+      {/* Profile Header with Mascot */}
+      <div className="relative w-full rounded-3xl bg-surface-container-lowest p-6 md:p-8 shadow-xl overflow-hidden mb-6">
+        {/* Decorative background gradients */}
+        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary-fixed/25 blur-3xl pointer-events-none"></div>
+        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          {/* Left: Profile info */}
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 bg-primary-container rounded-full flex items-center justify-center text-4xl text-on-primary shadow-lg">
+              {profile.displayName?.[0] || "?"}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-3 py-0.5 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm tracking-wider uppercase">{profile.role}</span>
+              </div>
+              <h1 className="font-headline-xl text-headline-xl text-on-surface tracking-tight leading-none">
+                {profile.displayName || "Anonymous"}
+              </h1>
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md">
+                  <span className="material-symbols-outlined text-[18px]">bolt</span>
+                  <span>{profile.xp} XP</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface-container-high text-on-surface font-label-md text-label-md">
+                  <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                  <span>{profile.streakCount} day streak</span>
+                </div>
+              </div>
+            </div>
           </div>
           
-          {!isOwnProfile && currentUser && (
-            <div>
-              {friendshipStatus === "accepted" ? (
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white text-[var(--brand-primary)] rounded-full font-medium">
-                  <span>✅</span>
-                  <span>Friends</span>
-                </span>
-              ) : friendshipStatus === "pending" ? (
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white text-[var(--brand-primary)] rounded-full font-medium">
-                  <span>⏳</span>
-                  <span>Pending</span>
-                </span>
-              ) : friendshipStatus === "blocked" ? (
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--error)] text-white rounded-full font-medium">
-                  <span>🚫</span>
-                  <span>Blocked</span>
-                </span>
-              ) : (
-                <form action={async () => {
-                  "use server";
-                  await sendFriendRequest(targetUserId);
-                }}>
-                  <button className="px-4 py-2 bg-white text-[var(--brand-primary)] rounded-full font-medium hover:bg-gray-100 transition-colors">
-                    Add Friend
-                  </button>
-                </form>
-              )}
+          {/* Right: Mascot + Friend Action */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2">
+              <Mascot pose="celebrate" size={128} />
             </div>
-          )}
+            {!isOwnProfile && currentUser && (
+              <div className="order-2 sm:order-1">
+                {friendshipStatus === "accepted" ? (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary rounded-full font-label-md font-bold shadow-glow">
+                    <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+                    <span>Friends</span>
+                  </span>
+                ) : friendshipStatus === "pending" ? (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md font-bold">
+                    <span className="material-symbols-outlined text-[18px]">schedule</span>
+                    <span>Pending</span>
+                  </span>
+                ) : friendshipStatus === "blocked" ? (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-error-container text-on-error-container rounded-full font-label-md font-bold">
+                    <span className="material-symbols-outlined text-[18px]">block</span>
+                    <span>Blocked</span>
+                  </span>
+                ) : (
+                  <form action={async () => {
+                    "use server";
+                    await sendFriendRequest(targetUserId);
+                  }}>
+                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary rounded-full font-label-md font-bold shadow-lg hover:bg-primary transition-all active:translate-y-[2px]">
+                      <span className="material-symbols-outlined text-[18px]">person_add</span>
+                      <span>Add Friend</span>
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-6 shadow-sm">
-          <h3 className="text-[var(--foreground-muted)] text-sm font-medium">Total XP</h3>
-          <p className="text-3xl font-bold text-[var(--brand-primary)]">{profile.xp}</p>
+        <div className="rounded-xl bg-surface-container-lowest p-6 shadow-md">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="material-symbols-outlined text-primary text-[24px]">bolt</span>
+            <h3 className="font-label-sm text-on-surface-variant font-medium">Total XP</h3>
+          </div>
+          <p className="font-headline-xl text-headline-xl text-primary font-extrabold">{profile.xp}</p>
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-6 shadow-sm">
-          <h3 className="text-[var(--foreground-muted)] text-sm font-medium">Lessons Completed</h3>
-          <p className="text-3xl font-bold text-[var(--success)]">{completedLessons.length}</p>
+        <div className="rounded-xl bg-surface-container-lowest p-6 shadow-md">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="material-symbols-outlined text-primary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+            <h3 className="font-label-sm text-on-surface-variant font-medium">Lessons Completed</h3>
+          </div>
+          <p className="font-headline-xl text-headline-xl text-primary-container font-extrabold">{completedLessons.length}</p>
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] p-6 shadow-sm">
-          <h3 className="text-[var(--foreground-muted)] text-sm font-medium">Current Streak</h3>
-          <p className="text-3xl font-bold text-[var(--warning)]">{profile.streakCount} days</p>
+        <div className="rounded-xl bg-surface-container-lowest p-6 shadow-md">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="material-symbols-outlined text-secondary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+            <h3 className="font-label-sm text-on-surface-variant font-medium">Current Streak</h3>
+          </div>
+          <p className="font-headline-xl text-headline-xl text-secondary font-extrabold">{profile.streakCount} days</p>
         </div>
       </div>
 
       {/* Badges Section */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] shadow-sm mb-6">
-        <div className="p-4 border-b border-[var(--border-light)]">
-          <h2 className="text-lg font-semibold text-[var(--foreground)]">Badges ({userBadgesData.length}/{allBadges.length})</h2>
+      <div className="rounded-2xl bg-surface-container-lowest shadow-md mb-6">
+        <div className="p-4 border-b border-outline-variant">
+          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Badges ({userBadgesData.length}/{allBadges.length})</h2>
         </div>
         
         {allBadges.length === 0 ? (
-          <div className="p-6 text-center text-[var(--foreground-muted)]">
+          <div className="p-6 text-center font-body-md text-on-surface-variant">
             No badges available
           </div>
         ) : (
-          <div className="p-4">
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Earned Badges</h3>
+          <div className="p-6">
+            <h3 className="font-label-md text-on-surface font-semibold mb-4">Earned Badges</h3>
             {userBadgesData.length === 0 ? (
-              <div className="p-4 text-center text-[var(--foreground-muted)] bg-[var(--background-secondary)] rounded-xl mb-4">
+              <div className="p-6 text-center font-body-md text-on-surface-variant bg-surface-container rounded-2xl mb-6">
+                <div className="relative w-16 h-16 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+                  <Mascot pose="empty" size={64} />
+                </div>
                 No badges earned yet
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 {userBadgesData.map((badge: any) => (
-                  <div key={badge.id} className="text-center p-4 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
-                    <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-2 flex items-center justify-center text-2xl shadow-md">
+                  <div key={badge.id} className="text-center p-4 bg-gradient-to-br from-secondary-fixed to-secondary-container rounded-2xl border border-secondary shadow-glow">
+                    <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-container rounded-full mx-auto mb-2 flex items-center justify-center text-2xl shadow-md">
                       🏆
                     </div>
-                    <p className="font-medium text-sm text-[var(--foreground)]">{badge.name}</p>
-                    <p className="text-xs text-[var(--foreground-muted)] mt-1">{badge.description}</p>
+                    <p className="font-label-md text-on-surface font-semibold">{badge.name}</p>
+                    <p className="font-body-sm text-on-surface-variant mt-1">{badge.description}</p>
                   </div>
                 ))}
               </div>
             )}
 
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Locked Badges</h3>
+            <h3 className="font-label-md text-on-surface font-semibold mb-4">Locked Badges</h3>
             {lockedBadges.length === 0 ? (
-              <div className="p-4 text-center text-[var(--foreground)] bg-[var(--success-light)] rounded-xl border border-[var(--success)]">
+              <div className="p-6 text-center font-body-md text-primary-container bg-primary-container/20 rounded-2xl border border-primary-container">
                 All badges earned! 🎉
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {lockedBadges.map((badge: any) => (
-                  <div key={badge.id} className="text-center p-4 bg-[var(--background-secondary)] rounded-xl border border-[var(--border-light)] opacity-60">
-                    <div className="w-16 h-16 bg-[var(--foreground-muted)] rounded-full mx-auto mb-2 flex items-center justify-center text-2xl">
+                  <div key={badge.id} className="text-center p-4 bg-surface-container rounded-2xl border border-outline-variant opacity-60">
+                    <div className="w-16 h-16 bg-surface-container-high rounded-full mx-auto mb-2 flex items-center justify-center text-2xl">
                       🔒
                     </div>
-                    <p className="font-medium text-sm text-[var(--foreground-muted)]">{badge.name}</p>
-                    <p className="text-xs text-[var(--foreground-muted)] mt-1">{badge.description}</p>
+                    <p className="font-label-md text-on-surface-variant font-semibold">{badge.name}</p>
+                    <p className="font-body-sm text-on-surface-variant mt-1">{badge.description}</p>
                   </div>
                 ))}
               </div>
@@ -212,12 +248,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
       </div>
 
       {/* Recent Activity */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] shadow-sm">
-        <div className="p-4 border-b border-[var(--border-light)]">
-          <h2 className="text-lg font-semibold text-[var(--foreground)]">Recent Activity</h2>
+      <div className="rounded-2xl bg-surface-container-lowest shadow-md">
+        <div className="p-4 border-b border-outline-variant">
+          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Recent Activity</h2>
         </div>
         
-        <div className="p-6 text-center text-[var(--foreground-muted)]">
+        <div className="p-6 text-center font-body-md text-on-surface-variant">
           Activity tracking coming soon
         </div>
       </div>

@@ -2,7 +2,9 @@ import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import AppShell from "./AppShell";
+import UnifiedShell from "./UnifiedShell";
 
 export default async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -11,24 +13,52 @@ export default async function Shell({ children }: { children: React.ReactNode })
   } = await supabase.auth.getUser();
 
   let userData = undefined;
+  let userRole: "learner" | "tutor" | "admin" | null = null;
+  let profile = null;
+  
   if (user) {
-    const [profile] = await db
+    const [profileResult] = await db
       .select()
       .from(profiles)
       .where(eq(profiles.id, user.id))
       .limit(1);
+    
+    profile = profileResult;
     
     if (profile) {
       userData = {
         id: profile.id,
         displayName: profile.displayName,
         email: user.email || "",
-        role: profile.role,
+        role: profile.role as "learner" | "tutor" | "admin",
         xp: profile.xp,
         streakCount: profile.streakCount,
       };
+      userRole = profile.role as "learner" | "tutor" | "admin";
     }
   }
 
+  // Use UnifiedShell for authenticated users with valid profile
+  // If user exists but profile is missing/invalid, redirect to onboarding
+  if (user) {
+    if (!profile) {
+      // User exists but no profile - redirect to onboarding
+      redirect("/onboarding");
+    }
+    if (userRole) {
+      return (
+        <UnifiedShell 
+          role={userRole}
+          initialXp={userData?.xp || 0}
+          initialStreak={userData?.streakCount || 0}
+          initialDisplayName={userData?.displayName || ""}
+        >
+          {children}
+        </UnifiedShell>
+      );
+    }
+  }
+
+  // AppShell for non-authenticated users (sign-in, sign-up pages)
   return <AppShell user={userData}>{children}</AppShell>;
 }

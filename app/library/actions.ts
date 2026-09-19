@@ -14,27 +14,7 @@ export async function getLibraryLessons() {
     return [];
   }
 
-  // Get all courses the user is enrolled in
-  const userEnrollments = await db
-    .select({ courseId: enrollments.courseId })
-    .from(enrollments)
-    .where(eq(enrollments.userId, user.id));
-
-  const courseIds = userEnrollments.map((e) => e.courseId);
-
-  if (courseIds.length === 0) {
-    return [];
-  }
-
-  // Get all units in enrolled courses
-  const courseUnits = await db
-    .select({ id: units.id, courseId: units.courseId })
-    .from(units)
-    .where(inArray(units.courseId, courseIds));
-
-  const unitIds = courseUnits.map((u) => u.id);
-
-  // Get all lessons in enrolled courses (ungated access)
+  // Optimized: Get all lessons in enrolled courses in a single query with joins
   const libraryLessons = await db
     .select({
       id: lessons.id,
@@ -50,7 +30,8 @@ export async function getLibraryLessons() {
     .from(lessons)
     .innerJoin(units, eq(lessons.unitId, units.id))
     .innerJoin(courses, eq(units.courseId, courses.id))
-    .where(inArray(lessons.unitId, unitIds))
+    .innerJoin(enrollments, eq(enrollments.courseId, courses.id))
+    .where(eq(enrollments.userId, user.id))
     .orderBy(lessons.orderIndex);
 
   return libraryLessons;

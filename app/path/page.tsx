@@ -4,6 +4,7 @@ import { courses, enrollments, lessons, profiles, units, userProgress } from "@/
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Mascot from "@/components/Mascot";
 
 export default async function PathPage() {
   const startTime = Date.now();
@@ -44,27 +45,19 @@ export default async function PathPage() {
     redirect("/onboarding");
   }
 
-  // 3. Fetch course information
-  const [course] = await db
-    .select()
-    .from(courses)
-    .where(eq(courses.id, activeEnrollment.courseId))
-    .limit(1);
+  // 3. Fetch course and units in parallel for speed
+  const [course, courseUnits] = await Promise.all([
+    db.select().from(courses).where(eq(courses.id, activeEnrollment.courseId)).limit(1),
+    db.select().from(units).where(eq(units.courseId, activeEnrollment.courseId)).orderBy(asc(units.orderIndex))
+  ]);
 
   if (!course) {
     redirect("/onboarding");
   }
 
-  // 4. Fetch all units for this course ordered by orderIndex
-  const courseUnits = await db
-    .select()
-    .from(units)
-    .where(eq(units.courseId, course.id))
-    .orderBy(asc(units.orderIndex));
-
   const unitIds = courseUnits.map((u) => u.id);
 
-  // 5. Fetch lessons and progress in parallel (they're independent)
+  // 4. Fetch lessons and progress in parallel (they're independent)
   const [courseLessons, progressRows] = await Promise.all([
     unitIds.length > 0
       ? db
@@ -80,7 +73,7 @@ export default async function PathPage() {
           .where(
             and(
               eq(userProgress.userId, user.id),
-              inArray(userProgress.lessonId, unitIds) // Will filter by actual lesson IDs after
+              inArray(userProgress.lessonId, unitIds)
             )
           )
       : Promise.resolve([])
@@ -95,7 +88,6 @@ export default async function PathPage() {
   console.log(`[PERF] Path page server render time: ${endTime - startTime}ms`);
 
   // 7. Compute deterministic state machine chain based on real DB progress
-  // Order units and lessons globally:
   const orderedLessonsWithUnit: Array<{
     lesson: typeof lessons.$inferSelect;
     unit: typeof units.$inferSelect;
@@ -126,127 +118,202 @@ export default async function PathPage() {
     }
   }
 
+  const currentLesson = orderedLessonsWithUnit.find(i => i.state === "current");
+  const completedCount = orderedLessonsWithUnit.filter(i => i.state === "completed").length;
+  const totalCount = orderedLessonsWithUnit.length;
+
   return (
-    <div className="p-6 lg:p-8">
-      {/* Course Header */}
-      <div className="mb-8 rounded-2xl border border-[var(--border-light)] bg-[var(--background-card)] p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <span className="inline-block rounded-full bg-[var(--brand-primary-light)] px-3 py-1 text-xs font-bold text-[var(--brand-primary-dark)] mb-2">
-              Active Course
-            </span>
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">{course.title}</h1>
-            <p className="mt-1 text-sm text-[var(--foreground-secondary)]">{course.description}</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--brand-primary)]">
-                {orderedLessonsWithUnit.filter(i => i.state === "completed").length}
-              </div>
-              <div className="text-xs text-[var(--foreground-muted)]">Completed</div>
+    <div className="w-full px-6 py-6">
+      {/* Welcome Banner with Mascot */}
+      <section className="w-full mb-6">
+        <div className="relative bg-surface-container-lowest rounded-xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+          <div className="flex items-center gap-6 z-10">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden shadow-inner">
+              <Mascot pose="encouraging" size={64} />
+              <span className="absolute top-1 right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-container"></span>
+              </span>
             </div>
-            <div className="h-10 w-px bg-[var(--border)]"></div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--foreground)]">
-                {orderedLessonsWithUnit.length}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-label-sm text-label-sm text-primary uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded-full font-extrabold">Course in Progress</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant font-bold">• Unit 1</span>
               </div>
-              <div className="text-xs text-[var(--foreground-muted)]">Total Lessons</div>
+              <h1 className="font-headline-md text-headline-md text-on-surface leading-snug">
+                Good morning, {profile.displayName || "Learner"}! Ready for today's lesson?
+              </h1>
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                Keep your momentum going! Complete {currentLesson ? `Node ${orderedLessonsWithUnit.indexOf(currentLesson) + 1}` : "the next lesson"} to reach your daily goal.
+              </p>
             </div>
           </div>
+          {/* Quick Stats */}
+          <div className="flex items-center gap-4 z-10 flex-shrink-0">
+            <div className="flex flex-col items-center bg-surface-container px-4 py-2 rounded-xl text-center min-w-[76px]">
+              <span className="text-secondary-container text-lg">🔥</span>
+              <span className="font-label-lg text-label-lg text-on-surface leading-tight">{profile.streakCount || 0} Days</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Streak</span>
+            </div>
+            <div className="flex flex-col items-center bg-surface-container px-4 py-2 rounded-xl text-center min-w-[76px]">
+              <span className="text-tertiary-container text-lg">⚡</span>
+              <span className="font-label-lg text-label-lg text-on-surface leading-tight">{profile.xp?.toLocaleString() || 0}</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">XP</span>
+            </div>
+          </div>
+          {/* Ambient Glow */}
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 rounded-full bg-primary-container/10 blur-2xl pointer-events-none"></div>
+          <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-secondary-container/10 blur-2xl pointer-events-none"></div>
         </div>
-      </div>
+      </section>
 
-      {/* Units and Lessons */}
-      <div className="space-y-6">
-        {courseUnits.map((unit, unitIdx) => {
-          const unitItems = orderedLessonsWithUnit.filter((i) => i.unit.id === unit.id);
-          const completedInUnit = unitItems.filter(i => i.state === "completed").length;
-
-          return (
-            <div key={unit.id} className="rounded-2xl border border-[var(--border)] bg-[var(--background-card)] overflow-hidden shadow-sm">
-              {/* Unit Header */}
-              <div className="border-b border-[var(--border-light)] bg-[var(--background-secondary)] p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--brand-primary)] text-white font-bold">
-                      {unitIdx + 1}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-[var(--foreground)]">{unit.title}</h3>
-                      <p className="text-xs text-[var(--foreground-secondary)]">
-                        {completedInUnit}/{unitItems.length} lessons completed
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-2 w-24 rounded-full bg-[var(--border-light)] overflow-hidden">
-                    <div
-                      className="h-full bg-[var(--success)] transition-all"
-                      style={{ width: `${(completedInUnit / unitItems.length) * 100}%` }}
-                    />
-                  </div>
-                </div>
+      {/* Current Lesson Hero Card */}
+      {currentLesson && (
+        <div className="relative bg-surface-container-lowest rounded-xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6 overflow-hidden mb-6">
+          <div className="flex flex-col gap-1 max-w-xl z-10">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-0.5 rounded-full uppercase tracking-wider font-extrabold flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">play_circle</span>
+                Next Challenge
+              </span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">
+                {currentLesson.unit.title} • Lesson {orderedLessonsWithUnit.indexOf(currentLesson) + 1}
+              </span>
+            </div>
+            <h2 className="font-headline-md text-headline-md text-on-surface">
+              {currentLesson.lesson.title}
+            </h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              {currentLesson.lesson.description}
+            </p>
+            {/* Progress Bar */}
+            <div className="w-full mt-2 flex flex-col gap-1.5">
+              <div className="flex justify-between items-center text-on-surface">
+                <span className="font-label-sm text-label-sm text-on-surface-variant font-bold">Progress</span>
+                <span className="font-label-md text-label-md font-extrabold text-primary">{completedCount} / {totalCount} activities</span>
               </div>
-
-              {/* Lessons List */}
-              <div className="divide-y divide-[var(--border-light)]">
-                {unitItems.map((item, lessonIdx) => {
-                  const { lesson, state } = item;
-                  const isCompleted = state === "completed";
-                  const isCurrent = state === "current";
-                  const isLocked = state === "locked";
-
-                  return (
-                    <Link
-                      key={lesson.id}
-                      href={isLocked ? "#" : `/lesson/${lesson.id}`}
-                      className={`block p-4 transition-colors ${
-                        isLocked ? "opacity-50 cursor-not-allowed" : "hover:bg-[var(--background-secondary)]"
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        {/* Status Icon */}
-                        <div
-                          className={`flex h-12 w-12 items-center justify-center rounded-full text-lg ${
-                            isCompleted
-                              ? "bg-[var(--success-light)] text-[var(--success)]"
-                              : isCurrent
-                              ? "bg-[var(--brand-primary)] text-white"
-                              : "bg-[var(--background-secondary)] text-[var(--foreground-muted)]"
-                          }`}
-                        >
-                          {isCompleted ? "✓" : isCurrent ? "▶" : "🔒"}
-                        </div>
-
-                        {/* Lesson Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-semibold text-[var(--foreground-muted)] uppercase">
-                              Lesson {lessonIdx + 1}
-                            </span>
-                            <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-bold text-yellow-800">
-                              +{lesson.xpReward} XP
-                            </span>
-                          </div>
-                          <h4 className="font-semibold text-[var(--foreground)] truncate">{lesson.title}</h4>
-                          <p className="text-sm text-[var(--foreground-secondary)] line-clamp-1">{lesson.description}</p>
-                        </div>
-
-                        {/* Arrow */}
-                        {!isLocked && (
-                          <div className="text-[var(--foreground-muted)]">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
+              <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden flex">
+                <div className="h-full bg-primary-container rounded-full shadow-glow" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
               </div>
             </div>
-          );
-        })}
+          </div>
+          {/* CTA Button */}
+          <div className="z-10 flex flex-col items-center w-full md:w-auto">
+            <Link
+              href={`/lesson/${currentLesson.lesson.id}`}
+              className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg uppercase tracking-wider shadow-lg active:translate-y-[2px] transition-all hover:bg-primary"
+            >
+              <span>Continue Learning</span>
+              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </Link>
+            <div className="flex items-center gap-1 mt-2 text-secondary font-label-sm text-label-sm">
+              <span className="material-symbols-outlined text-[16px]">stars</span>
+              <span>+{currentLesson.lesson.xpReward} XP Reward on Finish</span>
+            </div>
+          </div>
+          <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-primary-container/10 blur-xl pointer-events-none"></div>
+        </div>
+      )}
+
+      {/* Gamified Path Section */}
+      <div className="bg-surface-container-lowest rounded-xl p-6 shadow-sm flex flex-col items-center relative overflow-hidden">
+        {/* Unit Header */}
+        <div className="w-full flex items-center justify-between pb-4 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary font-headline-md">
+              <span className="material-symbols-outlined text-[28px]">data_object</span>
+            </div>
+            <div>
+              <span className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Unit 1</span>
+              <h3 className="font-headline-md text-headline-md text-on-surface">{courseUnits[0]?.title || "Course"}</h3>
+            </div>
+          </div>
+          <span className="font-label-sm text-label-sm bg-surface-container px-3 py-1 rounded-full text-on-surface-variant font-bold">
+            {completedCount} of {totalCount} Completed
+          </span>
+        </div>
+
+        {/* Serpentine Path Nodes */}
+        <div className="relative w-full max-w-md py-4 flex flex-col items-center">
+          {/* SVG Path Lines */}
+          <svg className="absolute top-8 left-1/2 -translate-x-1/2 w-48 h-[580px] pointer-events-none z-0" fill="none" viewBox="0 0 160 580">
+            {/* Completed path */}
+            <path d="M 80 40 Q 30 110 40 180" fill="none" stroke="#22c55e" strokeLinecap="round" strokeWidth="8"></path>
+            <path d="M 40 180 Q 50 250 120 300" fill="none" stroke="#22c55e" strokeLinecap="round" strokeWidth="8"></path>
+            {/* Incomplete path */}
+            <path d="M 120 300 Q 150 370 70 420" fill="none" stroke="#dae2fd" strokeDasharray="8 8" strokeLinecap="round" strokeWidth="8"></path>
+            <path d="M 70 420 Q 20 480 80 540" fill="none" stroke="#dae2fd" strokeDasharray="8 8" strokeLinecap="round" strokeWidth="8"></path>
+          </svg>
+
+          {/* Nodes */}
+          {orderedLessonsWithUnit.slice(0, 4).map((item, idx) => {
+            const { lesson, state } = item;
+            const isCompleted = state === "completed";
+            const isCurrent = state === "current";
+            const isLocked = state === "locked";
+
+            const positions = [
+              { x: -10, y: 0 }, // Node 1
+              { x: 12, y: 0 },  // Node 2
+              { x: -6, y: 0 },  // Node 3
+              { x: 0, y: 0 },   // Node 4
+            ];
+            const pos = positions[idx] || { x: 0, y: 0 };
+
+            return (
+              <div
+                key={lesson.id}
+                className={`relative flex flex-col items-center z-10 mb-16 ${idx % 2 === 0 ? '-translate-x-10' : 'translate-x-12'} group`}
+              >
+                {/* Mascot for current node */}
+                {isCurrent && (
+                  <div className="absolute -top-12 -left-36 hidden sm:flex items-center gap-2 animate-bounce">
+                    <div className="bg-surface-container px-3 py-2 rounded-xl shadow-sm">
+                      <p className="font-label-sm text-on-surface">Let's go! 🚀</p>
+                    </div>
+                    <Mascot pose="encouraging" size={32} />
+                  </div>
+                )}
+
+                {/* Node Circle */}
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center shadow-md hover:scale-105 active:translate-y-[2px] transition-transform ${
+                    isCompleted
+                      ? "bg-primary-container text-on-primary shadow-primary-container/20"
+                      : isCurrent
+                      ? "bg-primary text-on-primary animate-pulse"
+                      : "bg-surface-container text-on-surface-variant"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[30px]" style={isCompleted ? { fontVariationSettings: 'FILL 1' } : {}}>
+                    {isCompleted ? "check_circle" : isCurrent ? "play_circle" : "lock"}
+                  </span>
+                </div>
+
+                {/* Star ratings for completed */}
+                {isCompleted && (
+                  <div className="flex items-center gap-0.5 mt-2 bg-surface-container px-2 py-0.5 rounded-full shadow-xs">
+                    <span className="material-symbols-outlined text-secondary-container text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                    <span className="material-symbols-outlined text-secondary-container text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                    <span className="material-symbols-outlined text-secondary-container text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                  </div>
+                )}
+
+                {/* Lesson Label */}
+                <span className="font-label-md text-label-md text-on-surface mt-1">{lesson.title}</span>
+
+                {/* Link overlay */}
+                {!isLocked && (
+                  <Link
+                    href={`/lesson/${lesson.id}`}
+                    className="absolute inset-0 z-20"
+                    aria-label={`Go to ${lesson.title}`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
