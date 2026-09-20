@@ -14,7 +14,7 @@ export default async function AdminTutoringPage() {
     redirect("/sign-in");
   }
 
-  // Check if user is admin
+  // Check if user is admin first
   const [profile] = await db
     .select({ role: profiles.role })
     .from(profiles)

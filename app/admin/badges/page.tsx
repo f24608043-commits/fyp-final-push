@@ -13,7 +13,7 @@ export default async function AdminBadgesPage() {
     redirect("/sign-in");
   }
 
-  // Check if user has admin role
+  // Check if user has admin role first
   const [userProfile] = await db
     .select({ role: profiles.role })
     .from(profiles)

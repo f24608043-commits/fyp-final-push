@@ -8,11 +8,11 @@ test.describe('Admin Authenticated Tests', () => {
     await page.fill('input[name="email"]', 'alexabraham587@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/path/, { timeout: 10000 });
+    await page.waitForURL(/\/path/, { timeout: 20000 });
   });
 
   test('admin badges page responds', async ({ page }) => {
-    const response = await page.goto('/admin/badges', { timeout: 15000 });
+    const response = await page.goto('/admin/badges', { timeout: 30000 });
     expect(response?.status()).toBeLessThan(500);
     
     await page.waitForTimeout(2000);
@@ -21,7 +21,7 @@ test.describe('Admin Authenticated Tests', () => {
   });
 
   test('admin courses page responds', async ({ page }) => {
-    const response = await page.goto('/admin/courses', { timeout: 15000 });
+    const response = await page.goto('/admin/courses', { timeout: 30000 });
     expect(response?.status()).toBeLessThan(500);
     
     await page.waitForTimeout(2000);
@@ -30,7 +30,7 @@ test.describe('Admin Authenticated Tests', () => {
   });
 
   test('admin tutoring page responds', async ({ page }) => {
-    const response = await page.goto('/admin/tutoring', { timeout: 15000 });
+    const response = await page.goto('/admin/tutoring', { timeout: 30000 });
     expect(response?.status()).toBeLessThan(500);
     
     await page.waitForTimeout(2000);

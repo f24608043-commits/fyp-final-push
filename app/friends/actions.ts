@@ -248,7 +248,8 @@ export async function getFriendList() {
       and(eq(friendships.requesterId, userId), eq(friendships.addresseeId, profiles.id)),
       and(eq(friendships.addresseeId, userId), eq(friendships.requesterId, profiles.id))
     ))
-    .where(eq(friendships.status, "accepted"));
+    .where(eq(friendships.status, "accepted"))
+    .limit(50);
 
   return friendProfiles;
 }
@@ -275,7 +276,8 @@ export async function getPendingRequests() {
     })
     .from(friendships)
     .innerJoin(profiles, eq(friendships.requesterId, profiles.id))
-    .where(and(eq(friendships.addresseeId, userId), eq(friendships.status, "pending")));
+    .where(and(eq(friendships.addresseeId, userId), eq(friendships.status, "pending")))
+    .limit(50);
 
   return pendingRequests.map((request) => ({
     id: request.id,

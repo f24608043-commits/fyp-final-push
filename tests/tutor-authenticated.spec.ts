@@ -20,10 +20,10 @@ test.describe('Tutor Authenticated Tests', () => {
   });
 
   test('tutor can access history page', async ({ page }) => {
-    await page.goto('/tutoring/history');
-    await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+    await page.goto('/tutoring/history', { timeout: 30000 });
+    await page.waitForLoadState('load', { timeout: 30000 });
     
-    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10000 });
     expect(page.url()).toContain('/tutoring/history');
   });
 

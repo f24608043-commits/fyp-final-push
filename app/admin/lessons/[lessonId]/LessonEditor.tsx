@@ -135,11 +135,12 @@ export default function LessonEditor({
           <h3 className="mb-3 text-sm font-extrabold text-gray-700">Video Preview</h3>
           <div className="flex items-start gap-4">
             {/* Thumbnail */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
               alt="Video thumbnail"
               className="w-40 rounded-lg border border-gray-200 object-cover shadow-sm"
+              width={160}
+              height={90}
             />
             <div className="text-sm text-gray-600">
               <p className="font-semibold text-gray-800">YouTube ID: {youtubeVideoId}</p>

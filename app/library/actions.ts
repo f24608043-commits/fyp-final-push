@@ -32,7 +32,8 @@ export async function getLibraryLessons() {
     .innerJoin(courses, eq(units.courseId, courses.id))
     .innerJoin(enrollments, eq(enrollments.courseId, courses.id))
     .where(eq(enrollments.userId, user.id))
-    .orderBy(lessons.orderIndex);
+    .orderBy(lessons.orderIndex)
+    .limit(50);
 
   return libraryLessons;
 }
