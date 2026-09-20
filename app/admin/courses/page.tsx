@@ -28,14 +28,14 @@ export default async function AdminCoursesPage() {
   const courses = await getAllCourses();
 
   return (
-    <div className="w-full px-6 py-6">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-green-50 to-emerald-50 min-h-screen">
       <div className="mb-6">
-        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">Course Management</h1>
+        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">Course Management 📚</h1>
         <p className="font-body-md text-text-muted">Create and manage courses, units, and lessons</p>
       </div>
 
       {/* Create Course Form */}
-      <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-green-50 p-6 shadow-xl border-4 border-green-100 mb-6">
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Create New Course</h2>
         <form action={async (formData) => {
           "use server";
@@ -53,7 +53,7 @@ export default async function AdminCoursesPage() {
                 type="text"
                 name="name"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-green-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-lg"
                 placeholder="Course name"
                 suppressHydrationWarning={true}
               />
@@ -64,7 +64,7 @@ export default async function AdminCoursesPage() {
                 type="text"
                 name="category"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-green-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-lg"
                 placeholder="Programming"
                 suppressHydrationWarning={true}
               />
@@ -75,7 +75,7 @@ export default async function AdminCoursesPage() {
             <textarea
               name="description"
               required
-              className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+              className="w-full px-3 py-2 border-4 border-green-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-lg"
               rows={2}
               placeholder="Course description"
               suppressHydrationWarning={true}
@@ -83,7 +83,7 @@ export default async function AdminCoursesPage() {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-error text-white rounded-xl font-label-md font-bold shadow-clay-error hover:bg-error-dark transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
           >
             Create Course
           </button>
@@ -91,14 +91,14 @@ export default async function AdminCoursesPage() {
       </div>
 
       {/* Courses List */}
-      <div className="rounded-2xl bg-surface shadow-clay-surface border border-surface-border overflow-hidden">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-green-50 shadow-xl border-4 border-green-100 overflow-hidden">
         <table className="w-full">
-          <thead className="bg-surface-border border-b border-surface-border">
+          <thead className="bg-gradient-to-r from-green-500 to-emerald-500 border-b-4 border-green-200">
             <tr>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Name</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Category</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Description</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Name</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Category</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Description</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -110,12 +110,12 @@ export default async function AdminCoursesPage() {
               </tr>
             ) : (
               courses.map((course: any) => (
-                <tr key={course.id} className="border-b border-surface-border hover:bg-surface-border">
+                <tr key={course.id} className="border-b-4 border-green-100 hover:bg-green-50 transition-colors">
                   <td className="px-6 py-4 font-label-md font-semibold text-text-primary">{course.name}</td>
                   <td className="px-6 py-4 font-body-sm text-text-primary">{course.category}</td>
                   <td className="px-6 py-4 font-body-sm text-text-muted">{course.description}</td>
                   <td className="px-6 py-4">
-                    <Link href={`/admin/courses/${course.id}`} className="px-3 py-1 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-dark transition-all">
+                    <Link href={`/admin/courses/${course.id}`} className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-body-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Manage Units
                     </Link>
                   </td>

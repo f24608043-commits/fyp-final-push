@@ -25,6 +25,7 @@ export default function UnifiedShell({
   const [streak, setStreak] = useState(initialStreak);
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [level, setLevel] = useState(Math.floor(Math.sqrt((initialXp || 0) / 100)) + 1);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Only fetch if we don't have initial data (fallback for pages not using server-side data)
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function UnifiedShell({
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user && mounted) {
+        setUserId(user.id);
         try {
           const response = await fetch(`/api/profile/${user.id}`, { 
             cache: 'no-store' // Ensure fresh data but don't block
@@ -183,7 +185,7 @@ export default function UnifiedShell({
               </div>
             </div>
             {/* User Info */}
-            <div className="flex items-center gap-2">
+            <Link href={userId ? `/profile/${userId}` : "#"} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <div className="flex flex-col text-right">
                 <span className="font-label-md text-text-primary leading-tight">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
                 <div className="flex items-center justify-end gap-1">
@@ -195,7 +197,7 @@ export default function UnifiedShell({
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
                 <span className="material-symbols-outlined text-[18px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
 

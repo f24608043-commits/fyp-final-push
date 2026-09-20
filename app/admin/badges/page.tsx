@@ -27,14 +27,14 @@ export default async function AdminBadgesPage() {
   const badges = await getAllBadges();
 
   return (
-    <div className="w-full px-6 py-6">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-orange-50 to-red-50 min-h-screen">
       <div className="mb-6">
-        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">Badge Management</h1>
+        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">Badge Management 🏆</h1>
         <p className="font-body-md text-text-muted">Create, edit, and delete badge definitions</p>
       </div>
 
       {/* Create Badge Form */}
-      <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-orange-50 p-6 shadow-xl border-4 border-orange-100 mb-6">
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Create New Badge</h2>
         <form action={async (formData) => {
           "use server";
@@ -54,7 +54,7 @@ export default async function AdminBadgesPage() {
                 type="text"
                 name="name"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-orange-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-lg"
                 placeholder="Badge name"
                 suppressHydrationWarning={true}
               />
@@ -65,7 +65,7 @@ export default async function AdminBadgesPage() {
                 type="text"
                 name="icon"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-orange-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-lg"
                 placeholder="🏆"
                 suppressHydrationWarning={true}
               />
@@ -76,7 +76,7 @@ export default async function AdminBadgesPage() {
             <textarea
               name="description"
               required
-              className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+              className="w-full px-3 py-2 border-4 border-orange-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-lg"
               rows={2}
               placeholder="Badge description"
               suppressHydrationWarning={true}
@@ -88,7 +88,7 @@ export default async function AdminBadgesPage() {
               <select
                 name="criteriaType"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-orange-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-lg"
                 suppressHydrationWarning={true}
               >
                 <option value="first_lesson">First Lesson</option>
@@ -103,7 +103,7 @@ export default async function AdminBadgesPage() {
                 type="number"
                 name="criteriaValue"
                 required
-                className="w-full px-3 py-2 border border-surface-border rounded-xl bg-surface text-text-primary"
+                className="w-full px-3 py-2 border-4 border-orange-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 shadow-lg"
                 placeholder="1"
                 suppressHydrationWarning={true}
               />
@@ -111,7 +111,7 @@ export default async function AdminBadgesPage() {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-error text-white rounded-xl font-label-md font-bold shadow-clay-error hover:bg-error-dark transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
           >
             Create Badge
           </button>
@@ -119,15 +119,15 @@ export default async function AdminBadgesPage() {
       </div>
 
       {/* Badges List */}
-      <div className="rounded-2xl bg-surface shadow-clay-surface border border-surface-border overflow-hidden">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-orange-50 shadow-xl border-4 border-orange-100 overflow-hidden">
         <table className="w-full">
-          <thead className="bg-surface-border border-b border-surface-border">
+          <thead className="bg-gradient-to-r from-orange-500 to-red-500 border-b-4 border-orange-200">
             <tr>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Icon</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Name</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Description</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Criteria</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Icon</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Name</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Description</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Criteria</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -139,7 +139,7 @@ export default async function AdminBadgesPage() {
               </tr>
             ) : (
               badges.map((badge: any) => (
-                <tr key={badge.id} className="border-b border-surface-border hover:bg-surface-border">
+                <tr key={badge.id} className="border-b-4 border-orange-100 hover:bg-orange-50 transition-colors">
                   <td className="px-6 py-4 text-2xl">{badge.icon}</td>
                   <td className="px-6 py-4 font-label-md font-semibold text-text-primary">{badge.name}</td>
                   <td className="px-6 py-4 font-body-sm text-text-muted">{badge.description}</td>
@@ -149,7 +149,7 @@ export default async function AdminBadgesPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button
-                        className="px-3 py-1 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-dark transition-all"
+                        className="px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg font-body-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                       >
                         Edit
                       </button>
@@ -159,7 +159,7 @@ export default async function AdminBadgesPage() {
                       }}>
                         <button
                           type="submit"
-                          className="px-3 py-1 bg-error text-white rounded-lg font-body-sm font-semibold hover:bg-error-dark transition-all"
+                          className="px-3 py-1 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg font-body-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                         >
                           Delete
                         </button>

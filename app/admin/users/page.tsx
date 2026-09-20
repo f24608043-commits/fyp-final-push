@@ -32,9 +32,9 @@ export default async function AdminUsersPage({
   const users = await getAllUsers(searchQuery);
 
   return (
-    <div className="w-full px-6 py-6">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-indigo-50 min-h-screen">
       <div className="mb-6">
-        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">User Management</h1>
+        <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">User Management 👥</h1>
         <p className="font-body-md text-text-muted">View and manage user roles</p>
       </div>
 
@@ -46,12 +46,12 @@ export default async function AdminUsersPage({
             name="q"
             placeholder="Search users by name or role..."
             defaultValue={searchQuery}
-            className="w-full max-w-md px-4 py-2 border border-surface-border rounded-xl bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-error"
+            className="w-full max-w-md px-4 py-2 border-4 border-blue-200 rounded-xl bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-lg"
             suppressHydrationWarning={true}
           />
           <button
             type="submit"
-            className="ml-2 px-4 py-2 bg-error text-white rounded-xl font-label-md font-semibold hover:bg-error-dark transition-all"
+            className="ml-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-label-md font-semibold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
           >
             Search
           </button>
@@ -59,15 +59,15 @@ export default async function AdminUsersPage({
       </div>
 
       {/* Users Table */}
-      <div className="rounded-2xl bg-surface shadow-clay-surface border border-surface-border overflow-hidden">
+      <div className="rounded-2xl bg-gradient-to-br from-white to-blue-50 shadow-xl border-4 border-blue-100 overflow-hidden">
         <table className="w-full">
-          <thead className="bg-surface-border border-b border-surface-border">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 border-b-4 border-blue-200">
             <tr>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Name</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Role</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">XP</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Streak</th>
-              <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Name</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Role</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">XP</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Streak</th>
+              <th className="px-6 py-3 text-left font-label-md font-semibold text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -79,19 +79,19 @@ export default async function AdminUsersPage({
               </tr>
             ) : (
               users.map((user: any) => (
-                <tr key={user.id} className="border-b border-surface-border hover:bg-surface-border">
+                <tr key={user.id} className="border-b-4 border-blue-100 hover:bg-blue-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="font-label-md font-semibold text-text-primary">{user.displayName || "Anonymous"}</div>
                     <div className="font-body-sm text-text-muted">{user.id}</div>
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 rounded-full font-body-sm font-semibold ${
+                      className={`px-2 py-1 rounded-full font-body-sm font-semibold border-2 ${
                         user.role === "admin"
-                          ? "bg-error text-white"
+                          ? "bg-gradient-to-r from-red-500 to-orange-500 text-white border-white/30"
                           : user.role === "tutor"
-                          ? "bg-secondary text-white"
-                          : "bg-tertiary text-white"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-white/30"
+                          : "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30"
                       }`}
                     >
                       {user.role}
