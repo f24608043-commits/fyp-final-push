@@ -18,37 +18,36 @@ export default async function TutoringPage() {
   ]);
 
   return (
-    <div className="w-full px-6 py-6">
-      {/* Header with Mascot */}
-      <div className="relative w-full rounded-3xl bg-surface-container-lowest p-6 md:p-8 shadow-xl overflow-hidden mb-6">
-        {/* Decorative background gradients */}
-        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary-fixed/25 blur-3xl pointer-events-none"></div>
-        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+      {/* Header with Mascot - Stitch Frame Style */}
+      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
+        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
           <div className="flex flex-col gap-2 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-0.5 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm tracking-wider uppercase">Tutoring</span>
-              <span className="text-outline text-label-sm">•</span>
-              <span className="px-3 py-0.5 rounded-lg bg-primary-container/20 text-primary font-label-sm text-label-sm">Expert Help</span>
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutoring</span>
+              <span className="text-text-muted text-label-sm">•</span>
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-teal-500 to-green-500 text-white font-label-sm text-label-sm font-bold shadow-lg border-2 border-white/30">Expert Help</span>
             </div>
-            <h1 className="font-headline-xl text-headline-xl text-on-surface tracking-tight leading-none">
-              Tutoring Hub
+            <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
+              Tutoring Hub 🎓
             </h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            <p className="font-body-lg text-body-lg text-text-muted leading-relaxed">
               Connect with expert tutors for personalized learning sessions
             </p>
           </div>
 
           {/* Right: Mascot */}
           <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
-            <div className="relative max-w-xs bg-surface-container-lowest p-4 rounded-2xl shadow-lg border-b-4 border-surface-container-high order-2 sm:order-1">
+            <div className="relative max-w-xs bg-gradient-to-br from-blue-100 to-cyan-100 p-4 rounded-2xl shadow-xl border-4 border-white/50 order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Learn Together</span>
+                <span className="material-symbols-outlined text-cyan-600 text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-cyan-700 font-bold">Learn Together</span>
               </div>
-              <p className="font-headline-md text-label-md text-on-surface font-bold leading-snug">
+              <p className="font-headline-md text-label-md text-text-primary font-bold leading-snug">
                 "Get personalized help from expert tutors to accelerate your learning!"
               </p>
             </div>
@@ -57,11 +56,12 @@ export default async function TutoringPage() {
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       {/* Pending Requests (for tutors) */}
       {pendingRequests.length > 0 && (
-        <div className="mb-6 rounded-2xl bg-secondary-fixed p-6 shadow-xl">
+        <div className="mb-6 rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-6 shadow-xl border-4 border-yellow-200">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
             <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">
@@ -70,9 +70,9 @@ export default async function TutoringPage() {
           </div>
           <div className="space-y-3">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-surface-container-lowest p-4 shadow-md">
+              <div key={request.id} className="rounded-2xl bg-white p-4 shadow-lg border-4 border-yellow-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-on-primary font-bold text-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white font-bold text-lg shadow-xl border-4 border-white/30">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
                   <div>
@@ -95,7 +95,7 @@ export default async function TutoringPage() {
                     const { acceptSessionRequest } = await import("./actions");
                     await acceptSessionRequest(request.id, 0);
                   }}>
-                    <button className="rounded-full bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
+                    <button className="rounded-full bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Accept
                     </button>
                   </form>
@@ -104,7 +104,7 @@ export default async function TutoringPage() {
                     const { declineSessionRequest } = await import("./actions");
                     await declineSessionRequest(request.id);
                   }}>
-                    <button className="rounded-xl border border-outline-variant bg-surface-container text-on-surface px-4 py-2 font-label-md font-semibold hover:bg-surface-container-high transition-all">
+                    <button className="rounded-xl border-4 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 px-4 py-2 font-label-md font-semibold hover:from-gray-200 hover:to-gray-300 transition-all shadow-lg">
                       Decline
                     </button>
                   </form>
@@ -122,16 +122,16 @@ export default async function TutoringPage() {
           <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">My Sessions</h2>
         </div>
         {mySessions.length === 0 ? (
-          <div className="rounded-2xl bg-surface-container-lowest p-8 text-center shadow-md">
-            <div className="relative w-20 h-20 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
               <Mascot pose="empty" size={64} />
             </div>
-            <p className="font-body-md text-on-surface-variant">No sessions yet. Find a tutor to get started!</p>
+            <p className="font-body-md text-text-muted font-bold">No sessions yet. Find a tutor to get started!</p>
           </div>
         ) : (
           <div className="space-y-3">
             {mySessions.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-surface-container-lowest p-5 shadow-md">
+              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <p className="font-label-md text-on-surface font-semibold">
@@ -140,11 +140,11 @@ export default async function TutoringPage() {
                     <p className="font-body-sm text-on-surface-variant mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
-                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold ${
-                      session.status === "confirmed" ? "bg-primary-container/20 text-primary" :
-                      session.status === "completed" ? "bg-tertiary-fixed text-on-tertiary-fixed" :
-                      session.status === "cancelled" ? "bg-error-container text-on-error-container" :
-                      "bg-surface-container-high text-on-surface-variant"
+                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
+                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
+                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
+                      session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
+                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
                     }`}>
                       {session.status}
                     </span>
@@ -154,7 +154,7 @@ export default async function TutoringPage() {
                       href={`https://meet.jit.si/${session.jitsiRoomId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]"
+                      className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                     >
                       <span className="material-symbols-outlined text-[20px]">videocam</span>
                       Join Session
@@ -174,28 +174,28 @@ export default async function TutoringPage() {
           <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Find a Tutor</h2>
         </div>
         {tutors.length === 0 ? (
-          <div className="rounded-2xl bg-surface-container-lowest p-8 text-center shadow-md">
-            <div className="relative w-20 h-20 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
               <Mascot pose="empty" size={64} />
             </div>
-            <p className="font-body-md text-on-surface-variant">No tutors available yet.</p>
+            <p className="font-body-md text-text-muted font-bold">No tutors available yet.</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tutors.map((tutor: any) => (
-              <div key={tutor.id} className="rounded-2xl bg-surface-container-lowest p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div key={tutor.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100 hover:shadow-2xl hover:border-blue-200 transition-all">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-container text-on-primary font-bold text-xl">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-bold text-xl shadow-xl border-4 border-white/30">
                     {tutor.displayName?.[0] || "?"}
                   </div>
                   <div className="min-w-0">
                     <p className="font-label-md text-on-surface font-semibold truncate">
                       {tutor.displayName || "Unknown"}
                     </p>
-                    <div className="flex items-center gap-1 font-body-sm text-on-surface-variant">
-                      <span className="material-symbols-outlined text-secondary text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
-                      <span className="font-bold text-secondary">{tutor.rating}/5</span>
-                      <span className="text-on-surface-variant">({tutor.totalSessions} sessions)</span>
+                    <div className="flex items-center gap-1 font-body-sm text-text-muted">
+                      <span className="material-symbols-outlined text-yellow-500 text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                      <span className="font-bold text-yellow-600">{tutor.rating}/5</span>
+                      <span className="font-bold text-gray-500">({tutor.totalSessions} sessions)</span>
                     </div>
                   </div>
                 </div>
@@ -204,7 +204,7 @@ export default async function TutoringPage() {
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {tutor.subjects?.map((subject: string, idx: number) => (
-                    <span key={idx} className="rounded-full bg-tertiary-fixed text-on-tertiary-fixed px-2 py-1 font-label-sm font-semibold">
+                    <span key={idx} className="rounded-full bg-gradient-to-r from-teal-400 to-green-500 text-white px-2 py-1 font-label-sm font-semibold shadow-lg border-2 border-white/30">
                       {subject}
                     </span>
                   ))}
@@ -222,7 +222,7 @@ export default async function TutoringPage() {
                       message: "I would like to book a session"
                     });
                   }}>
-                    <button className="rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
+                    <button className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Book Session
                     </button>
                   </form>
