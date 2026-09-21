@@ -104,7 +104,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-20 md:bottom-4 right-4 z-50">
       {/* Collapsed state */}
       {!isOpen && (
         <button
@@ -113,12 +113,17 @@ export default function ChatWidget() {
             setCurrentPose("waving");
             setTimeout(() => setCurrentPose("idle"), 2000);
           }}
-          className="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 rounded-2xl shadow-clay-lg hover:shadow-clay-xl transition-all duration-300 hover:scale-105"
+          className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full shadow-clay-lg hover:shadow-clay-xl transition-all duration-300 hover:scale-105"
           style={{
             boxShadow: "0 8px 32px rgba(34, 197, 94, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2)",
           }}
         >
-          <div className="flex items-center gap-3">
+          {/* Mobile: Small circle icon */}
+          <div className="md:hidden w-12 h-12 flex items-center justify-center">
+            <Mascot pose="waving" size={32} />
+          </div>
+          {/* Desktop: Full button with text */}
+          <div className="hidden md:flex items-center gap-3 p-4">
             <Mascot pose="waving" size={40} />
             <div className="text-left">
               <p className="font-semibold text-sm">Chat with Mascot</p>
@@ -131,7 +136,7 @@ export default function ChatWidget() {
       {/* Expanded state */}
       {isOpen && (
         <div
-          className="w-96 h-[500px] bg-white rounded-2xl shadow-clay-xl overflow-hidden flex flex-col transition-all duration-300"
+          className="w-96 h-[500px] md:w-96 md:h-[500px] bg-white rounded-2xl shadow-clay-xl overflow-hidden flex flex-col transition-all duration-300"
           style={{
             boxShadow: "0 12px 48px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5)",
           }}
