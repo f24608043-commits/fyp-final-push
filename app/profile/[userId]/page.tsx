@@ -133,12 +133,24 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
               <Mascot pose="celebrate" size={128} />
             </div>
             {!isOwnProfile && currentUser && (
-              <div className="order-2 sm:order-1">
+              <div className="order-2 sm:order-1 flex gap-2">
                 {friendshipStatus === "accepted" ? (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-label-md font-bold shadow-clay-primary">
-                    <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
-                    <span>Friends</span>
-                  </span>
+                  <>
+                    <form action={async () => {
+                      "use server";
+                      const { startDirectConversation } = await import("../../messaging/actions");
+                      await startDirectConversation(targetUserId);
+                    }}>
+                      <button className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-full font-label-md font-bold shadow-clay-secondary hover:bg-secondary/90 transition-all active:translate-y-[2px]">
+                        <span className="material-symbols-outlined text-[18px]">chat</span>
+                        <span>Message</span>
+                      </button>
+                    </form>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-label-md font-bold shadow-clay-primary">
+                      <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+                      <span>Friends</span>
+                    </span>
+                  </>
                 ) : friendshipStatus === "pending" ? (
                   <span className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high text-text-muted rounded-full font-label-md font-bold">
                     <span className="material-symbols-outlined text-[18px]">schedule</span>

@@ -28,6 +28,7 @@ export interface QuizSubmissionResult {
   totalXP?: number;
   lessonsCompleted?: number;
   streakDays?: number;
+  mascotPose?: "idle" | "celebrate" | "empty" | "encouraging" | "waving" | "thinking" | "pointing";
 }
 
 export async function submitQuiz(
@@ -279,6 +280,18 @@ export async function submitQuiz(
       )
     );
 
+  // Determine mascot pose based on result
+  let mascotPose: QuizSubmissionResult["mascotPose"];
+  if (passed) {
+    if (badgesAwarded.length > 0) {
+      mascotPose = "celebrate"; // Badge unlocked
+    } else {
+      mascotPose = "encouraging"; // Lesson passed
+    }
+  } else {
+    mascotPose = "encouraging"; // Wrong answer - encourage to try again
+  }
+
   return {
     success: true,
     passed,
@@ -290,5 +303,6 @@ export async function submitQuiz(
     totalXP: profileStats?.xp || 0,
     lessonsCompleted: Number(lessonsCompleted) || 0,
     streakDays: profileStats?.streakCount || 0,
+    mascotPose,
   };
 }

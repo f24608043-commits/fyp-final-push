@@ -147,6 +147,15 @@ export default async function FriendsPage() {
                     <span className="font-bold text-orange-600">{friend.streakCount} day streak</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <form action={async () => {
+                      "use server";
+                      const { startDirectConversation } = await import("../messaging/actions");
+                      await startDirectConversation(friend.id);
+                    }}>
+                      <button className="font-label-sm font-bold border-2 border-pink-300 bg-gradient-to-br from-pink-50 to-rose-50 text-pink-600 px-3 py-2 rounded-full shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all">
+                        Message
+                      </button>
+                    </form>
                     <Link
                       href={`/profile/${friend.id}`}
                       className="font-label-sm font-bold bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform"

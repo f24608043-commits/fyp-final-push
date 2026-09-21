@@ -2,6 +2,12 @@ import { getMySessions, getTutorProfile, getTutorAvailability, getPendingRequest
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
+import dynamic from "next/dynamic";
+
+// Lazy load messaging widget
+const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
+  loading: () => null,
+});
 
 export default async function TutorDashboard() {
   const supabase = await createClient();
@@ -207,17 +213,24 @@ export default async function TutorDashboard() {
                       {session.status}
                     </span>
                   </div>
-                  {session.status === "confirmed" && session.jitsiRoomId && (
-                    <a
-                      href={`https://meet.jit.si/${session.jitsiRoomId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
-                    >
-                      <span className="material-symbols-outlined text-[20px]">videocam</span>
-                      Join Session
-                    </a>
-                  )}
+                  <div className="flex flex-col gap-2">
+                    {session.status === "confirmed" && session.jitsiRoomId && (
+                      <a
+                        href={`https://meet.jit.si/${session.jitsiRoomId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">videocam</span>
+                        Join Session
+                      </a>
+                    )}
+                    <MessagingWidget
+                      otherUserId={session.learnerId}
+                      otherUserName="Learner"
+                      sessionId={session.id}
+                    />
+                  </div>
                 </div>
               </div>
             ))}

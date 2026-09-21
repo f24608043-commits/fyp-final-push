@@ -51,6 +51,43 @@ export default function NewCoursePage() {
           />
         </div>
 
+        {/* Open Source Content Import Section */}
+        <div className="border-t border-gray-200 pt-5">
+          <h3 className="text-sm font-bold text-gray-900 mb-3">Import from Open Source Content</h3>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="youtubeUrl">
+                YouTube Playlist URL
+              </label>
+              <input
+                id="youtubeUrl"
+                name="youtubeUrl"
+                type="url"
+                placeholder="https://www.youtube.com/playlist?list=..."
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Import videos from a YouTube playlist as lessons
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="youtubeVideoIds">
+                YouTube Video IDs (comma-separated)
+              </label>
+              <input
+                id="youtubeVideoIds"
+                name="youtubeVideoIds"
+                type="text"
+                placeholder="dQw4w9WgXcQ, abc123def456"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Add specific YouTube videos as lessons
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center gap-3">
           <input
             id="isPublished"

@@ -1,10 +1,11 @@
 ﻿import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { courses, enrollments, lessons, profiles, units, userProgress } from "@/db/schema";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { courses, enrollments, lessons, profiles, units, userProgress, tutorSessions } from "@/db/schema";
+import { and, asc, eq, inArray, or } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Mascot from "@/components/Mascot";
+import { getMySessions } from "@/app/tutoring/actions";
 
 export default async function PathPage() {
   const startTime = Date.now();
@@ -18,9 +19,10 @@ export default async function PathPage() {
   }
 
   // 1. Verify user profile and onboarding status AND fetch enrollments in parallel
-  const [profileResult, userEnrollments] = await Promise.all([
+  const [profileResult, userEnrollments, mySessions] = await Promise.all([
     db.select().from(profiles).where(eq(profiles.id, user.id)).limit(1),
-    db.select().from(enrollments).where(eq(enrollments.userId, user.id))
+    db.select().from(enrollments).where(eq(enrollments.userId, user.id)),
+    getMySessions()
   ]);
 
   const profile = profileResult[0];
@@ -223,6 +225,56 @@ export default async function PathPage() {
           </div>
           <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-purple-500/20 blur-xl pointer-events-none"></div>
         </div>
+        </div>
+      )}
+
+      {/* Upcoming Tutoring Sessions - Stitch Frame Style */}
+      {mySessions.length > 0 && (
+        <div className="relative bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
+          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>videocam</span>
+                <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Upcoming Sessions</h2>
+              </div>
+              <Link href="/tutoring" className="font-label-sm text-primary font-bold hover:underline">View All</Link>
+            </div>
+            <div className="space-y-3">
+              {mySessions.slice(0, 2).map((session: any) => (
+                <div key={session.id} className="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-4 border-2 border-blue-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-label-md text-on-surface font-semibold">
+                        {new Date(session.scheduledAt).toLocaleString()}
+                      </p>
+                      <p className="font-body-sm text-on-surface-variant">
+                        Duration: {session.durationMins} minutes
+                      </p>
+                    </div>
+                    <span className={`inline-block rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
+                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
+                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
+                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                    }`}>
+                      {session.status}
+                    </span>
+                  </div>
+                  {session.status === "confirmed" && session.jitsiRoomId && (
+                    <a
+                      href={`https://meet.jit.si/${session.jitsiRoomId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">videocam</span>
+                      Join Session
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

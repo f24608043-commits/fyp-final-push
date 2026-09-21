@@ -2,6 +2,12 @@ import { getTutors, getMySessions, getPendingRequests } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
+import dynamic from "next/dynamic";
+
+// Lazy load messaging widget
+const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
+  loading: () => null,
+});
 
 export default async function TutoringPage() {
   const supabase = await createClient();
@@ -130,39 +136,51 @@ export default async function TutoringPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {mySessions.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold">
-                      {new Date(session.scheduledAt).toLocaleString()}
-                    </p>
-                    <p className="font-body-sm text-on-surface-variant mt-1">
-                      Duration: {session.durationMins} minutes
-                    </p>
-                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                      session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
-                    }`}>
-                      {session.status}
-                    </span>
+            {mySessions.map((session: any) => {
+              const otherUserId = session.tutorId === user.id ? session.learnerId : session.tutorId;
+              const otherUserName = session.tutorId === user.id ? "Learner" : "Tutor";
+              
+              return (
+                <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="font-label-md text-on-surface font-semibold">
+                        {new Date(session.scheduledAt).toLocaleString()}
+                      </p>
+                      <p className="font-body-sm text-on-surface-variant mt-1">
+                        Duration: {session.durationMins} minutes
+                      </p>
+                      <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
+                        session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
+                        session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
+                        session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
+                        "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      }`}>
+                        {session.status}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {session.status === "confirmed" && session.jitsiRoomId && (
+                        <a
+                          href={`https://meet.jit.si/${session.jitsiRoomId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                        >
+                          <span className="material-symbols-outlined text-[20px]">videocam</span>
+                          Join Session
+                        </a>
+                      )}
+                      <MessagingWidget
+                        otherUserId={otherUserId}
+                        otherUserName={otherUserName}
+                        sessionId={session.id}
+                      />
+                    </div>
                   </div>
-                  {session.status === "confirmed" && session.jitsiRoomId && (
-                    <a
-                      href={`https://meet.jit.si/${session.jitsiRoomId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
-                    >
-                      <span className="material-symbols-outlined text-[20px]">videocam</span>
-                      Join Session
-                    </a>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -213,19 +231,30 @@ export default async function TutoringPage() {
                   <p className="font-label-sm font-semibold text-on-surface">
                     {tutor.hourlyRate ? `$${tutor.hourlyRate}/hour` : "Free"}
                   </p>
-                  <form action={async () => {
-                    "use server";
-                    const { requestSession } = await import("./actions");
-                    await requestSession({
-                      tutorId: tutor.tutorId,
-                      requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
-                      message: "I would like to book a session"
-                    });
-                  }}>
-                    <button className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
-                      Book Session
-                    </button>
-                  </form>
+                  <div className="flex gap-2">
+                    <form action={async () => {
+                      "use server";
+                      const { startDirectConversation } = await import("../messaging/actions");
+                      await startDirectConversation(tutor.tutorId);
+                    }}>
+                      <button className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all">
+                        Message
+                      </button>
+                    </form>
+                    <form action={async () => {
+                      "use server";
+                      const { requestSession } = await import("./actions");
+                      await requestSession({
+                        tutorId: tutor.tutorId,
+                        requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
+                        message: "I would like to book a session"
+                      });
+                    }}>
+                      <button className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                        Book Session
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             ))}

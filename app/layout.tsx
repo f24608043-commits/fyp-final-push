@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Rubik, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import Shell from "@/components/Shell";
+import dynamic from "next/dynamic";
+
+// Lazy load ChatWidget to avoid impacting initial bundle size
+const ChatWidget = dynamic(() => import("@/components/ChatWidget"), {
+  loading: () => null,
+});
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -20,6 +26,12 @@ const nunitoSans = Nunito_Sans({
 export const metadata: Metadata = {
   title: "LEGO - Learn And Go",
   description: "AI-powered, gamified learning with video lessons, quizzes, and live tutoring.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: "cover",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -33,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-surface font-body-md">
         <Shell>{children}</Shell>
+        <ChatWidget />
       </body>
     </html>
   );

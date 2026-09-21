@@ -11,3 +11,6 @@ function getClient() {
 }
 
 export const db = drizzle(getClient(), { schema });
+
+// Export schema tables for convenience
+export * from "./schema";

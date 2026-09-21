@@ -5,6 +5,7 @@ import Link from "next/link";
 import { submitQuiz, type QuizSubmissionResult } from "../actions";
 import Celebration from "@/components/Celebration";
 import Mascot from "@/components/Mascot";
+import { triggerMascotPose, triggerMascotAssembly } from "@/lib/mascot";
 
 interface OptionItem {
   id: string;
@@ -67,6 +68,17 @@ export default function LessonClient({
     try {
       const res = await submitQuiz(lessonId, selectedAnswers);
       setResult(res);
+      
+      // Trigger mascot pose based on result
+      if (res.mascotPose) {
+        triggerMascotPose(res.mascotPose);
+      }
+      
+      // Trigger assembly animation if badges were awarded
+      if (res.badgesAwarded && res.badgesAwarded.length > 0) {
+        triggerMascotAssembly();
+      }
+      
       if (res.passed) {
         setStage("celebration");
       } else {
