@@ -190,6 +190,7 @@ test.describe('Cross-Role Feature Access', () => {
     await page.waitForURL(/\/tutoring\/dashboard|\/path/, { timeout: 30000 });
 
     await page.goto('/admin/courses');
+    await page.waitForURL(/\/path|\/tutoring\/dashboard|\/\?error=/, { timeout: 15000 });
     
     const url = page.url();
     console.log(`Tutor accessing /admin/courses - redirected to: ${url}`);
