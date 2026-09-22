@@ -84,7 +84,7 @@ export async function signIn(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -93,6 +93,32 @@ export async function signIn(formData: FormData) {
     redirect(`/sign-in?error=${encodeURIComponent(error.message)}`);
   }
 
+  // Get user profile to determine redirect based on role
+  if (data.user) {
+    const [profile] = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, data.user.id))
+      .limit(1);
+
+    if (profile) {
+      // Redirect based on role
+      if (profile.role === "admin") {
+        redirect("/admin");
+      } else if (profile.role === "tutor") {
+        redirect("/tutoring/dashboard");
+      } else if (profile.role === "learner") {
+        // Learners go to onboarding if not done, otherwise path
+        if (profile.onboardingDone) {
+          redirect("/path");
+        } else {
+          redirect("/onboarding");
+        }
+      }
+    }
+  }
+
+  // Default fallback
   redirect("/path");
 }
 

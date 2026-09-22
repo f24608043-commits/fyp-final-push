@@ -7,7 +7,17 @@ function getClient() {
   if (!connectionString) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
-  return postgres(connectionString, { prepare: false, ssl: { rejectUnauthorized: false } });
+  return postgres(connectionString, {
+    prepare: false,
+    ssl: { rejectUnauthorized: false },
+    connection: {
+      timeout: 30000, // 30 second connection timeout
+    },
+    max: 5, // Reduce max connections to avoid overwhelming the pooler
+    idle_timeout: 10, // Close idle connections faster
+    connect_timeout: 30, // 30 second connection attempt timeout
+    max_lifetime: 60 * 30, // Recycle connections after 30 minutes
+  });
 }
 
 export const db = drizzle(getClient(), { schema });

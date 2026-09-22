@@ -21,8 +21,14 @@ export default async function AdminCoursesPage() {
     .where(eq(profiles.id, user.id))
     .limit(1);
 
-  if (!userProfile || userProfile.role !== 'admin') {
-    redirect("/path");
+  if (!userProfile) {
+    console.error('[ADMIN ACCESS] No profile found for user:', user.id);
+    redirect("/sign-in?error=profile_not_found");
+  }
+
+  if (userProfile.role !== 'admin') {
+    console.error('[ADMIN ACCESS] Non-admin user attempted access:', user.id, 'role:', userProfile.role);
+    redirect("/?error=admin_only");
   }
 
   const courses = await getAllCourses();

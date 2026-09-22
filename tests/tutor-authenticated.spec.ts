@@ -55,7 +55,7 @@ test.describe('Tutor Authenticated Tests', () => {
     await page.goto('/admin/courses');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
     
-    // Should be redirected to /path
-    expect(page.url()).toContain('/path');
+    // Should be redirected away from admin pages
+    expect(page.url()).not.toContain('/admin');
   });
 });
