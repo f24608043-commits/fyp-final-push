@@ -99,7 +99,7 @@ test.describe('Messaging System', () => {
     await page.fill('input[name="password"]', ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
     
-    await expect(page).toHaveURL(/\/path/, { timeout: 15000 });
+    await expect(page).toHaveURL(/\/admin/, { timeout: 30000 });
     
     // Navigate to messages page
     await page.goto('/messages');

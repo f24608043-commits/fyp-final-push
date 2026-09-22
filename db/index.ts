@@ -13,7 +13,7 @@ function getClient() {
     connection: {
       timeout: 30000, // 30 second connection timeout
     },
-    max: 5, // Reduce max connections to avoid overwhelming the pooler
+    max: 10, // Middle ground: serial test showed improvement with smaller pool
     idle_timeout: 10, // Close idle connections faster
     connect_timeout: 30, // 30 second connection attempt timeout
     max_lifetime: 60 * 30, // Recycle connections after 30 minutes

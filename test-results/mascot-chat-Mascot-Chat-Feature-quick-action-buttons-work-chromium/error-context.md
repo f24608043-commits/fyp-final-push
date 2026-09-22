@@ -7,7 +7,7 @@
 # Test info
 
 - Name: mascot-chat.spec.ts >> Mascot Chat Feature >> quick action buttons work
-- Location: tests\mascot-chat.spec.ts:55:7
+- Location: tests\mascot-chat.spec.ts:62:7
 
 # Error details
 
@@ -175,142 +175,149 @@ Received:   1
   7   |     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
   8   |     await page.fill('input[type="password"]', 'Test123456!');
   9   |     await page.click('button[type="submit"]');
-  10  |     await page.waitForURL('/path', { timeout: 15000 });
-  11  |   });
-  12  | 
-  13  |   test('chat widget opens and closes', async ({ page }) => {
-  14  |     // Wait for chat widget to load (lazy loaded)
-  15  |     await page.waitForTimeout(2000);
+  10  |     
+  11  |     // Handle onboarding redirect
+  12  |     const url = page.url();
+  13  |     if (url.includes('/onboarding')) {
+  14  |       await page.goto('/path');
+  15  |     }
   16  |     
-  17  |     // Find and click the collapsed chat button
-  18  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
-  19  |     await expect(chatButton).toBeVisible();
-  20  |     await chatButton.click();
-  21  |     
-  22  |     // Chat should be open
-  23  |     await expect(page.locator('text=LEGO Mascot')).toBeVisible();
-  24  |     await expect(page.locator('text=Online - Ready to help!')).toBeVisible();
-  25  |     
-  26  |     // Close the chat
-  27  |     const closeButton = page.locator('button:has-text("✕")').first();
-  28  |     await closeButton.click();
-  29  |     
-  30  |     // Chat should be closed
-  31  |     await expect(page.locator('text=LEGO Mascot')).not.toBeVisible();
-  32  |   });
-  33  | 
-  34  |   test('send message and receive AI response', async ({ page }) => {
-  35  |     await page.waitForTimeout(2000);
+  17  |     await page.waitForLoadState('networkidle', { timeout: 30000 });
+  18  |   });
+  19  | 
+  20  |   test('chat widget opens and closes', async ({ page }) => {
+  21  |     // Wait for chat widget to load (lazy loaded)
+  22  |     await page.waitForTimeout(2000);
+  23  |     
+  24  |     // Find and click the collapsed chat button
+  25  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
+  26  |     await expect(chatButton).toBeVisible();
+  27  |     await chatButton.click();
+  28  |     
+  29  |     // Chat should be open
+  30  |     await expect(page.locator('text=LEGO Mascot')).toBeVisible();
+  31  |     await expect(page.locator('text=Online - Ready to help!')).toBeVisible();
+  32  |     
+  33  |     // Close the chat
+  34  |     const closeButton = page.locator('button:has-text("✕")').first();
+  35  |     await closeButton.click();
   36  |     
-  37  |     // Open chat
-  38  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
-  39  |     await chatButton.click();
-  40  |     
-  41  |     // Send a message
-  42  |     const input = page.locator('input[placeholder="Type a message..."]');
-  43  |     await input.fill('Hello!');
-  44  |     await page.click('button:has-text("Send")');
-  45  |     
-  46  |     // Wait for response
-  47  |     await page.waitForTimeout(5000);
-  48  |     
-  49  |     // Check that a response appeared
-  50  |     const messages = page.locator('.flex-1.overflow-y-auto p');
-  51  |     const messageCount = await messages.count();
-  52  |     expect(messageCount).toBeGreaterThan(1); // At least initial + response
-  53  |   });
-  54  | 
-  55  |   test('quick action buttons work', async ({ page }) => {
-  56  |     await page.waitForTimeout(2000);
-  57  |     
-  58  |     // Open chat
-  59  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
-  60  |     await chatButton.click();
-  61  |     
-  62  |     // Click quick action button
-  63  |     await page.click('button:has-text("💡 Hint")');
+  37  |     // Chat should be closed
+  38  |     await expect(page.locator('text=LEGO Mascot')).not.toBeVisible();
+  39  |   });
+  40  | 
+  41  |   test('send message and receive AI response', async ({ page }) => {
+  42  |     await page.waitForTimeout(2000);
+  43  |     
+  44  |     // Open chat
+  45  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
+  46  |     await chatButton.click();
+  47  |     
+  48  |     // Send a message
+  49  |     const input = page.locator('input[placeholder="Type a message..."]');
+  50  |     await input.fill('Hello!');
+  51  |     await page.click('button:has-text("Send")');
+  52  |     
+  53  |     // Wait for response
+  54  |     await page.waitForTimeout(5000);
+  55  |     
+  56  |     // Check that a response appeared
+  57  |     const messages = page.locator('.flex-1.overflow-y-auto p');
+  58  |     const messageCount = await messages.count();
+  59  |     expect(messageCount).toBeGreaterThan(1); // At least initial + response
+  60  |   });
+  61  | 
+  62  |   test('quick action buttons work', async ({ page }) => {
+  63  |     await page.waitForTimeout(2000);
   64  |     
-  65  |     // Wait for response
-  66  |     await page.waitForTimeout(5000);
-  67  |     
-  68  |     // Check that a response appeared
-  69  |     const messages = page.locator('.flex-1.overflow-y-auto p');
-  70  |     const messageCount = await messages.count();
-> 71  |     expect(messageCount).toBeGreaterThan(1);
+  65  |     // Open chat
+  66  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
+  67  |     await chatButton.click();
+  68  |     
+  69  |     // Click quick action button
+  70  |     await page.click('button:has-text("💡 Hint")');
+  71  |     
+  72  |     // Wait for response
+  73  |     await page.waitForTimeout(5000);
+  74  |     
+  75  |     // Check that a response appeared
+  76  |     const messages = page.locator('.flex-1.overflow-y-auto p');
+  77  |     const messageCount = await messages.count();
+> 78  |     expect(messageCount).toBeGreaterThan(1);
       |                          ^ Error: expect(received).toBeGreaterThan(expected)
-  72  |   });
-  73  | 
-  74  |   test('assembly animation trigger works', async ({ page }) => {
-  75  |     await page.waitForTimeout(2000);
-  76  |     
-  77  |     // Open chat
-  78  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
-  79  |     await chatButton.click();
-  80  |     
-  81  |     // Click assembly animation button
-  82  |     const sparkleButton = page.locator('button:has-text("✨")').first();
-  83  |     await expect(sparkleButton).toBeVisible();
-  84  |     await sparkleButton.click();
-  85  |     
-  86  |     // Animation should play (we can't easily test visual animation, but we can check button is clickable)
-  87  |     await expect(sparkleButton).toBeVisible();
-  88  |   });
-  89  | 
-  90  |   test('rate limit enforcement', async ({ page }) => {
-  91  |     await page.waitForTimeout(2000);
+  79  |   });
+  80  | 
+  81  |   test('assembly animation trigger works', async ({ page }) => {
+  82  |     await page.waitForTimeout(2000);
+  83  |     
+  84  |     // Open chat
+  85  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
+  86  |     await chatButton.click();
+  87  |     
+  88  |     // Click assembly animation button
+  89  |     const sparkleButton = page.locator('button:has-text("✨")').first();
+  90  |     await expect(sparkleButton).toBeVisible();
+  91  |     await sparkleButton.click();
   92  |     
-  93  |     // Open chat
-  94  |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
-  95  |     await chatButton.click();
-  96  |     
-  97  |     // Send multiple messages rapidly to test rate limit (though 20/hour is hard to hit in a test)
-  98  |     const input = page.locator('input[placeholder="Type a message..."]');
+  93  |     // Animation should play (we can't easily test visual animation, but we can check button is clickable)
+  94  |     await expect(sparkleButton).toBeVisible();
+  95  |   });
+  96  | 
+  97  |   test('rate limit enforcement', async ({ page }) => {
+  98  |     await page.waitForTimeout(2000);
   99  |     
-  100 |     for (let i = 0; i < 5; i++) {
-  101 |       await input.fill(`Test message ${i}`);
-  102 |       await page.click('button:has-text("Send")');
-  103 |       await page.waitForTimeout(1000);
-  104 |     }
-  105 |     
-  106 |     // Check that messages were sent
-  107 |     const messages = page.locator('.flex-1.overflow-y-auto p');
-  108 |     const messageCount = await messages.count();
-  109 |     expect(messageCount).toBeGreaterThan(5);
-  110 |   });
-  111 | });
-  112 | 
-  113 | test.describe('Mascot Chat API - Failure Scenarios', () => {
-  114 |   test('OpenRouter failure falls back to canned response', async ({ page }) => {
-  115 |     // This test would require temporarily invalidating the OpenRouter key
-  116 |     // For now, we'll test the API endpoint directly
-  117 |     
-  118 |     const response = await page.request.post('/api/mascot-chat', {
-  119 |       data: {
-  120 |         message: 'Test message',
-  121 |         simulateOpenRouterFailure: true,
-  122 |       },
-  123 |     });
+  100 |     // Open chat
+  101 |     const chatButton = page.locator('button:has-text("Chat with Mascot")').first();
+  102 |     await chatButton.click();
+  103 |     
+  104 |     // Send multiple messages rapidly to test rate limit (though 20/hour is hard to hit in a test)
+  105 |     const input = page.locator('input[placeholder="Type a message..."]');
+  106 |     
+  107 |     for (let i = 0; i < 5; i++) {
+  108 |       await input.fill(`Test message ${i}`);
+  109 |       await page.click('button:has-text("Send")');
+  110 |       await page.waitForTimeout(1000);
+  111 |     }
+  112 |     
+  113 |     // Check that messages were sent
+  114 |     const messages = page.locator('.flex-1.overflow-y-auto p');
+  115 |     const messageCount = await messages.count();
+  116 |     expect(messageCount).toBeGreaterThan(5);
+  117 |   });
+  118 | });
+  119 | 
+  120 | test.describe('Mascot Chat API - Failure Scenarios', () => {
+  121 |   test('OpenRouter failure falls back to canned response', async ({ page }) => {
+  122 |     // This test would require temporarily invalidating the OpenRouter key
+  123 |     // For now, we'll test the API endpoint directly
   124 |     
-  125 |     const data = await response.json();
-  126 |     expect(response.ok()).toBeTruthy();
-  127 |     expect(data.message).toBeTruthy();
-  128 |     expect(data.provider).toBe('canned');
-  129 |   });
-  130 | 
-  131 |   test('OpenAI failure falls back to canned response', async ({ page }) => {
-  132 |     const response = await page.request.post('/api/mascot-chat', {
-  133 |       data: {
-  134 |         message: 'Test message',
-  135 |         simulateOpenRouterFailure: true,
-  136 |         simulateOpenAiFailure: true,
-  137 |       },
-  138 |     });
-  139 |     
-  140 |     const data = await response.json();
-  141 |     expect(response.ok()).toBeTruthy();
-  142 |     expect(data.message).toBeTruthy();
-  143 |     expect(data.provider).toBe('canned');
-  144 |   });
-  145 | });
-  146 | 
+  125 |     const response = await page.request.post('/api/mascot-chat', {
+  126 |       data: {
+  127 |         message: 'Test message',
+  128 |         simulateOpenRouterFailure: true,
+  129 |       },
+  130 |     });
+  131 |     
+  132 |     const data = await response.json();
+  133 |     expect(response.ok()).toBeTruthy();
+  134 |     expect(data.message).toBeTruthy();
+  135 |     expect(data.provider).toBe('canned');
+  136 |   });
+  137 | 
+  138 |   test('OpenAI failure falls back to canned response', async ({ page }) => {
+  139 |     const response = await page.request.post('/api/mascot-chat', {
+  140 |       data: {
+  141 |         message: 'Test message',
+  142 |         simulateOpenRouterFailure: true,
+  143 |         simulateOpenAiFailure: true,
+  144 |       },
+  145 |     });
+  146 |     
+  147 |     const data = await response.json();
+  148 |     expect(response.ok()).toBeTruthy();
+  149 |     expect(data.message).toBeTruthy();
+  150 |     expect(data.provider).toBe('canned');
+  151 |   });
+  152 | });
+  153 | 
 ```

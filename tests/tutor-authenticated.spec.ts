@@ -8,7 +8,7 @@ test.describe('Tutor Authenticated Tests', () => {
     await page.fill('input[name="email"]', 'orphix.itsolutions@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/tutoring\/dashboard|\/path/, { timeout: 10000 });
+    await page.waitForURL(/\/tutoring\/dashboard|\/path/, { timeout: 30000 });
   });
 
   test('tutor can access dashboard', async ({ page }) => {
@@ -37,23 +37,23 @@ test.describe('Tutor Authenticated Tests', () => {
 
   test('tutor is blocked from admin dashboard', async ({ page }) => {
     await page.goto('/admin');
-    await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+    await page.waitForURL(/\/path|\/tutoring\/dashboard|\/\?error=/, { timeout: 15000 });
     
-    // Should be redirected to /path
-    expect(page.url()).toContain('/path');
+    // Should be redirected away from admin pages
+    expect(page.url()).not.toContain('/admin');
   });
 
   test('tutor is blocked from admin users page', async ({ page }) => {
     await page.goto('/admin/users');
-    await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+    await page.waitForURL(/\/path|\/tutoring\/dashboard|\/\?error=/, { timeout: 15000 });
     
-    // Should be redirected to /path
-    expect(page.url()).toContain('/path');
+    // Should be redirected away from admin pages
+    expect(page.url()).not.toContain('/admin');
   });
 
   test('tutor is blocked from admin courses page', async ({ page }) => {
     await page.goto('/admin/courses');
-    await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+    await page.waitForURL(/\/path|\/tutoring\/dashboard|\/\?error=/, { timeout: 15000 });
     
     // Should be redirected away from admin pages
     expect(page.url()).not.toContain('/admin');

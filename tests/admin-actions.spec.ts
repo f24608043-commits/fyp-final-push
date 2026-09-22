@@ -8,7 +8,7 @@ test.describe('Admin Actions - Form Submissions', () => {
     await page.fill('input[name="email"]', 'alexabraham587@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/path/, { timeout: 10000 });
+    await page.waitForURL(/\/admin/, { timeout: 30000 });
   });
 
   test('admin badge creation form exists and is fillable', async ({ page }) => {

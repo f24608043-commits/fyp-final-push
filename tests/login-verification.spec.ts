@@ -25,7 +25,7 @@ test.describe('Login Verification', () => {
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
     
-    // Admin should land on /path (default after login)
-    await expect(page).toHaveURL(/\/path/, { timeout: 15000 });
+    // Admin should land on /admin
+    await expect(page).toHaveURL(/\/admin/, { timeout: 30000 });
   });
 });

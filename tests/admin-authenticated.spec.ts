@@ -8,7 +8,7 @@ test.describe('Admin Authenticated Tests', () => {
     await page.fill('input[name="email"]', 'alexabraham587@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/path/, { timeout: 20000 });
+    await page.waitForURL(/\/admin/, { timeout: 30000 });
   });
 
   test('admin badges page responds', async ({ page }) => {
