@@ -53,9 +53,11 @@ export default async function PathPage() {
     db.select().from(units).where(eq(units.courseId, activeEnrollment.courseId)).orderBy(asc(units.orderIndex))
   ]);
 
-  if (!course) {
+  if (!course || course.length === 0) {
     redirect("/onboarding");
   }
+
+  const courseData = course[0];
 
   const unitIds = courseUnits.map((u) => u.id);
 
@@ -85,6 +87,9 @@ export default async function PathPage() {
   const filteredProgressRows = progressRows.filter(p => lessonIds.includes(p.lessonId));
 
   const progressMap = new Map(filteredProgressRows.map((p) => [p.lessonId, p.status]));
+
+  const completedLessons = filteredProgressRows.filter(p => p.status === "completed").length;
+  const totalLessons = courseLessons.length;
 
   const endTime = Date.now();
   console.log(`[PERF] Path page server render time: ${endTime - startTime}ms`);
@@ -126,105 +131,113 @@ export default async function PathPage() {
 
   return (
     <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-primary/5 to-secondary/5 min-h-screen">
-      {/* Welcome Banner with Mascot - Stitch Frame Style */}
-      <section className="w-full mb-6">
-        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-secondary rounded-3xl p-1 shadow-2xl overflow-hidden">
-          {/* Stitch border effect */}
-          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/30 pointer-events-none"></div>
-          <div className="absolute inset-2 rounded-2xl border-2 border-dotted border-white/20 pointer-events-none"></div>
-          
-          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-6 z-10">
-              <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-xl border-4 border-white">
-                <Mascot pose="encouraging" size={80} />
-                <span className="absolute top-0 right-0 flex h-5 w-5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-5 w-5 bg-green-500 border-2 border-white"></span>
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-label-sm text-label-sm text-primary uppercase tracking-wider bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent px-3 py-1 rounded-full font-extrabold border-2 border-primary/20">🎮 Course in Progress</span>
-                  <span className="font-label-sm text-label-sm text-text-muted font-bold">• Unit 1</span>
-                </div>
-                <h1 className="font-headline-lg text-headline-lg text-text-primary leading-snug">
-                  Good morning, {profile.displayName || "Learner"}! 🌟
-                </h1>
-                <p className="font-body-md text-body-md text-text-muted">
-                  Keep your momentum going! Complete {currentLesson ? `Node ${orderedLessonsWithUnit.indexOf(currentLesson) + 1}` : "the next lesson"} to reach your daily goal.
-                </p>
-              </div>
+      {/* Header with Mascot */}
+      <div className="relative clay-card p-6 md:p-8 overflow-hidden mb-6">
+        {/* Decorative background gradients */}
+        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary/25 blur-3xl pointer-events-none"></div>
+        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-secondary/25 blur-3xl pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          {/* Left: Header info */}
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-0.5 rounded-lg clay-badge text-text-muted font-label-sm text-label-sm tracking-wider uppercase">{courseData.title}</span>
+              <span className="text-text-muted text-label-sm">•</span>
+              <span className="px-3 py-0.5 rounded-lg clay-badge bg-primary/10 text-primary font-label-sm text-label-sm">Learning Path</span>
             </div>
-            {/* Quick Stats - Colorful Cards */}
-            <div className="flex items-center gap-4 z-10 flex-shrink-0">
-              <div className="flex flex-col items-center bg-gradient-to-br from-orange-400 to-red-500 text-white px-5 py-3 rounded-2xl text-center min-w-[88px] shadow-xl border-4 border-white/30 transform hover:scale-105 transition-transform">
-                <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-                <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.streakCount || 0}</span>
-                <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Streak</span>
+            <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
+              {courseData.title}
+            </h1>
+            <p className="font-body-lg text-body-lg text-text-muted leading-relaxed">
+              {courseData.description}
+            </p>
+          </div>
+
+          {/* Right: Mascot + Stats */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+            <div className="relative max-w-xs clay-card p-4 order-2 sm:order-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-primary">Progress</span>
               </div>
-              <div className="flex flex-col items-center bg-gradient-to-br from-blue-400 to-purple-500 text-white px-5 py-3 rounded-2xl text-center min-w-[88px] shadow-xl border-4 border-white/30 transform hover:scale-105 transition-transform">
-                <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
-                <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.xp?.toLocaleString() || 0}</span>
-                <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">XP</span>
-              </div>
-              <div className="flex flex-col items-center bg-gradient-to-br from-green-400 to-teal-500 text-white px-5 py-3 rounded-2xl text-center min-w-[88px] shadow-xl border-4 border-white/30 transform hover:scale-105 transition-transform">
-                <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
-                <span className="font-label-lg text-label-lg leading-tight font-extrabold">{Math.floor(Math.sqrt(profile.xp / 100)) + 1}</span>
-                <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Level</span>
-              </div>
+              <p className="font-headline-md text-label-md text-text-primary font-bold leading-snug">
+                {completedLessons} of {totalLessons} lessons completed
+              </p>
+            </div>
+            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2 animate-float">
+              <Mascot pose="encouraging" size={128} />
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Stats Bar */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex flex-col items-center clay-button-primary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
+          <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.streakCount || 0}</span>
+          <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Streak</span>
+        </div>
+        <div className="flex flex-col items-center clay-button-secondary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
+          <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.xp?.toLocaleString() || 0}</span>
+          <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">XP</span>
+        </div>
+        <div className="flex flex-col items-center clay-card px-5 py-3 rounded-2xl text-center min-w-[88px]">
+          <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{Math.floor(Math.sqrt(profile.xp / 100)) + 1}</span>
+          <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Level</span>
+        </div>
+      </div>
 
       {/* Current Lesson Hero Card - Stitch Frame Style */}
       {currentLesson && (
         <div className="relative bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
           <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
           <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex flex-col gap-1 max-w-xl z-10">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm text-label-sm px-3 py-1 rounded-full uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-lg border-2 border-white/30">
-                <span className="material-symbols-outlined text-[14px]">play_circle</span>
-                Next Challenge
-              </span>
-              <span className="font-label-sm text-label-sm text-text-muted uppercase font-bold">
-                {currentLesson.unit.title} • Lesson {orderedLessonsWithUnit.indexOf(currentLesson) + 1}
-              </span>
-            </div>
-            <h2 className="font-headline-md text-headline-md text-text-primary">
-              {currentLesson.lesson.title}
-            </h2>
-            <p className="font-body-md text-body-md text-text-muted">
-              {currentLesson.lesson.description}
-            </p>
-            {/* Progress Bar */}
-            <div className="w-full mt-2 flex flex-col gap-1.5">
-              <div className="flex justify-between items-center text-text-primary">
-                <span className="font-label-sm text-label-sm text-text-muted font-bold">Progress</span>
-                <span className="font-label-md text-label-md font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{completedCount} / {totalCount} activities</span>
+            <div className="flex flex-col gap-1 max-w-xl z-10">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm text-label-sm px-3 py-1 rounded-full uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-lg border-2 border-white/30">
+                  <span className="material-symbols-outlined text-[14px]">play_circle</span>
+                  Next Challenge
+                </span>
+                <span className="font-label-sm text-label-sm text-text-muted uppercase font-bold">
+                  {currentLesson.unit.title} • Lesson {orderedLessonsWithUnit.indexOf(currentLesson) + 1}
+                </span>
               </div>
-              <div className="w-full h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full overflow-hidden shadow-inner">
-                <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
+              <h2 className="font-headline-md text-headline-md text-text-primary">
+                {currentLesson.lesson.title}
+              </h2>
+              <p className="font-body-md text-body-md text-text-muted">
+                {currentLesson.lesson.description}
+              </p>
+              {/* Progress Bar */}
+              <div className="w-full mt-2 flex flex-col gap-1.5">
+                <div className="flex justify-between items-center text-text-primary">
+                  <span className="font-label-sm text-label-sm text-text-muted font-bold">Progress</span>
+                  <span className="font-label-md text-label-md font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{completedCount} / {totalCount} activities</span>
+                </div>
+                <div className="w-full h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
+                </div>
               </div>
             </div>
-          </div>
-          {/* CTA Button */}
-          <div className="z-10 flex flex-col items-center w-full md:w-auto">
-            <Link
-              href={`/lesson/${currentLesson.lesson.id}`}
-              className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-lg text-label-lg uppercase tracking-wider shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
-            >
-              <span>Continue Learning</span>
-              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-            </Link>
-            <div className="flex items-center gap-1 mt-2 text-secondary font-label-sm text-label-sm">
-              <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>stars</span>
-              <span>+{currentLesson.lesson.xpReward} XP Reward on Finish</span>
+            {/* CTA Button */}
+            <div className="z-10 flex flex-col items-center w-full md:w-auto">
+              <Link
+                href={`/lesson/${currentLesson.lesson.id}`}
+                className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-lg text-label-lg uppercase tracking-wider shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              >
+                <span>Continue Learning</span>
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              </Link>
+              <div className="flex items-center gap-1 mt-2 text-secondary font-label-sm text-label-sm">
+                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>stars</span>
+                <span>+{currentLesson.lesson.xpReward} XP Reward on Finish</span>
+              </div>
             </div>
+            <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-purple-500/20 blur-xl pointer-events-none"></div>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-purple-500/20 blur-xl pointer-events-none"></div>
-        </div>
         </div>
       )}
 
