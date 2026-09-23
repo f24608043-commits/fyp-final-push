@@ -26,6 +26,7 @@ export default function UnifiedShell({
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [level, setLevel] = useState(Math.floor(Math.sqrt((initialXp || 0) / 100)) + 1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Only fetch if we don't have initial data (fallback for pages not using server-side data)
   useEffect(() => {
@@ -251,9 +252,16 @@ export default function UnifiedShell({
       {/* Main Content - Responsive padding */}
       <div className="flex-1 lg:pl-64 md:pl-16 pl-0">
         {/* Top Header - Mobile: slim, Desktop: full */}
-        <header className="fixed top-0 left-0 right-0 lg:left-64 md:left-16 h-16 bg-surface/90 backdrop-blur-xl shadow-clay-surface z-40 flex items-center justify-between px-4 lg:px-6">
-          {/* Mobile Logo & Stats */}
+        <header className="fixed top-0 left-0 right-0 lg:left-64 md:left-16 h-16 bg-surface/95 backdrop-blur-xl shadow-clay-surface z-40 flex items-center justify-between px-4 lg:px-6">
+          {/* Mobile Menu Toggle & Logo */}
           <div className="flex items-center gap-2 lg:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-surface-border hover:bg-surface transition-colors"
+              aria-label="Open menu"
+            >
+              <span className="material-symbols-outlined text-[24px] text-text-primary">menu</span>
+            </button>
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
               <span className="material-symbols-outlined text-[18px]">{logoIcon}</span>
             </div>
@@ -305,6 +313,100 @@ export default function UnifiedShell({
           {children}
         </main>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="fixed inset-y-0 left-0 w-72 bg-surface z-50 lg:hidden shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="h-16 px-4 flex items-center justify-between border-b border-surface-border">
+              <div className="flex items-center gap-2">
+                <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
+                  <span className="material-symbols-outlined text-[22px]">{logoIcon}</span>
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className={`font-label-lg tracking-tight font-extrabold uppercase ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LEGO</span>
+                  <span className="font-label-sm text-text-muted font-bold tracking-wide">Learn And Go</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-surface-border transition-colors"
+                aria-label="Close menu"
+              >
+                <span className="material-symbols-outlined text-[24px] text-text-primary">close</span>
+              </button>
+            </div>
+
+            {/* Role Badge */}
+            <div className="px-4 py-3 border-b border-surface-border">
+              <div className={`px-4 py-2 rounded-full flex items-center gap-2 shadow-clay-surface ${isLearner ? 'bg-primary/10' : isAdmin ? 'bg-error/10' : 'bg-secondary/10'}`}>
+                <span className={`w-2 h-2 rounded-full ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}></span>
+                <span className="font-label-sm uppercase tracking-wider text-text-primary font-bold">{roleLabel}</span>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex flex-col gap-1 px-4 py-4 flex-1 overflow-y-auto">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all ${
+                    pathname === item.path
+                      ? `bg-primary text-white font-bold shadow-clay-primary`
+                      : "text-text-muted hover:bg-surface-border hover:text-text-primary font-label-md"
+                  }`}
+                  aria-current={pathname === item.path ? "page" : undefined}
+                >
+                  <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                  <span className="font-label-md">{item.label}</span>
+                </Link>
+              ))}
+              
+              {/* More Items */}
+              <div className="my-2 border-t border-surface-border"></div>
+              {moreItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-muted hover:bg-surface-border hover:text-text-primary font-label-md transition-all"
+                >
+                  <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                  <span className="font-label-md">{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+
+            {/* User Info */}
+            <div className="px-4 py-4 border-t border-surface-border">
+              <Link
+                href={userId ? `/profile/${userId}` : "#"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-surface-border transition-colors"
+              >
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
+                  <span className="material-symbols-outlined text-[22px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-label-md text-text-primary leading-tight">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
+                  <div className="flex items-center gap-1">
+                    <span className={`font-label-sm font-extrabold ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LVL {level}</span>
+                    <span className="font-label-sm text-text-muted">•</span>
+                    <span className="font-label-sm text-text-muted uppercase tracking-wider font-bold">{userRoleLabel}</span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Mobile Bottom Bar */}
       <nav className="lg:hidden md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface/95 backdrop-blur-xl shadow-clay-surface z-50 flex items-center justify-around px-2 pb-[env(safe-area-inset-bottom)] border-t border-surface-border">
