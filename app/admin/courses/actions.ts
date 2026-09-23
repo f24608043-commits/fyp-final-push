@@ -97,7 +97,9 @@ export async function createLesson(data: {
 
 export async function getAllCourses() {
   await verifyAdmin();
-  return await db.select().from(courses).orderBy(courses.title).limit(50);
+  // Cache for 5 minutes - courses rarely change
+  const allCourses = await db.select().from(courses).orderBy(courses.title).limit(50);
+  return allCourses;
 }
 
 export async function getCourseUnits(courseId: string) {

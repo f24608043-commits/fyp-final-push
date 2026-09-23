@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 export default async function AdminUsersPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -28,7 +28,8 @@ export default async function AdminUsersPage({
     redirect("/path");
   }
 
-  const searchQuery = searchParams.q || "";
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = resolvedSearchParams.q || "";
   const users = await getAllUsers(searchQuery);
 
   return (

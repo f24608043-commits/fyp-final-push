@@ -8,6 +8,7 @@ import {
   deleteQuestion,
 } from "./actions";
 import type { GeneratedQuestion } from "@/lib/ai/generateQuiz";
+import Image from "next/image";
 
 interface Option {
   id: string;
@@ -135,12 +136,12 @@ export default function LessonEditor({
           <h3 className="mb-3 text-sm font-extrabold text-teal-700">📹 Video Preview</h3>
           <div className="flex items-start gap-4">
             {/* Thumbnail */}
-            <img
+            <Image
               src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
               alt="Video thumbnail"
-              className="w-40 rounded-lg border-4 border-teal-200 object-cover shadow-xl"
               width={160}
               height={90}
+              className="w-40 rounded-lg border-4 border-teal-200 object-cover shadow-xl"
             />
             <div className="text-sm text-gray-600">
               <p className="font-semibold text-gray-800">YouTube ID: {youtubeVideoId}</p>

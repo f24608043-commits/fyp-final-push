@@ -20,7 +20,7 @@ interface Message {
   };
 }
 
-export default function MessageThreadPage({ params }: { params: { id: string } }) {
+export default function MessageThreadPage({ params }: { params: Promise<{ id: string }> }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +30,7 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
   const [jitsiRoomId, setJitsiRoomId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,9 +45,12 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
 
     async function loadInitialData() {
       try {
+        const resolvedParams = await params;
+        setConversationId(resolvedParams.id);
+
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        
+
         if (!user) {
           redirect("/sign-in");
           return;
@@ -55,25 +59,25 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
         setCurrentUser(user);
 
         // Load messages
-        const initialMessages = await getMessages(params.id);
+        const initialMessages = await getMessages(resolvedParams.id);
         if (mounted) {
           setMessages(initialMessages);
           setIsLoading(false);
         }
 
         // Mark as read
-        await markRead(params.id);
+        await markRead(resolvedParams.id);
 
         // Setup Realtime subscription
         const channel = supabase
-          .channel(`messages:${params.id}`)
+          .channel(`messages:${resolvedParams.id}`)
           .on(
             "postgres_changes",
             {
               event: "INSERT",
               schema: "public",
               table: "messages",
-              filter: `conversation_id=eq.${params.id}`,
+              filter: `conversation_id=eq.${resolvedParams.id}`,
             },
             async (payload) => {
               const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -104,7 +108,7 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
 
               setMessages((prev) => [...prev, newMessage]);
 
-              await markRead(params.id);
+              await markRead(resolvedParams.id);
             }
           )
           .subscribe();
@@ -125,16 +129,15 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
         supabase.removeChannel(channelRef.current);
       }
     };
-  }, [params.id]);
+  }, [params]);
 
   const handleSend = async () => {
-    if (!newMessage.trim() || isSending) return;
+    if (!newMessage.trim() || isSending || !conversationId) return;
 
+    setIsSending(true);
     const tempMessage = newMessage;
     setNewMessage("");
-    setIsSending(true);
 
-    // Optimistic update
     const optimisticMessage: Message = {
       message: {
         id: "temp",
@@ -142,23 +145,21 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
         createdAt: new Date(),
       },
       sender: {
-        id: currentUser?.id || "",
-        displayName: currentUser?.user_metadata?.display_name || null,
-        avatarUrl: currentUser?.user_metadata?.avatar_url || null,
+        id: currentUser.id,
+        displayName: currentUser.user_metadata.display_name || currentUser.email,
+        avatarUrl: currentUser.user_metadata.avatar_url,
       },
     };
+
     setMessages((prev) => [...prev, optimisticMessage]);
 
     try {
-      await sendMessage(params.id, tempMessage);
+      await sendMessage(conversationId, tempMessage);
       // Remove optimistic message and let Realtime handle the real one
       setMessages((prev) => prev.filter((m) => m.message.id !== "temp"));
     } catch (error: any) {
       console.error("Error sending message:", error);
-      // Revert optimistic update on error
       setMessages((prev) => prev.filter((m) => m.message.id !== "temp"));
-      setNewMessage(tempMessage);
-      alert(error.message || "Failed to send message");
     } finally {
       setIsSending(false);
     }
@@ -166,9 +167,10 @@ export default function MessageThreadPage({ params }: { params: { id: string } }
 
   const handleLeaveGroup = async () => {
     if (!confirm("Are you sure you want to leave this conversation?")) return;
+    if (!conversationId) return;
 
     try {
-      await leaveGroup(params.id);
+      await leaveGroup(conversationId);
       redirect("/messages");
     } catch (error: any) {
       console.error("Error leaving group:", error);

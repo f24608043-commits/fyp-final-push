@@ -15,6 +15,7 @@ export async function getLibraryLessons() {
   }
 
   // Optimized: Get all lessons in enrolled courses in a single query with joins
+  // Note: This could be cached with Next.js fetch() for better performance
   const libraryLessons = await db
     .select({
       id: lessons.id,
