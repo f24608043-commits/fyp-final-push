@@ -270,49 +270,128 @@ export default function UnifiedShell({
             </div>
           </div>
 
-          {/* Desktop Header */}
+          {/* Desktop Header - Magical Interactive Design */}
           <div className="hidden lg:flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-surface-border hover:bg-surface transition-colors shadow-clay-surface" type="button">
-              <span className={`w-2.5 h-2.5 rounded-full ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}></span>
-              <span className="font-label-md text-text-primary">{headerLabel}</span>
-              <span className="material-symbols-outlined text-text-muted text-[18px]">arrow_drop_down</span>
-            </button>
+            <div className={`relative group cursor-pointer transition-all duration-500 hover:scale-105 active:scale-95`}>
+              {/* Animated gradient background */}
+              <div className={`absolute inset-0 rounded-2xl blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-500 animate-gradient-shift ${isLearner ? 'bg-gradient-to-r from-primary via-green-400 to-primary' : isAdmin ? 'bg-gradient-to-r from-error via-pink-500 to-error' : 'bg-gradient-to-r from-secondary via-blue-400 to-secondary'}`}></div>
+              
+              {/* Main button */}
+              <div className={`relative flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-surface/90 backdrop-blur-xl shadow-2xl border-2 border-white/40 group-hover:border-white/60 transition-all duration-300 overflow-hidden`}>
+                {/* Sparkle effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                
+                {/* Status indicator with pulse */}
+                <div className="relative">
+                  <div className={`absolute inset-0 rounded-full animate-ping ${isLearner ? 'bg-primary/50' : isAdmin ? 'bg-error/50' : 'bg-secondary/50'}`}></div>
+                  <span className={`relative w-3 h-3 rounded-full ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'} shadow-lg`}></span>
+                </div>
+                
+                {/* Label */}
+                <div className="flex flex-col">
+                  <span className="font-label-sm text-text-muted font-semibold tracking-wider uppercase">Current</span>
+                  <span className={`font-label-lg font-extrabold ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>{headerLabel}</span>
+                </div>
+                
+                {/* Animated arrow */}
+                <span className={`material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:rotate-180 ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>expand_more</span>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 lg:gap-6">
-            {/* Stats - Mobile: compact interactive badges, Desktop: full */}
-            <div className="flex items-center gap-2">
-              {/* Streak Badge */}
-              <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
-                <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500' : 'bg-gradient-to-r from-blue-400 to-cyan-500'}`}></div>
-                <div className={`relative flex items-center gap-1 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full font-label-sm lg:font-label-md font-bold ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500 text-white' : 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'} shadow-lg border-2 border-white/30`}>
-                  <span className="material-symbols-outlined text-[16px] lg:text-[18px] animate-pulse" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-                  <span className="hidden sm:inline">{streak}</span>
+            {/* Stats - Mobile: compact interactive badges, Desktop: magical full-size badges */}
+            <div className="flex items-center gap-3">
+              {/* Streak Badge - Desktop Magical Version */}
+              <div className={`hidden lg:flex relative group cursor-pointer transition-all duration-500 hover:scale-110 active:scale-95`}>
+                {/* Animated gradient glow */}
+                <div className={`absolute inset-0 rounded-full blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-500 animate-gradient-shift ${isLearner ? 'bg-gradient-to-r from-orange-400 via-red-500 to-orange-400' : isAdmin ? 'bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400' : 'bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-400'}`}></div>
+                
+                {/* Main badge */}
+                <div className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full font-label-md font-bold text-white shadow-2xl border-2 border-white/40 group-hover:border-white/60 transition-all duration-300 overflow-hidden ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500' : 'bg-gradient-to-r from-blue-400 to-cyan-500'}`}>
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                  
+                  {/* Icon with pulse */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full animate-ping bg-white/30"></div>
+                    <span className="material-symbols-outlined text-[22px] relative" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                  </div>
+                  
+                  {/* Value */}
+                  <span className="relative">{streak}</span>
+                  
+                  {/* Label */}
+                  <span className="relative font-label-sm font-normal opacity-90">streak</span>
                 </div>
               </div>
               
-              {/* XP Badge */}
-              <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
-                <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500' : 'bg-gradient-to-r from-teal-400 to-green-500'}`}></div>
-                <div className={`relative flex items-center gap-1 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full font-label-sm lg:font-label-md font-bold ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500 text-white' : 'bg-gradient-to-r from-teal-400 to-green-500 text-white'} shadow-lg border-2 border-white/30`}>
-                  <span className="material-symbols-outlined text-[16px] lg:text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
-                  <span className="hidden sm:inline">{xp.toLocaleString()}</span>
+              {/* XP Badge - Desktop Magical Version */}
+              <div className={`hidden lg:flex relative group cursor-pointer transition-all duration-500 hover:scale-110 active:scale-95`}>
+                {/* Animated gradient glow */}
+                <div className={`absolute inset-0 rounded-full blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-500 animate-gradient-shift ${isLearner ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-400' : isAdmin ? 'bg-gradient-to-r from-indigo-400 via-violet-500 to-indigo-400' : 'bg-gradient-to-r from-teal-400 via-green-500 to-teal-400'}`}></div>
+                
+                {/* Main badge */}
+                <div className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full font-label-md font-bold text-white shadow-2xl border-2 border-white/40 group-hover:border-white/60 transition-all duration-300 overflow-hidden ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500' : 'bg-gradient-to-r from-teal-400 to-green-500'}`}>
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                  
+                  {/* Icon */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full animate-ping bg-white/30"></div>
+                    <span className="material-symbols-outlined text-[22px] relative" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
+                  </div>
+                  
+                  {/* Value */}
+                  <span className="relative">{xp.toLocaleString()}</span>
+                  
+                  {/* Label */}
+                  <span className="relative font-label-sm font-normal opacity-90">XP</span>
+                </div>
+              </div>
+              
+              {/* Mobile Compact Stats */}
+              <div className="flex lg:hidden items-center gap-2">
+                {/* Streak Badge */}
+                <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
+                  <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500' : 'bg-gradient-to-r from-blue-400 to-cyan-500'}`}></div>
+                  <div className={`relative flex items-center gap-1 px-2.5 py-1.5 rounded-full font-label-sm font-bold ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500 text-white' : 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'} shadow-lg border-2 border-white/30`}>
+                    <span className="material-symbols-outlined text-[16px] animate-pulse" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                    <span className="hidden sm:inline">{streak}</span>
+                  </div>
+                </div>
+                
+                {/* XP Badge */}
+                <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
+                  <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500' : 'bg-gradient-to-r from-teal-400 to-green-500'}`}></div>
+                  <div className={`relative flex items-center gap-1 px-2.5 py-1.5 rounded-full font-label-sm font-bold ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500 text-white' : 'bg-gradient-to-r from-teal-400 to-green-500 text-white'} shadow-lg border-2 border-white/30`}>
+                    <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
+                    <span className="hidden sm:inline">{xp.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
             </div>
             
-            {/* User Info - Mobile: interactive avatar, Desktop: full */}
-            <Link href={userId ? `/profile/${userId}` : "#"} className="flex items-center gap-2 group">
-              <div className={`relative w-9 h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 active:scale-95 ${isLearner ? 'bg-gradient-to-br from-primary to-primary-dark text-white' : isAdmin ? 'bg-gradient-to-br from-error to-red-700 text-white' : 'bg-gradient-to-br from-secondary to-secondary-dark text-white'} shadow-xl border-3 border-white/40`}>
-                <span className="material-symbols-outlined text-[20px] lg:text-[22px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
-                {/* Level indicator */}
-                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}>
+            {/* User Info - Mobile: interactive avatar, Desktop: magical full profile */}
+            <Link href={userId ? `/profile/${userId}` : "#"} className="flex items-center gap-3 group">
+              {/* Avatar */}
+              <div className={`relative w-9 h-9 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 active:scale-95 ${isLearner ? 'bg-gradient-to-br from-primary via-green-400 to-primary-dark text-white' : isAdmin ? 'bg-gradient-to-br from-error via-pink-500 to-red-700 text-white' : 'bg-gradient-to-br from-secondary via-blue-400 to-secondary-dark text-white'} shadow-2xl border-3 border-white/40 group-hover:border-white/60 overflow-hidden`}>
+                {/* Animated gradient background */}
+                <div className={`absolute inset-0 animate-gradient-shift ${isLearner ? 'bg-gradient-to-br from-primary via-green-400 to-primary-dark' : isAdmin ? 'bg-gradient-to-br from-error via-pink-500 to-red-700' : 'bg-gradient-to-br from-secondary via-blue-400 to-secondary-dark'}`}></div>
+                
+                {/* Icon */}
+                <span className="relative material-symbols-outlined text-[20px] lg:text-[26px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
+                
+                {/* Level indicator - Desktop */}
+                <div className={`hidden lg:flex absolute -bottom-1 -right-1 w-7 h-7 rounded-full items-center justify-center text-[12px] font-bold border-2 border-white shadow-lg ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}>
                   {level}
                 </div>
               </div>
-              <div className="hidden lg:flex flex-col text-right">
-                <span className="font-label-md text-text-primary leading-tight group-hover:text-primary transition-colors">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
-                <div className="flex items-center justify-end gap-1">
+              
+              {/* Desktop Profile Info */}
+              <div className="hidden lg:flex flex-col">
+                <span className="font-label-md text-text-primary leading-tight group-hover:text-primary transition-colors font-semibold">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
+                <div className="flex items-center gap-2">
                   <span className={`font-label-sm font-extrabold ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LVL {level}</span>
                   <span className="font-label-sm text-text-muted">•</span>
                   <span className="font-label-sm text-text-muted uppercase tracking-wider font-bold">{userRoleLabel}</span>

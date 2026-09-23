@@ -157,6 +157,26 @@
   }
 }
 
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-bounce {
   animation: bounce 1s infinite;
 }
@@ -171,6 +191,15 @@
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
 }
 
 .shimmer {
