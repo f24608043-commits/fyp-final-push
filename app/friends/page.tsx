@@ -1,4 +1,4 @@
-import { getFriendList, getPendingRequests } from "./actions";
+import { getFriendList, getPendingRequests, getSuggestedFriends, sendFriendRequest } from "./actions";
 import { acceptFriendRequest, rejectFriendRequest, removeFriend } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
@@ -13,9 +13,10 @@ export default async function FriendsPage() {
     redirect("/sign-in");
   }
 
-  const [friends, pendingRequests] = await Promise.all([
+  const [friends, pendingRequests, suggestedFriends] = await Promise.all([
     getFriendList(),
-    getPendingRequests()
+    getPendingRequests(),
+    getSuggestedFriends()
   ]);
 
   return (
@@ -103,6 +104,65 @@ export default async function FriendsPage() {
                         Reject
                       </button>
                     </form>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Suggested Friends - Duolingo Style */}
+      {suggestedFriends.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-secondary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>person_add</span>
+            <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
+              People You May Know ({suggestedFriends.length})
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {suggestedFriends.map((suggested: any) => (
+              <div key={suggested.id} className="rounded-2xl bg-gradient-to-br from-white to-orange-50 p-5 shadow-xl border-4 border-orange-100 hover:shadow-2xl hover:border-orange-200 transition-all">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white font-bold text-xl shadow-xl border-4 border-white/30">
+                      {suggested.displayName?.[0] || "?"}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-secondary to-secondary/80 rounded-full flex items-center justify-center text-xs border-2 border-white">
+                      🔥
+                    </div>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-label-md text-text-primary font-semibold truncate">
+                      {suggested.displayName || "Unknown User"}
+                    </p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="material-symbols-outlined text-yellow-500 text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>stars</span>
+                      <span className="font-body-sm text-yellow-600 font-bold">{suggested.xp} XP</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 font-body-sm text-text-muted">
+                    <span className="material-symbols-outlined text-orange-500 text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                    <span className="font-bold text-orange-600">{suggested.streakCount} day streak</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <form action={async () => {
+                      "use server";
+                      await sendFriendRequest(suggested.id);
+                    }}>
+                      <button className="font-label-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform">
+                        Add Friend
+                      </button>
+                    </form>
+                    <Link
+                      href={`/profile/${suggested.id}`}
+                      className="font-label-sm font-medium text-text-muted hover:text-primary transition-colors"
+                    >
+                      View
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -323,3 +323,71 @@ export async function removeFriend(friendshipId: string) {
   revalidatePath("/profile/[userId]");
   return { success: true };
 }
+
+export async function getSuggestedFriends() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  const userId = user.id;
+
+  // Get current user's XP for similarity matching
+  const [currentUser] = await db
+    .select({ xp: profiles.xp })
+    .from(profiles)
+    .where(eq(profiles.id, userId))
+    .limit(1);
+
+  if (!currentUser) return [];
+
+  const userXP = currentUser.xp;
+
+  // Get users who are not friends, not blocked, and have similar XP (within 50% range)
+  const suggestedUsers = await db
+    .select({
+      id: profiles.id,
+      displayName: profiles.displayName,
+      xp: profiles.xp,
+      streakCount: profiles.streakCount,
+      avatarUrl: profiles.avatarUrl,
+      role: profiles.role,
+    })
+    .from(profiles)
+    .where(and(
+      eq(profiles.role, "learner"), // Only suggest learners
+      // Not the current user
+      // Not already friends (subquery check)
+      // Not blocked
+    ))
+    .orderBy(desc(profiles.xp))
+    .limit(10);
+
+  // Filter out users who are already friends or blocked
+  const existingFriendships = await db
+    .select({
+      requesterId: friendships.requesterId,
+      addresseeId: friendships.addresseeId,
+      status: friendships.status,
+    })
+    .from(friendships)
+    .where(
+      or(
+        eq(friendships.requesterId, userId),
+        eq(friendships.addresseeId, userId)
+      )
+    );
+
+  const blockedOrFriendIds = new Set();
+  existingFriendships.forEach((f) => {
+    if (f.status === "blocked" || f.status === "accepted" || f.status === "pending") {
+      blockedOrFriendIds.add(f.requesterId === userId ? f.addresseeId : f.requesterId);
+    }
+  });
+
+  return suggestedUsers
+    .filter((suggested) => suggested.id !== userId && !blockedOrFriendIds.has(suggested.id))
+    .slice(0, 5); // Return top 5 suggestions
+}
