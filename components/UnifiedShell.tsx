@@ -279,25 +279,39 @@ export default function UnifiedShell({
             </button>
           </div>
 
-          <div className="flex items-center gap-4 lg:gap-6">
-            {/* Stats - Mobile: compact, Desktop: full */}
+          <div className="flex items-center gap-3 lg:gap-6">
+            {/* Stats - Mobile: compact interactive badges, Desktop: full */}
             <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-1 px-2 py-1 lg:px-3 lg:py-1 rounded-full shadow-clay-secondary font-label-sm lg:font-label-md ${isLearner ? 'bg-secondary text-white' : isAdmin ? 'bg-tertiary text-white' : 'bg-surface text-text-primary'}`}>
-                <span className="material-symbols-outlined text-[14px] lg:text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-                <span className="hidden sm:inline">{streak}</span>
+              {/* Streak Badge */}
+              <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
+                <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500' : 'bg-gradient-to-r from-blue-400 to-cyan-500'}`}></div>
+                <div className={`relative flex items-center gap-1 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full font-label-sm lg:font-label-md font-bold ${isLearner ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white' : isAdmin ? 'bg-gradient-to-r from-purple-400 to-pink-500 text-white' : 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'} shadow-lg border-2 border-white/30`}>
+                  <span className="material-symbols-outlined text-[16px] lg:text-[18px] animate-pulse" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                  <span className="hidden sm:inline">{streak}</span>
+                </div>
               </div>
-              <div className={`flex items-center gap-1 px-2 py-1 lg:px-3 lg:py-1 rounded-full shadow-clay-primary font-label-sm lg:font-label-md ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-tertiary text-white' : 'bg-surface text-text-primary'}`}>
-                <span className="material-symbols-outlined text-[14px] lg:text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
-                <span className="hidden sm:inline">{xp.toLocaleString()}</span>
+              
+              {/* XP Badge */}
+              <div className={`relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95`}>
+                <div className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500' : 'bg-gradient-to-r from-teal-400 to-green-500'}`}></div>
+                <div className={`relative flex items-center gap-1 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full font-label-sm lg:font-label-md font-bold ${isLearner ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : isAdmin ? 'bg-gradient-to-r from-indigo-400 to-violet-500 text-white' : 'bg-gradient-to-r from-teal-400 to-green-500 text-white'} shadow-lg border-2 border-white/30`}>
+                  <span className="material-symbols-outlined text-[16px] lg:text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
+                  <span className="hidden sm:inline">{xp.toLocaleString()}</span>
+                </div>
               </div>
             </div>
-            {/* User Info - Mobile: avatar only, Desktop: full */}
-            <Link href={userId ? `/profile/${userId}` : "#"} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-clay-primary ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
-                <span className="material-symbols-outlined text-[18px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
+            
+            {/* User Info - Mobile: interactive avatar, Desktop: full */}
+            <Link href={userId ? `/profile/${userId}` : "#"} className="flex items-center gap-2 group">
+              <div className={`relative w-9 h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 active:scale-95 ${isLearner ? 'bg-gradient-to-br from-primary to-primary-dark text-white' : isAdmin ? 'bg-gradient-to-br from-error to-red-700 text-white' : 'bg-gradient-to-br from-secondary to-secondary-dark text-white'} shadow-xl border-3 border-white/40`}>
+                <span className="material-symbols-outlined text-[20px] lg:text-[22px]">{isLearner ? "person" : isAdmin ? "shield" : "supervised_user_circle"}</span>
+                {/* Level indicator */}
+                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white ${isLearner ? 'bg-primary' : isAdmin ? 'bg-error' : 'bg-secondary'}`}>
+                  {level}
+                </div>
               </div>
               <div className="hidden lg:flex flex-col text-right">
-                <span className="font-label-md text-text-primary leading-tight">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
+                <span className="font-label-md text-text-primary leading-tight group-hover:text-primary transition-colors">{displayName || (isLearner ? "Learner" : isAdmin ? "Admin" : "Tutor")}</span>
                 <div className="flex items-center justify-end gap-1">
                   <span className={`font-label-sm font-extrabold ${isLearner ? 'text-primary' : isAdmin ? 'text-error' : 'text-secondary'}`}>LVL {level}</span>
                   <span className="font-label-sm text-text-muted">•</span>
