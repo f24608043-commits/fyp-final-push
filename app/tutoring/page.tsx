@@ -17,11 +17,23 @@ export default async function TutoringPage() {
     redirect("/sign-in");
   }
 
-  const [tutors, mySessions, pendingRequests] = await Promise.all([
-    getTutors(),
-    getMySessions(),
-    getPendingRequests()
-  ]);
+  let tutors: any[] = [];
+  let mySessions: any[] = [];
+  let pendingRequests: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      getTutors(),
+      getMySessions(),
+      getPendingRequests()
+    ]);
+    tutors = results[0] || [];
+    mySessions = results[1] || [];
+    pendingRequests = results[2] || [];
+  } catch (error) {
+    console.error("Error fetching tutoring data:", error);
+    // Continue with empty arrays if fetch fails
+  }
 
   return (
     <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">

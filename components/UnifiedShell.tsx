@@ -76,19 +76,19 @@ export default function UnifiedShell({
       sidebar: [
         { path: "/path", label: "Path", icon: "home" },
         { path: "/library", label: "Library", icon: "menu_book" },
-        { path: "/tutoring", label: "Class", icon: "groups" },
+        { path: "/tutoring", label: "Tutoring", icon: "groups" },
         { path: "/friends", label: "Friends", icon: "diversity_3" },
         { path: "/messages", label: "Messages", icon: "chat" },
       ],
       bottom: [
         { path: "/path", label: "Path", icon: "home" },
         { path: "/library", label: "Library", icon: "menu_book" },
+        { path: "/tutoring", label: "Tutoring", icon: "groups" },
         { path: "/friends", label: "Friends", icon: "diversity_3" },
-        { path: "/leaderboard", label: "Leaderboard", icon: "leaderboard" },
-        { path: "/profile", label: "Profile", icon: "person" },
+        { path: "/notifications", label: "Notifications", icon: "notifications" },
       ],
       more: [
-        { path: "/notifications", label: "Notifications", icon: "notifications" },
+        { path: "/leaderboard", label: "Leaderboard", icon: "leaderboard" },
         { path: "/settings", label: "Settings", icon: "settings" },
       ],
     },
