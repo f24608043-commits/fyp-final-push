@@ -334,18 +334,39 @@ export async function getSuggestedFriends() {
 
   const userId = user.id;
 
-  // Get current user's XP for similarity matching
-  const [currentUser] = await db
-    .select({ xp: profiles.xp })
-    .from(profiles)
-    .where(eq(profiles.id, userId))
-    .limit(1);
+  // Get current user's XP and existing friendships in parallel
+  const [currentUser, existingFriendships] = await Promise.all([
+    db
+      .select({ xp: profiles.xp })
+      .from(profiles)
+      .where(eq(profiles.id, userId))
+      .limit(1),
+    db
+      .select({
+        requesterId: friendships.requesterId,
+        addresseeId: friendships.addresseeId,
+        status: friendships.status,
+      })
+      .from(friendships)
+      .where(
+        or(
+          eq(friendships.requesterId, userId),
+          eq(friendships.addresseeId, userId)
+        )
+      )
+  ]);
 
   if (!currentUser) return [];
 
-  const userXP = currentUser.xp;
+  // Build set of blocked/friend IDs
+  const blockedOrFriendIds = new Set();
+  existingFriendships.forEach((f) => {
+    if (f.status === "blocked" || f.status === "accepted" || f.status === "pending") {
+      blockedOrFriendIds.add(f.requesterId === userId ? f.addresseeId : f.requesterId);
+    }
+  });
 
-  // Get users who are not friends, not blocked, and have similar XP (within 50% range)
+  // Get suggested users (learners only, not current user, not already friends/blocked)
   const suggestedUsers = await db
     .select({
       id: profiles.id,
@@ -356,38 +377,12 @@ export async function getSuggestedFriends() {
       role: profiles.role,
     })
     .from(profiles)
-    .where(and(
-      eq(profiles.role, "learner"), // Only suggest learners
-      // Not the current user
-      // Not already friends (subquery check)
-      // Not blocked
-    ))
+    .where(eq(profiles.role, "learner"))
     .orderBy(desc(profiles.xp))
-    .limit(10);
+    .limit(20); // Get more to filter
 
-  // Filter out users who are already friends or blocked
-  const existingFriendships = await db
-    .select({
-      requesterId: friendships.requesterId,
-      addresseeId: friendships.addresseeId,
-      status: friendships.status,
-    })
-    .from(friendships)
-    .where(
-      or(
-        eq(friendships.requesterId, userId),
-        eq(friendships.addresseeId, userId)
-      )
-    );
-
-  const blockedOrFriendIds = new Set();
-  existingFriendships.forEach((f) => {
-    if (f.status === "blocked" || f.status === "accepted" || f.status === "pending") {
-      blockedOrFriendIds.add(f.requesterId === userId ? f.addresseeId : f.requesterId);
-    }
-  });
-
+  // Filter and return top 5
   return suggestedUsers
     .filter((suggested) => suggested.id !== userId && !blockedOrFriendIds.has(suggested.id))
-    .slice(0, 5); // Return top 5 suggestions
+    .slice(0, 5);
 }

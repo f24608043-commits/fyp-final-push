@@ -242,7 +242,7 @@ export default async function PathPage() {
       )}
 
       {/* Upcoming Tutoring Sessions - Stitch Frame Style */}
-      {mySessions.length > 0 && (
+      {mySessions.length > 0 ? (
         <div className="relative bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
           <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
           <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6">
@@ -287,6 +287,26 @@ export default async function PathPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
+          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>event_available</span>
+                <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Schedule a Session</h2>
+              </div>
+            </div>
+            <p className="font-body-md text-on-surface-variant mb-4">Book a 1-on-1 tutoring session with expert tutors to accelerate your learning.</p>
+            <Link
+              href="/tutoring"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+              Find a Tutor
+            </Link>
           </div>
         </div>
       )}

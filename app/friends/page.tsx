@@ -151,7 +151,12 @@ export default async function FriendsPage() {
                   <div className="flex items-center gap-2">
                     <form action={async () => {
                       "use server";
-                      await sendFriendRequest(suggested.id);
+                      try {
+                        await sendFriendRequest(suggested.id);
+                      } catch (error) {
+                        console.error("Error sending friend request:", error);
+                        // Don't throw - let the page reload
+                      }
                     }}>
                       <button className="font-label-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform">
                         Add Friend

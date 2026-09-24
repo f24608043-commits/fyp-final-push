@@ -37,64 +37,82 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
   }
 
   // Get user's completed lessons count, earned badges, all badges, friendship status, courses enrolled, and friends count in parallel for speed
-  const [completedLessons, userBadgesData, allBadges, friendship, coursesEnrolled, friendsCount] = await Promise.all([
-    db
-      .select({ count: userProgress.lessonId })
-      .from(userProgress)
-      .where(
-        and(
-          eq(userProgress.userId, targetUserId),
-          eq(userProgress.status, "completed")
-        )
-      ),
-    db
-      .select({
-        id: badges.id,
-        name: badges.name,
-        description: badges.description,
-      })
-      .from(userBadges)
-      .innerJoin(badges, eq(userBadges.badgeId, badges.id))
-      .where(eq(userBadges.userId, targetUserId)),
-    db
-      .select({
-        id: badges.id,
-        name: badges.name,
-        description: badges.description,
-        criteriaType: badges.criteriaType,
-        criteriaValue: badges.criteriaValue,
-      })
-      .from(badges),
-    currentUser ? db
-      .select()
-      .from(friendships)
-      .where(
-        or(
+  let completedLessons: any[] = [];
+  let userBadgesData: any[] = [];
+  let allBadges: any[] = [];
+  let friendship: any[] = [];
+  let coursesEnrolled: any[] = [];
+  let friendsCount: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      db
+        .select({ count: userProgress.lessonId })
+        .from(userProgress)
+        .where(
           and(
-            eq(friendships.requesterId, currentUser.id),
-            eq(friendships.addresseeId, targetUserId)
-          ),
-          and(
-            eq(friendships.requesterId, targetUserId),
-            eq(friendships.addresseeId, currentUser.id)
+            eq(userProgress.userId, targetUserId),
+            eq(userProgress.status, "completed")
+          )
+        ),
+      db
+        .select({
+          id: badges.id,
+          name: badges.name,
+          description: badges.description,
+        })
+        .from(userBadges)
+        .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+        .where(eq(userBadges.userId, targetUserId)),
+      db
+        .select({
+          id: badges.id,
+          name: badges.name,
+          description: badges.description,
+          criteriaType: badges.criteriaType,
+          criteriaValue: badges.criteriaValue,
+        })
+        .from(badges),
+      currentUser ? db
+        .select()
+        .from(friendships)
+        .where(
+          or(
+            and(
+              eq(friendships.requesterId, currentUser.id),
+              eq(friendships.addresseeId, targetUserId)
+            ),
+            and(
+              eq(friendships.requesterId, targetUserId),
+              eq(friendships.addresseeId, currentUser.id)
+            )
           )
         )
-      )
-      .limit(1) : Promise.resolve([]),
-    db
-      .select({ count: count() })
-      .from(enrollments)
-      .where(eq(enrollments.userId, targetUserId)),
-    db
-      .select({ count: count() })
-      .from(friendships)
-      .where(
-        and(
-          or(eq(friendships.requesterId, targetUserId), eq(friendships.addresseeId, targetUserId)),
-          eq(friendships.status, "accepted")
+        .limit(1) : Promise.resolve([]),
+      db
+        .select({ count: count() })
+        .from(enrollments)
+        .where(eq(enrollments.userId, targetUserId)),
+      db
+        .select({ count: count() })
+        .from(friendships)
+        .where(
+          and(
+            or(eq(friendships.requesterId, targetUserId), eq(friendships.addresseeId, targetUserId)),
+            eq(friendships.status, "accepted")
+          )
         )
-      )
-  ]);
+    ]);
+    completedLessons = results[0] || [];
+    userBadgesData = results[1] || [];
+    allBadges = results[2] || [];
+    friendship = results[3] || [];
+    coursesEnrolled = results[4] || [];
+    friendsCount = results[5] || [];
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    // Continue with empty arrays if fetch fails
+  }
 
   const earnedBadgeIds = userBadgesData.map((b: any) => b.id);
   const lockedBadges = allBadges.filter((b: any) => !earnedBadgeIds.includes(b.id));

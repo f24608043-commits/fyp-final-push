@@ -239,15 +239,17 @@ export default async function TutoringPage() {
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-label-sm font-semibold text-on-surface">
-                    {tutor.hourlyRate ? `$${tutor.hourlyRate}/hour` : "Free"}
-                  </p>
+                <div className="flex items-center justify-end">
                   <div className="flex gap-2">
                     <form action={async () => {
                       "use server";
-                      const { startDirectConversation } = await import("../messaging/actions");
-                      await startDirectConversation(tutor.tutorId);
+                      try {
+                        const { startDirectConversation } = await import("../messaging/actions");
+                        await startDirectConversation(tutor.tutorId);
+                      } catch (error) {
+                        console.error("Error starting conversation:", error);
+                        // Don't throw - let the page reload
+                      }
                     }}>
                       <button className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all">
                         Message
@@ -255,12 +257,17 @@ export default async function TutoringPage() {
                     </form>
                     <form action={async () => {
                       "use server";
-                      const { requestSession } = await import("./actions");
-                      await requestSession({
-                        tutorId: tutor.tutorId,
-                        requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
-                        message: "I would like to book a session"
-                      });
+                      try {
+                        const { requestSession } = await import("./actions");
+                        await requestSession({
+                          tutorId: tutor.tutorId,
+                          requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
+                          message: "I would like to book a session"
+                        });
+                      } catch (error) {
+                        console.error("Error requesting session:", error);
+                        // Don't throw - let the page reload
+                      }
                     }}>
                       <button className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                         Book Session
