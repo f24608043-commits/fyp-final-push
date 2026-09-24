@@ -13,10 +13,10 @@ function getClient() {
     connection: {
       timeout: 30000, // 30 second connection timeout
     },
-    max: 10, // Middle ground: serial test showed improvement with smaller pool
-    idle_timeout: 10, // Close idle connections faster
+    max: 15, // Match Supabase pooler limit to prevent exhaustion
+    idle_timeout: 5, // Close idle connections faster to prevent leaks
     connect_timeout: 30, // 30 second connection attempt timeout
-    max_lifetime: 60 * 30, // Recycle connections after 30 minutes
+    max_lifetime: 60 * 15, // Recycle connections after 15 minutes
   });
 }
 
