@@ -79,16 +79,63 @@ export default async function TutorDashboard() {
             <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Set Up Your Tutor Profile</h2>
           </div>
           <p className="font-body-md text-on-secondary-container mb-4">Complete your profile to start accepting students.</p>
-          <form action={async () => {
+          <form action={async (formData: FormData) => {
             "use server";
             const { createTutorProfile } = await import("../actions");
+            const bio = formData.get("bio") as string;
+            const subjects = formData.get("subjects") as string;
+            const hourlyRate = formData.get("hourlyRate") ? parseInt(formData.get("hourlyRate") as string) : null;
+            const timezone = formData.get("timezone") as string;
+            
             await createTutorProfile({
-              bio: "I am an experienced tutor ready to help you learn!",
-              subjects: ["Math", "Science"],
-              hourlyRate: 25,
-              timezone: "UTC"
+              bio,
+              subjects: subjects ? subjects.split(",").map(s => s.trim()) : [],
+              hourlyRate,
+              timezone: timezone || "UTC"
             });
           }}>
+            <div className="space-y-4 mb-4">
+              <div>
+                <label className="block font-label-sm font-semibold mb-1">Bio</label>
+                <textarea 
+                  name="bio" 
+                  required
+                  className="w-full rounded-xl border-2 border-yellow-200 p-3 focus:border-yellow-400 focus:outline-none"
+                  placeholder="Describe your teaching experience..."
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm font-semibold mb-1">Subjects (comma-separated)</label>
+                <input 
+                  type="text" 
+                  name="subjects"
+                  required
+                  className="w-full rounded-xl border-2 border-yellow-200 p-3 focus:border-yellow-400 focus:outline-none"
+                  placeholder="Math, Science, Python"
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm font-semibold mb-1">Hourly Rate (leave blank for free)</label>
+                <input 
+                  type="number" 
+                  name="hourlyRate"
+                  className="w-full rounded-xl border-2 border-yellow-200 p-3 focus:border-yellow-400 focus:outline-none"
+                  placeholder="25"
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm font-semibold mb-1">Timezone</label>
+                <input 
+                  type="text" 
+                  name="timezone"
+                  required
+                  defaultValue="UTC"
+                  className="w-full rounded-xl border-2 border-yellow-200 p-3 focus:border-yellow-400 focus:outline-none"
+                  placeholder="UTC"
+                />
+              </div>
+            </div>
             <button className="rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
               Create Profile
             </button>

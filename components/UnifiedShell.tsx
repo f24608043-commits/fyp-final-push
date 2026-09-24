@@ -300,6 +300,15 @@ export default function UnifiedShell({
           </div>
 
           <div className="flex items-center gap-3 lg:gap-6">
+            {/* Notification Bell - Desktop */}
+            <Link href="/notifications" className="hidden lg:flex relative group cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95">
+              <div className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isLearner ? 'bg-gradient-to-br from-primary to-primary-dark text-white' : isAdmin ? 'bg-gradient-to-br from-error to-red-700 text-white' : 'bg-gradient-to-br from-secondary to-secondary-dark text-white'} shadow-xl border-2 border-white/40 group-hover:border-white/60`}>
+                <span className="material-symbols-outlined text-[20px]">notifications</span>
+                {/* Unread count badge - will be populated client-side */}
+                <span id="notification-badge" className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold border-2 border-white hidden items-center justify-center">0</span>
+              </div>
+            </Link>
+            
             {/* Stats - Mobile: compact interactive badges, Desktop: magical full-size badges */}
             <div className="flex items-center gap-3">
               {/* Streak Badge - Desktop Magical Version */}
