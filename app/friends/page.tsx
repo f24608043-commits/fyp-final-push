@@ -15,11 +15,23 @@ export default async function FriendsPage() {
     redirect("/sign-in");
   }
 
-  const [friends, pendingRequests, suggestedFriends] = await Promise.all([
-    getFriendList(),
-    getPendingRequests(),
-    getSuggestedFriends()
-  ]);
+  let friends: any[] = [];
+  let pendingRequests: any[] = [];
+  let suggestedFriends: any[] = [];
+
+  try {
+    const result = await Promise.all([
+      getFriendList(),
+      getPendingRequests(),
+      getSuggestedFriends()
+    ]);
+    friends = result[0] || [];
+    pendingRequests = result[1] || [];
+    suggestedFriends = result[2] || [];
+  } catch (error) {
+    console.error("Error loading friends data:", error);
+    // Continue with empty state
+  }
 
   return (
     <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-pink-50 to-rose-50 min-h-screen">

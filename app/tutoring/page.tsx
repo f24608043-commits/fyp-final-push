@@ -245,29 +245,19 @@ export default async function TutoringPage() {
                   <div className="flex gap-2">
                     <form action={async () => {
                       "use server";
-                      try {
-                        const { startDirectConversation } = await import("../messaging/actions");
-                        await startDirectConversation(tutor.tutorId);
-                      } catch (error) {
-                        console.error("Error starting conversation:", error);
-                        // Don't throw - let the page reload
-                      }
+                      const { startDirectConversation } = await import("../messaging/actions");
+                      await startDirectConversation(tutor.tutorId);
                     }}>
                       <MessageButton />
                     </form>
                     <form action={async () => {
                       "use server";
-                      try {
-                        const { requestSession } = await import("./actions");
-                        await requestSession({
-                          tutorId: tutor.tutorId,
-                          requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
-                          message: "I would like to book a session"
-                        });
-                      } catch (error) {
-                        console.error("Error requesting session:", error);
-                        // Don't throw - let the page reload
-                      }
+                      const { requestSession } = await import("./actions");
+                      await requestSession({
+                        tutorId: tutor.tutorId,
+                        requestedSlots: [{ date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "11:00" }],
+                        message: "I would like to book a session"
+                      });
                     }}>
                       <BookSessionButton />
                     </form>

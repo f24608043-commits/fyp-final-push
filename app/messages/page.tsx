@@ -12,10 +12,20 @@ export default async function MessagesPage() {
     redirect("/sign-in");
   }
 
-  const [conversations, unreadCount] = await Promise.all([
-    getConversations(),
-    getUnreadCount(),
-  ]);
+  let conversations: any[] = [];
+  let unreadCount = 0;
+
+  try {
+    const result = await Promise.all([
+      getConversations(),
+      getUnreadCount(),
+    ]);
+    conversations = result[0] || [];
+    unreadCount = result[1] || 0;
+  } catch (error) {
+    console.error("Error loading conversations:", error);
+    // Continue with empty state
+  }
 
   return (
     <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-purple-50 min-h-screen">

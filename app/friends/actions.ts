@@ -104,37 +104,42 @@ export async function acceptFriendRequest(friendshipId: string) {
 
   const userId = user.id;
 
-  // Verify the user is the addressee
-  const friendship = await db
-    .select()
-    .from(friendships)
-    .where(eq(friendships.id, friendshipId))
-    .limit(1);
+  try {
+    // Verify the user is the addressee
+    const friendship = await db
+      .select()
+      .from(friendships)
+      .where(eq(friendships.id, friendshipId))
+      .limit(1);
 
-  if (friendship.length === 0) {
-    throw new Error("Friend request not found");
+    if (friendship.length === 0) {
+      throw new Error("Friend request not found");
+    }
+
+    if (friendship[0].addresseeId !== userId) {
+      throw new Error("You can only accept requests sent to you");
+    }
+
+    if (friendship[0].status !== "pending") {
+      throw new Error("This request is no longer pending");
+    }
+
+    // Update friendship status
+    await db
+      .update(friendships)
+      .set({ status: "accepted", updatedAt: new Date() })
+      .where(eq(friendships.id, friendshipId));
+
+    // Send notification to requester
+    await notifyFriendAccepted(friendship[0].requesterId, userId);
+
+    revalidatePath("/friends");
+    revalidatePath("/profile/[userId]");
+    return { success: true };
+  } catch (error) {
+    console.error("Error accepting friend request:", error);
+    throw new Error("Failed to accept friend request. Please try again.");
   }
-
-  if (friendship[0].addresseeId !== userId) {
-    throw new Error("You can only accept requests sent to you");
-  }
-
-  if (friendship[0].status !== "pending") {
-    throw new Error("This request is no longer pending");
-  }
-
-  // Update friendship status
-  await db
-    .update(friendships)
-    .set({ status: "accepted", updatedAt: new Date() })
-    .where(eq(friendships.id, friendshipId));
-
-  // Send notification to requester
-  await notifyFriendAccepted(friendship[0].requesterId, userId);
-
-  revalidatePath("/friends");
-  revalidatePath("/profile/[userId]");
-  return { success: true };
 }
 
 export async function rejectFriendRequest(friendshipId: string) {
@@ -147,34 +152,39 @@ export async function rejectFriendRequest(friendshipId: string) {
 
   const userId = user.id;
 
-  // Verify the user is the addressee
-  const friendship = await db
-    .select()
-    .from(friendships)
-    .where(eq(friendships.id, friendshipId))
-    .limit(1);
+  try {
+    // Verify the user is the addressee
+    const friendship = await db
+      .select()
+      .from(friendships)
+      .where(eq(friendships.id, friendshipId))
+      .limit(1);
 
-  if (friendship.length === 0) {
-    throw new Error("Friend request not found");
+    if (friendship.length === 0) {
+      throw new Error("Friend request not found");
+    }
+
+    if (friendship[0].addresseeId !== userId) {
+      throw new Error("You can only reject requests sent to you");
+    }
+
+    if (friendship[0].status !== "pending") {
+      throw new Error("This request is no longer pending");
+    }
+
+    // Update friendship status
+    await db
+      .update(friendships)
+      .set({ status: "rejected", updatedAt: new Date() })
+      .where(eq(friendships.id, friendshipId));
+
+    revalidatePath("/friends");
+    revalidatePath("/profile/[userId]");
+    return { success: true };
+  } catch (error) {
+    console.error("Error rejecting friend request:", error);
+    throw new Error("Failed to reject friend request. Please try again.");
   }
-
-  if (friendship[0].addresseeId !== userId) {
-    throw new Error("You can only reject requests sent to you");
-  }
-
-  if (friendship[0].status !== "pending") {
-    throw new Error("This request is no longer pending");
-  }
-
-  // Update friendship status
-  await db
-    .update(friendships)
-    .set({ status: "rejected", updatedAt: new Date() })
-    .where(eq(friendships.id, friendshipId));
-
-  revalidatePath("/friends");
-  revalidatePath("/profile/[userId]");
-  return { success: true };
 }
 
 export async function blockUser(targetUserId: string) {

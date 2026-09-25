@@ -94,25 +94,31 @@ export async function setAvailability(slots: {
     throw new Error("You must be logged in");
   }
 
-  // Delete existing availability
-  await db
-    .delete(tutorAvailability)
-    .where(eq(tutorAvailability.tutorId, user.id));
+  try {
+    // Delete existing availability
+    await db
+      .delete(tutorAvailability)
+      .where(eq(tutorAvailability.tutorId, user.id));
 
-  // Insert new availability slots
-  if (slots.length > 0) {
-    await db.insert(tutorAvailability).values(
-      slots.map(slot => ({
-        tutorId: user.id,
-        dayOfWeek: slot.dayOfWeek,
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-      }))
-    );
+    // Insert new availability slots
+    if (slots.length > 0) {
+      await db.insert(tutorAvailability).values(
+        slots.map(slot => ({
+          tutorId: user.id,
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        }))
+      );
+    }
+
+    revalidatePath("/tutoring");
+    revalidatePath("/tutoring/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error setting availability:", error);
+    throw new Error("Failed to set availability. Please try again.");
   }
-
-  revalidatePath("/tutoring");
-  return { success: true };
 }
 
 export async function getTutorAvailability(tutorId: string) {
@@ -192,56 +198,62 @@ export async function acceptSessionRequest(requestId: string, selectedSlotIndex:
     throw new Error("You must be logged in");
   }
 
-  // Get the request
-  const [request] = await db
-    .select()
-    .from(sessionRequests)
-    .where(eq(sessionRequests.id, requestId))
-    .limit(1);
+  try {
+    // Get the request
+    const [request] = await db
+      .select()
+      .from(sessionRequests)
+      .where(eq(sessionRequests.id, requestId))
+      .limit(1);
 
-  if (!request || request.tutorId !== user.id) {
-    throw new Error("Request not found or unauthorized");
+    if (!request || request.tutorId !== user.id) {
+      throw new Error("Request not found or unauthorized");
+    }
+
+    const selectedSlot = (request.requestedSlots as any)[selectedSlotIndex];
+    if (!selectedSlot) {
+      throw new Error("Invalid slot selection");
+    }
+
+    // Generate Jitsi room ID
+    const jitsiRoomId = `${requestId}-${Math.random().toString(36).substring(2, 10)}`;
+
+    // Create confirmed session
+    const [session] = await db
+      .insert(tutorSessions)
+      .values({
+        learnerId: request.learnerId,
+        tutorId: request.tutorId,
+        courseId: null, // Will be set from request if needed
+        scheduledAt: new Date(selectedSlot.date + "T" + selectedSlot.startTime),
+        durationMins: 60, // Calculate from slot times
+        status: "confirmed",
+        jitsiRoomId,
+      })
+      .returning();
+
+    // Update request status
+    await db
+      .update(sessionRequests)
+      .set({ status: "accepted", updatedAt: new Date() })
+      .where(eq(sessionRequests.id, requestId));
+
+    // Notify learner
+    await createNotification({
+      userId: request.learnerId,
+      type: "lesson_completed",
+      title: "Session Request Accepted",
+      message: "Your tutoring session has been confirmed",
+      data: { sessionId: session.id },
+    });
+
+    revalidatePath("/tutoring");
+    revalidatePath("/tutoring/dashboard");
+    return { success: true, sessionId: session.id };
+  } catch (error) {
+    console.error("Error accepting session request:", error);
+    throw new Error("Failed to accept session request. Please try again.");
   }
-
-  const selectedSlot = (request.requestedSlots as any)[selectedSlotIndex];
-  if (!selectedSlot) {
-    throw new Error("Invalid slot selection");
-  }
-
-  // Generate Jitsi room ID
-  const jitsiRoomId = `${requestId}-${Math.random().toString(36).substring(2, 10)}`;
-
-  // Create confirmed session
-  const [session] = await db
-    .insert(tutorSessions)
-    .values({
-      learnerId: request.learnerId,
-      tutorId: request.tutorId,
-      courseId: null, // Will be set from request if needed
-      scheduledAt: new Date(selectedSlot.date + "T" + selectedSlot.startTime),
-      durationMins: 60, // Calculate from slot times
-      status: "confirmed",
-      jitsiRoomId,
-    })
-    .returning();
-
-  // Update request status
-  await db
-    .update(sessionRequests)
-    .set({ status: "accepted", updatedAt: new Date() })
-    .where(eq(sessionRequests.id, requestId));
-
-  // Notify learner
-  await createNotification({
-    userId: request.learnerId,
-    type: "lesson_completed",
-    title: "Session Request Accepted",
-    message: "Your tutoring session has been confirmed",
-    data: { sessionId: session.id },
-  });
-
-  revalidatePath("/tutoring");
-  return { success: true, sessionId: session.id };
 }
 
 export async function declineSessionRequest(requestId: string) {

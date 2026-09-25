@@ -30,6 +30,10 @@ export async function signUp(formData: FormData) {
 
   if (error) {
     console.error("Sign-up error:", error);
+    // If user already registered, redirect to sign-in
+    if (error.message.includes("already registered") || error.message.includes("already been registered")) {
+      redirect("/sign-in?info=Account already exists. Please sign in.");
+    }
     redirect(`/sign-up?error=${encodeURIComponent(error.message)}`);
   }
 

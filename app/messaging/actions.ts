@@ -15,6 +15,7 @@ import {
 import { eq, and, or, desc, asc, sql, lt, isNull } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 
 // Helper: Get current user with role verification
@@ -176,7 +177,7 @@ export async function startDirectConversation(otherUserId: string) {
   ]);
 
   revalidatePath("/messages");
-  return { success: true, conversationId: conversation.id };
+  redirect(`/messages/${conversation.id}`);
 }
 
 // Create a group conversation (tutor only, max 30 members)
