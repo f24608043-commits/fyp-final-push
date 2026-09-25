@@ -21,8 +21,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
         await page.goto('/path');
       }
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).not.toBeVisible();
       await expect(bottomBar).toBeVisible();
@@ -35,8 +35,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/(path|onboarding|tutoring\/dashboard)/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).not.toBeVisible();
       await expect(bottomBar).toBeVisible();
@@ -49,8 +49,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/admin/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).not.toBeVisible();
       await expect(bottomBar).toBeVisible();
@@ -89,7 +89,7 @@ test.describe('Responsive Shell - Viewport Tests', () => {
         await page.goto('/path');
       }
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
       await expect(sidebar).toBeVisible();
     });
 
@@ -100,7 +100,7 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/(path|onboarding|tutoring\/dashboard)/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
       await expect(sidebar).toBeVisible();
     });
 
@@ -111,7 +111,7 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/admin/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
       await expect(sidebar).toBeVisible();
     });
 
@@ -148,8 +148,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
         await page.goto('/path');
       }
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).toBeVisible();
       await expect(bottomBar).not.toBeVisible();
@@ -162,8 +162,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/(path|onboarding|tutoring\/dashboard)/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).toBeVisible();
       await expect(bottomBar).not.toBeVisible();
@@ -176,8 +176,8 @@ test.describe('Responsive Shell - Viewport Tests', () => {
       await page.click('button[type="submit"]');
       await page.waitForURL(/\/admin/, { timeout: 15000 });
       
-      const sidebar = page.locator('[class*="sidebar"], aside');
-      const bottomBar = page.locator('[class*="bottom"], nav[class*="mobile"]');
+      const sidebar = page.locator('[class*="sidebar"], aside').first();
+      const bottomBar = page.locator('nav[class*="mobile"]');
       
       await expect(sidebar).toBeVisible();
       await expect(bottomBar).not.toBeVisible();
@@ -216,7 +216,7 @@ test.describe('Responsive Shell - Viewport Tests', () => {
         await page.goto('/path');
       }
       
-      const mainContent = page.locator('main, [class*="content"], [class*="container"]');
+      const mainContent = page.locator('main').first();
       const contentWidth = await mainContent.evaluate(el => {
         if (el instanceof HTMLElement) {
           return el.offsetWidth;

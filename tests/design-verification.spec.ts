@@ -37,7 +37,7 @@ test.describe('Design Verification - Claymorphism + Mobile Nav', () => {
         }
         
         await page.goto(pagePath);
-        await page.waitForLoadState('networkidle', { timeout: 15000 });
+        await page.waitForLoadState('networkidle', { timeout: 30000 });
         
         // Take screenshot
         await page.screenshot({

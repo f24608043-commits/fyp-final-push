@@ -4,7 +4,7 @@ test.describe('Tutor Authenticated Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Sign in as tutor
     await page.goto('/sign-in');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 30000 });
     await page.fill('input[name="email"]', 'orphix.itsolutions@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');

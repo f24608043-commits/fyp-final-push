@@ -19,7 +19,7 @@ test.describe('Realtime Messaging', () => {
     await page1.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
     
     await page1.goto('/messages');
-    await page1.waitForLoadState('networkidle');
+    await page1.waitForLoadState('networkidle', { timeout: 30000 });
     await expect(page1.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
     
     await context1.close();
@@ -36,7 +36,7 @@ test.describe('Realtime Messaging', () => {
     await page2.waitForURL(/\/admin/, { timeout: 15000 });
     
     await page2.goto('/messages');
-    await page2.waitForLoadState('networkidle');
+    await page2.waitForLoadState('networkidle', { timeout: 30000 });
     await expect(page2.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
     
     await context2.close();

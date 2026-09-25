@@ -70,6 +70,9 @@ test.describe('Mascot Evidence Screenshots', () => {
   test('screenshot new poses', async ({ page }) => {
     await page.waitForTimeout(2000);
     
+    // Ensure page is stable before dispatching events
+    await page.waitForLoadState('domcontentloaded');
+    
     // Test waving pose
     await page.evaluate(() => {
       const event = new CustomEvent('mascot-pose', { detail: 'waving' });

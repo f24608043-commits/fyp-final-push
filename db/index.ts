@@ -13,10 +13,11 @@ function getClient() {
     connection: {
       timeout: 30000, // 30 second connection timeout
     },
-    max: 15, // Match Supabase pooler limit to prevent exhaustion
+    max: 15, // Match Supabase pooler limit exactly
     idle_timeout: 5, // Close idle connections faster to prevent leaks
     connect_timeout: 30, // 30 second connection attempt timeout
     max_lifetime: 60 * 15, // Recycle connections after 15 minutes
+    onnotice: () => {}, // Ignore notices from pgbouncer
   });
 }
 

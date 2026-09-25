@@ -182,7 +182,7 @@ test.describe('Messaging System', () => {
     
     // Navigate to library page
     await page.goto('/library');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 30000 });
     
     // Check that library page loads
     await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });

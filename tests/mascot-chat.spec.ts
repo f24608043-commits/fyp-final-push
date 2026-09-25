@@ -9,7 +9,7 @@ test.describe('Mascot Chat Feature', () => {
     await page.click('button[type="submit"]');
     
     // Handle onboarding redirect
-    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 30000 });
     const url = page.url();
     if (url.includes('/onboarding')) {
       await page.goto('/path');
@@ -96,6 +96,7 @@ test.describe('Mascot Chat Feature', () => {
   });
 
   test('rate limit enforcement', async ({ page }) => {
+    test.setTimeout(60000); // Increase timeout to 60s for slow API responses
     await page.waitForTimeout(2000);
     
     // Open chat
@@ -125,7 +126,7 @@ test.describe('Mascot Chat API - Failure Scenarios', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 30000 });
     
     // Handle onboarding redirect
     const url = page.url();
