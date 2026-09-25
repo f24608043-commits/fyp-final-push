@@ -388,7 +388,7 @@ export const conversations = pgTable(
     type: conversationTypeEnum("type").notNull().default("direct"),
     title: text("title"),
     createdBy: uuid("created_by").notNull().references(() => profiles.id, { onDelete: "cascade" }),
-    directKey: uuid("direct_key").unique(), // For direct conversations, ensures one thread per pair
+    directKey: text("direct_key").unique(), // For direct conversations, ensures one thread per pair (concatenated UUIDs)
     lastMessageAt: timestamp("last_message_at", { withTimezone: true }),
     jitsiRoomId: text("jitsi_room_id"), // For group live class rooms
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
