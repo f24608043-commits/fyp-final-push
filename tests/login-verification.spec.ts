@@ -2,7 +2,15 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Login Verification', () => {
   test('learner can log in', async ({ page }) => {
-    test.skip(true, 'Learner account password is incorrect - needs password reset in Supabase');
+    await page.goto('/sign-in');
+    await page.waitForLoadState('networkidle');
+    
+    await page.fill('input[name="email"]', 'testlearner+test@gmail.com');
+    await page.fill('input[name="password"]', 'Test123456!');
+    await page.click('button[type="submit"]');
+    
+    // Learner should land on /path or /onboarding
+    await expect(page).toHaveURL(/\/(path|onboarding)/, { timeout: 15000 });
   });
 
   test('tutor can log in', async ({ page }) => {

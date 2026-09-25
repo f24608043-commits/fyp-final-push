@@ -5,7 +5,24 @@ test.describe('Performance Measurement - Messaging Impact', () => {
   const TUTOR_PASSWORD = 'Qasim.11';
 
   test('measure /messages page load time', async ({ page }) => {
-    test.skip(true, 'Auth issues - skipping for now');
+    await page.goto('/sign-in');
+    await page.waitForLoadState('networkidle');
+    await page.fill('input[name="email"]', TUTOR_EMAIL);
+    await page.fill('input[name="password"]', TUTOR_PASSWORD);
+    await page.click('button[type="submit"]');
+    
+    await expect(page).toHaveURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
+
+    const startTime = Date.now();
+    await page.goto('/messages');
+    await page.waitForLoadState('networkidle');
+    const endTime = Date.now();
+    
+    const loadTime = endTime - startTime;
+    console.log(`📊 /messages page load time: ${loadTime}ms`);
+    
+    // Page should load in less than 10 seconds
+    expect(loadTime).toBeLessThan(10000);
   });
 
   test('measure /messages/[id] page load time', async ({ page }) => {
@@ -13,7 +30,24 @@ test.describe('Performance Measurement - Messaging Impact', () => {
   });
 
   test('measure /tutoring/test-setup page load time', async ({ page }) => {
-    test.skip(true, 'Auth issues - skipping for now');
+    await page.goto('/sign-in');
+    await page.waitForLoadState('networkidle');
+    await page.fill('input[name="email"]', TUTOR_EMAIL);
+    await page.fill('input[name="password"]', TUTOR_PASSWORD);
+    await page.click('button[type="submit"]');
+    
+    await expect(page).toHaveURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
+
+    const startTime = Date.now();
+    await page.goto('/tutoring/test-setup');
+    await page.waitForLoadState('networkidle');
+    const endTime = Date.now();
+    
+    const loadTime = endTime - startTime;
+    console.log(`📊 /tutoring/test-setup page load time: ${loadTime}ms`);
+    
+    // Page should load in less than 10 seconds
+    expect(loadTime).toBeLessThan(10000);
   });
 
   test('measure bundle size impact', async ({ page }) => {
@@ -63,6 +97,23 @@ test.describe('Performance Measurement - Messaging Impact', () => {
   });
 
   test('measure navigation shell performance', async ({ page }) => {
-    test.skip(true, 'Library route timing out - skipping for now');
+    await page.goto('/sign-in');
+    await page.waitForLoadState('networkidle');
+    await page.fill('input[name="email"]', TUTOR_EMAIL);
+    await page.fill('input[name="password"]', TUTOR_PASSWORD);
+    await page.click('button[type="submit"]');
+    
+    await expect(page).toHaveURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
+
+    const startTime = Date.now();
+    await page.goto('/library');
+    await page.waitForLoadState('networkidle');
+    const endTime = Date.now();
+    
+    const loadTime = endTime - startTime;
+    console.log(`📊 /library page load time: ${loadTime}ms`);
+    
+    // Page should load in less than 10 seconds
+    expect(loadTime).toBeLessThan(10000);
   });
 });
