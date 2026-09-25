@@ -21,7 +21,8 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
     await page.fill('input[type="password"]', tutorPassword);
     await page.click('button[type="submit"]');
     
-    await page.waitForURL('/path', { timeout: 15000 });
+    // Wait for either /path, /onboarding, or /tutoring/dashboard (tutor redirect)
+    await page.waitForURL(/\/(path|onboarding|tutoring\/dashboard)/, { timeout: 15000 });
     
     // Step 2: Navigate to tutoring dashboard
     await page.goto('/tutoring/dashboard');

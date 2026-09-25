@@ -10,7 +10,13 @@ test.describe('Debug Tutoring Page', () => {
     await page.fill('input[type="email"]', learnerEmail);
     await page.fill('input[type="password"]', learnerPassword);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+    
+    // Handle onboarding redirect
+    const url = page.url();
+    if (url.includes('/onboarding')) {
+      await page.goto('/path');
+    }
     
     // Navigate to tutoring
     await page.goto('/tutoring');

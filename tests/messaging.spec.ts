@@ -124,7 +124,7 @@ test.describe('Messaging System', () => {
     await page.fill('input[name="password"]', ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
     
-    await expect(page).toHaveURL(/\/path/, { timeout: 15000 });
+    await expect(page).toHaveURL(/\/admin/, { timeout: 15000 });
     
     // Navigate to course creation
     await page.goto('/admin/courses/new');

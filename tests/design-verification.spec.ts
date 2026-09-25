@@ -24,12 +24,15 @@ test.describe('Design Verification - Claymorphism + Mobile Nav', () => {
           await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
           await page.fill('input[type="password"]', 'Test123456!');
           await page.click('button[type="submit"]');
-          await page.waitForLoadState('networkidle', { timeout: 30000 });
           
-          // Handle onboarding redirect
+          // Wait for either /path or /onboarding, then handle redirect
+          await page.waitForURL(/\/(path|onboarding)/, { timeout: 30000 });
           const url = page.url();
           if (url.includes('/onboarding')) {
             await page.goto('/path');
+            await page.waitForLoadState('networkidle', { timeout: 15000 });
+          } else {
+            await page.waitForLoadState('networkidle', { timeout: 15000 });
           }
         }
         

@@ -7,7 +7,7 @@ test.describe('Mascot Chat API Tests', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
 
     // Get cookies and use them in the request
     const cookies = await page.context().cookies();
@@ -42,7 +42,7 @@ test.describe('Mascot Chat API Tests', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
 
     // Get cookies and use them in the request
     const cookies = await page.context().cookies();
@@ -78,7 +78,7 @@ test.describe('Mascot Chat API Tests', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
 
     // Get cookies and use them in the request
     const cookies = await page.context().cookies();

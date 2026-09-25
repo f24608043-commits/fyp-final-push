@@ -8,7 +8,13 @@ test.describe('Mascot Evidence Screenshots', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+    
+    // Handle onboarding redirect
+    const url = page.url();
+    if (url.includes('/onboarding')) {
+      await page.goto('/path');
+    }
   });
 
   test('screenshot chat widget collapsed', async ({ page }) => {

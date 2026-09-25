@@ -49,7 +49,7 @@ test.describe('Admin YouTube Import Tests', () => {
     await page.fill('input[name="email"]', 'alexabraham587@gmail.com');
     await page.fill('input[name="password"]', 'Qasim.11');
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/path/, { timeout: 15000 });
+    await page.waitForURL(/\/admin/, { timeout: 15000 });
     
     await page.goto('http://localhost:3000/admin/courses/new');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });

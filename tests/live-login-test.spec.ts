@@ -12,11 +12,17 @@ test.describe('Live Login Test - Basic Verification', () => {
     await page.fill('input[type="password"]', learnerPassword);
     await page.click('button[type="submit"]');
     
-    await page.waitForURL('/path', { timeout: 15000 });
+    // Wait for either /path or /onboarding (user may need onboarding)
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
     
-    console.log('✅ Login successful, redirected to /path');
+    const currentUrl = page.url();
+    if (currentUrl.includes('/onboarding')) {
+      console.log('✅ Login successful, redirected to /onboarding (onboarding needed)');
+    } else {
+      console.log('✅ Login successful, redirected to /path');
+    }
     
-    // Check if we're on the path page
-    expect(page.url()).toContain('/path');
+    // Check if we're on either the path page or onboarding
+    expect(currentUrl).toMatch(/\/(path|onboarding)/);
   });
 });

@@ -11,10 +11,10 @@ test.describe('Login Time Measurement', () => {
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     
-    // Click submit and measure time to reach path page
+    // Click submit and measure time to reach path page or onboarding
     const submitStartTime = Date.now();
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path', { timeout: 15000 });
+    await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
     const submitEndTime = Date.now();
     
     const loginTime = submitEndTime - submitStartTime;
