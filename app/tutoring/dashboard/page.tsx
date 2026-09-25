@@ -3,6 +3,10 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
 import dynamic from "next/dynamic";
+import AcceptButton from "./AcceptButton";
+import DeclineButton from "./DeclineButton";
+import CreateProfileButton from "./CreateProfileButton";
+import EditAvailabilityButton from "./EditAvailabilityButton";
 
 // Lazy load messaging widget
 const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
@@ -136,9 +140,7 @@ export default async function TutorDashboard() {
                 />
               </div>
             </div>
-            <button className="rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
-              Create Profile
-            </button>
+            <CreateProfileButton />
           </form>
         </div>
       ) : (
@@ -208,18 +210,14 @@ export default async function TutorDashboard() {
                     const { acceptSessionRequest } = await import("../actions");
                     await acceptSessionRequest(request.id, 0);
                   }}>
-                    <button className="rounded-full bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
-                      Accept
-                    </button>
+                    <AcceptButton />
                   </form>
                   <form action={async () => {
                     "use server";
                     const { declineSessionRequest } = await import("../actions");
                     await declineSessionRequest(request.id);
                   }}>
-                    <button className="rounded-xl border-4 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 px-4 py-2 font-label-md font-semibold hover:from-gray-200 hover:to-gray-300 transition-all shadow-lg">
-                      Decline
-                    </button>
+                    <DeclineButton />
                   </form>
                 </div>
               </div>
@@ -370,9 +368,7 @@ export default async function TutorDashboard() {
             { dayOfWeek: 5, startTime: "09:00", endTime: "17:00" }
           ]);
         }}>
-          <button className="rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
-            Edit Availability
-          </button>
+          <EditAvailabilityButton />
         </form>
       </div>
     </div>

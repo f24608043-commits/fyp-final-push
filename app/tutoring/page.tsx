@@ -3,6 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
 import dynamic from "next/dynamic";
+import BookSessionButton from "./BookSessionButton";
+import MessageButton from "./MessageButton";
 
 // Lazy load messaging widget
 const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
@@ -251,9 +253,7 @@ export default async function TutoringPage() {
                         // Don't throw - let the page reload
                       }
                     }}>
-                      <button className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all">
-                        Message
-                      </button>
+                      <MessageButton />
                     </form>
                     <form action={async () => {
                       "use server";
@@ -269,9 +269,7 @@ export default async function TutoringPage() {
                         // Don't throw - let the page reload
                       }
                     }}>
-                      <button className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
-                        Book Session
-                      </button>
+                      <BookSessionButton />
                     </form>
                   </div>
                 </div>

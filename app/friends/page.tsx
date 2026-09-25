@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
 import Link from "next/link";
+import AddFriendButton from "./AddFriendButton";
+import MessageButton from "./MessageButton";
 
 export default async function FriendsPage() {
   const supabase = await createClient();
@@ -158,9 +160,7 @@ export default async function FriendsPage() {
                         // Don't throw - let the page reload
                       }
                     }}>
-                      <button className="font-label-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform">
-                        Add Friend
-                      </button>
+                      <AddFriendButton suggestedId={suggested.id} />
                     </form>
                     <Link
                       href={`/profile/${suggested.id}`}
@@ -217,9 +217,7 @@ export default async function FriendsPage() {
                       const { startDirectConversation } = await import("../messaging/actions");
                       await startDirectConversation(friend.id);
                     }}>
-                      <button className="font-label-sm font-bold border-2 border-pink-300 bg-gradient-to-br from-pink-50 to-rose-50 text-pink-600 px-3 py-2 rounded-full shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all">
-                        Message
-                      </button>
+                      <MessageButton />
                     </form>
                     <Link
                       href={`/profile/${friend.id}`}
