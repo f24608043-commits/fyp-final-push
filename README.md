@@ -1,0 +1,172 @@
+# LEGO Digital Learning Platform
+
+A gamified learning management system built with Next.js 13, Supabase, and Drizzle ORM.
+
+## Features
+
+- **Learning Path**: Sequential lesson progression with video content and quizzes
+- **Gamification**: XP system, badges, streaks, and leaderboards
+- **Tutoring System**: Book tutoring sessions with certified tutors
+- **Social Features**: Friend system, profiles, and comparisons
+- **Celebration Moments**: Animated celebration with mascot on lesson completion
+- **Admin Dashboard**: Manage courses, units, lessons, badges, and users
+- **Practice Mode**: AI-generated practice quizzes using OpenRouter API
+
+## Tech Stack
+
+- **Framework**: Next.js 16.3.5 (App Router)
+- **Database**: PostgreSQL via Supabase
+- **ORM**: Drizzle ORM
+- **Authentication**: Supabase Auth
+- **Styling**: Tailwind CSS with CSS variables (design tokens)
+- **TypeScript**: Strict mode enabled
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ installed
+- Supabase account
+- OpenRouter API key (for practice mode)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/f24608043-commits/fyp-final-push.git
+cd fyp-final-push
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your credentials:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+DATABASE_URL=postgresql://postgres:your_password@db.your-project.supabase.co:5432/postgres
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
+4. Run database migrations:
+```bash
+npx drizzle-kit push
+```
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+├── app/                    # Next.js App Router pages
+│   ├── admin/             # Admin dashboard
+│   ├── lesson/            # Lesson pages and practice mode
+│   ├── tutoring/          # Tutoring system
+│   ├── friends/           # Friend system
+│   └── ...
+├── components/            # Reusable components
+│   ├── Celebration.tsx    # Lesson completion celebration
+│   └── Shell.tsx         # Shared layout shell
+├── db/                   # Database schema and client
+├── utils/                # Utility functions
+└── drizzle/             # Database migrations
+```
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `OPENROUTER_API_KEY` | OpenRouter API for AI quizzes | Yes (for practice mode) |
+
+## Deployment
+
+### Vercel Deployment
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+### Environment Variables for Vercel
+
+Add the following in Vercel Project Settings:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `DATABASE_URL`
+- `OPENROUTER_API_KEY`
+
+## Database Schema
+
+Key tables:
+- `profiles` - User profiles with XP, streaks, roles
+- `lessons` - Lesson content with YouTube videos
+- `user_progress` - Lesson completion tracking
+- `badges` - Achievement badges
+- `user_badges` - User badge awards
+- `tutor_profiles` - Tutor profiles with subjects
+- `session_requests` - Tutoring session bookings
+- `friends` - Friend relationships
+
+## Security Features
+
+- Row-Level Security (RLS) policies on all tables
+- Server-side quiz grading (tamper-resistant)
+- Role-based access control (admin, tutor, learner)
+- Rate limiting on friend requests
+- Authentication required for all protected routes
+
+## Performance Optimizations
+
+- Concurrent data fetching with `Promise.all`
+- Database indexes on frequently queried columns
+- CSS variables for consistent theming
+- Optimized image loading
+- Static generation where possible
+
+## Known Issues
+
+1. **Middleware Deprecation Warning**: Next.js warning about deprecated `middleware` convention. Run `npx @next/codemod@canary middleware-to-proxy .` to migrate.
+
+2. **Client-Side Tutor Filtering**: Currently uses client-side filtering for tutor subjects. SQL JSONB filtering needed for production scale.
+
+## Development
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+### Database Commands
+
+```bash
+npx drizzle-kit push      # Push schema changes to database
+npx drizzle-kit generate  # Generate migration files
+npx drizzle-kit studio    # Open Drizzle Studio
+```
+
+## Contributing
+
+This is a final year project. For questions or issues, please refer to the project documentation.
+
+## License
+
+MIT
