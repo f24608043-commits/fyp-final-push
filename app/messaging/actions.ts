@@ -462,14 +462,22 @@ export async function sendMessage(conversationId: string, body: string) {
     throw new Error("You are not a member of this conversation");
   }
 
-  // Check if blocked by any member
+  // Check if blocked by any member in the conversation
+  const conversationMembersList = await db
+    .select({ userId: conversationMembers.userId })
+    .from(conversationMembers)
+    .where(eq(conversationMembers.conversationId, conversationId));
+
+  const memberIds = conversationMembersList.map(m => m.userId);
+
   const [blocked] = await db
     .select()
     .from(blocks)
     .where(
       and(
         eq(blocks.blockerId, user.id),
-        sql`${blocks.blockedId} IN (SELECT user_id FROM conversation_members WHERE conversation_id = ${conversationId})`
+        // Check if blocked by anyone in the conversation
+        sql`${blocks.blockedId} = ANY(${memberIds})`
       )
     )
     .limit(1);
