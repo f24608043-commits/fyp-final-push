@@ -54,8 +54,32 @@ export default async function PathPage() {
   const activeEnrollment = userEnrollments.find((e) => e.isActive) || userEnrollments[0];
 
   if (!activeEnrollment) {
-    console.log("[PATH] No enrollment found, redirecting to onboarding");
-    redirect("/onboarding");
+    console.log("[PATH] No enrollment found, showing enrollment prompt");
+    return (
+      <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-primary/5 to-secondary/5 min-h-screen">
+        <div className="relative clay-card p-8 md:p-12 overflow-hidden">
+          <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary/25 blur-3xl pointer-events-none"></div>
+          <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
+            <div className="relative w-32 h-32 mb-6">
+              <Mascot pose="encouraging" size={128} />
+            </div>
+            <h1 className="font-headline-2xl text-headline-2xl text-text-primary font-extrabold mb-4">
+              Start Your Learning Journey
+            </h1>
+            <p className="font-body-lg text-body-lg text-text-muted mb-8">
+              You need to enroll in a course to begin learning. Choose a course from our library to get started!
+            </p>
+            <Link
+              href="/library"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-label-lg font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[24px]">school</span>
+              Browse Courses
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // 3. Fetch course and units in parallel for speed

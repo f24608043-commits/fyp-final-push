@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { friendships, profiles, friendshipStatusEnum } from "@/db/schema";
-import { eq, and, or, desc, inArray, gte } from "drizzle-orm";
+import { friendships, profiles, friendshipStatusEnum, friendStreaks, dailyActivityLog } from "@/db/schema";
+import { eq, and, or, desc, inArray, gte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { notifyFriendRequest, notifyFriendAccepted } from "@/app/notifications/actions";
@@ -130,11 +130,23 @@ export async function acceptFriendRequest(friendshipId: string) {
       .set({ status: "accepted", updatedAt: new Date() })
       .where(eq(friendships.id, friendshipId));
 
+    // Create friend streak entry
+    await db.insert(friendStreaks).values({
+      friendshipId: friendshipId,
+      streakCount: 0,
+      lastSharedDate: null,
+    });
+
     // Send notification to requester
     await notifyFriendAccepted(friendship[0].requesterId, userId);
 
+    // Automatically create a conversation between the two friends
+    const { startDirectConversation } = await import("../messaging/actions");
+    await startDirectConversation(friendship[0].requesterId);
+
     revalidatePath("/friends");
     revalidatePath("/profile/[userId]");
+    revalidatePath("/messages");
     return { success: true };
   } catch (error) {
     console.error("Error accepting friend request:", error);
@@ -405,4 +417,96 @@ export async function getSuggestedFriends() {
   return suggestedUsers
     .filter((suggested) => suggested.id !== userId && !blockedOrFriendIds.has(suggested.id))
     .slice(0, 5);
+}
+
+// Update friend streaks - call this when a user completes a lesson
+export async function updateFriendStreaks(userId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // Log today's activity for the user
+  await db.insert(dailyActivityLog).values({
+    userId,
+    activityDate: today,
+  }).onConflictDoNothing();
+
+  // Get all accepted friendships for this user
+  const userFriendships = await db
+    .select()
+    .from(friendships)
+    .where(
+      and(
+        eq(friendships.status, "accepted"),
+        or(eq(friendships.requesterId, userId), eq(friendships.addresseeId, userId))
+      )
+    );
+
+  for (const friendship of userFriendships) {
+    const friendId = friendship.requesterId === userId ? friendship.addresseeId : friendship.requesterId;
+
+    // Check if friend also has activity today
+    const [friendActivity] = await db
+      .select({ count: dailyActivityLog.id })
+      .from(dailyActivityLog)
+      .where(
+        and(
+          eq(dailyActivityLog.userId, friendId),
+          eq(dailyActivityLog.activityDate, today)
+        )
+      );
+
+    if (friendActivity && Number(friendActivity.count) > 0) {
+      // Both friends have activity today - update streak
+      const [friendStreak] = await db
+        .select()
+        .from(friendStreaks)
+        .where(eq(friendStreaks.friendshipId, friendship.id))
+        .limit(1);
+
+      if (friendStreak) {
+        const lastSharedDate = friendStreak.lastSharedDate ? new Date(friendStreak.lastSharedDate).toISOString().split('T')[0] : null;
+        const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        if (lastSharedDate === yesterday) {
+          // Consecutive day - increment streak
+          await db
+            .update(friendStreaks)
+            .set({ 
+              streakCount: friendStreak.streakCount + 1,
+              lastSharedDate: todayStr,
+              updatedAt: new Date()
+            })
+            .where(eq(friendStreaks.friendshipId, friendship.id));
+        } else if (lastSharedDate !== todayStr) {
+          // Not consecutive - reset to 1
+          await db
+            .update(friendStreaks)
+            .set({ 
+              streakCount: 1,
+              lastSharedDate: todayStr,
+              updatedAt: new Date()
+            })
+            .where(eq(friendStreaks.friendshipId, friendship.id));
+        }
+      }
+    }
+  }
+}
+
+// Get friend streak for a specific friendship
+export async function getFriendStreak(friendshipId: string) {
+  const [friendStreak] = await db
+    .select()
+    .from(friendStreaks)
+    .where(eq(friendStreaks.friendshipId, friendshipId))
+    .limit(1);
+
+  return friendStreak || { streakCount: 0, lastSharedDate: null };
 }

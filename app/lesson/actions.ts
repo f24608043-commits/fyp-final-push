@@ -159,18 +159,22 @@ export async function submitQuiz(
         } else if (diffDays > 1) {
           newStreak = 1;
         }
+        // If diffDays === 0 (same day), keep current streak
       }
 
       await db
         .update(profiles)
         .set({
-          xp: (profile.xp || 0) + lesson.xpReward,
+          xp: profile.xp + lesson.xpReward,
           streakCount: newStreak,
-          lastActiveDate: todayStr,
-          updatedAt: new Date(),
+          lastActiveDate: new Date(),
         })
         .where(eq(profiles.id, user.id));
     }
+
+    // 7. Update friend streaks (Duolingo-style)
+    const { updateFriendStreaks } = await import("../friends/actions");
+    await updateFriendStreaks(user.id);
 
     // 7. Insert daily activity log
     await db

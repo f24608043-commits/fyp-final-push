@@ -9,13 +9,8 @@ import MessageButton from "./MessageButton";
 // Server action for messaging a tutor
 async function messageTutor(tutorId: string) {
   "use server";
-  try {
-    const { startDirectConversation } = await import("../messaging/actions");
-    await startDirectConversation(tutorId);
-  } catch (error) {
-    console.error("Message button error:", error);
-    throw error;
-  }
+  const { startDirectConversation } = await import("../messaging/actions");
+  await startDirectConversation(tutorId);
 }
 
 // Lazy load messaging widget
@@ -256,7 +251,7 @@ export default async function TutoringPage() {
                 <div className="flex items-center justify-end">
                   <div className="flex gap-2">
                     <form action={messageTutor.bind(null, tutor.tutorId)}>
-                      <MessageButton />
+                      <MessageButton tutorId={tutor.tutorId} />
                     </form>
                     <BookSessionButton tutorId={tutor.tutorId} />
                   </div>

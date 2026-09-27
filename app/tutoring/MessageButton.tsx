@@ -3,7 +3,7 @@
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 
-export default function MessageButton() {
+export default function MessageButton({ tutorId }: { tutorId: string }) {
   const { pending } = useFormStatus();
   const router = useRouter();
 
