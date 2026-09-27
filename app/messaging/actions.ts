@@ -13,7 +13,7 @@ import {
   messageReports,
   tutorEnrollments
 } from "@/db/schema";
-import { eq, and, or, desc, asc, sql, lt, isNull } from "drizzle-orm";
+import { eq, and, or, desc, asc, sql, lt, isNull, inArray } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -489,17 +489,25 @@ export async function sendMessage(conversationId: string, body: string) {
   }
 
   // Insert message (rate limit enforced by DB trigger)
-  const [message] = await db
-    .insert(messages)
-    .values({
-      conversationId,
-      senderId: user.id,
-      body: body.trim(),
-    })
-    .returning();
+  try {
+    const [message] = await db
+      .insert(messages)
+      .values({
+        conversationId,
+        senderId: user.id,
+        body: body.trim(),
+      })
+      .returning();
 
-  revalidatePath("/messages");
-  return { success: true, message };
+    revalidatePath("/messages");
+    return { success: true, message };
+  } catch (error: any) {
+    console.error("Database error inserting message:", error);
+    if (error.code === '23505') {
+      throw new Error("Rate limit exceeded: Please wait before sending another message");
+    }
+    throw new Error("Failed to send message. Please try again.");
+  }
 }
 
 // Get messages for a conversation with pagination
