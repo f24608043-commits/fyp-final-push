@@ -85,10 +85,11 @@ export default function UnifiedShell({
         { path: "/library", label: "Library", icon: "menu_book" },
         { path: "/tutoring", label: "Tutoring", icon: "groups" },
         { path: "/friends", label: "Friends", icon: "diversity_3" },
-        { path: "/notifications", label: "Notifications", icon: "notifications" },
+        { path: "/profile", label: "Profile", icon: "person" },
       ],
       more: [
         { path: "/leaderboard", label: "Leaderboard", icon: "leaderboard" },
+        { path: "/notifications", label: "Notifications", icon: "notifications" },
         { path: "/settings", label: "Settings", icon: "settings" },
       ],
     },
@@ -125,7 +126,7 @@ export default function UnifiedShell({
         { path: "/admin/users", label: "Users", icon: "people" },
         { path: "/admin/courses", label: "Courses", icon: "school" },
         { path: "/admin/badges", label: "Badges", icon: "military_tech" },
-        { path: "/more", label: "More", icon: "more_horiz" },
+        { path: "/profile", label: "Profile", icon: "person" },
       ],
       more: [
         { path: "/admin/tutoring", label: "Tutoring", icon: "groups" },
