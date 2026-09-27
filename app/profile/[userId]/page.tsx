@@ -138,219 +138,244 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
   const userTitle = getTitle(profile.xp);
 
   return (
-    <div className="w-full px-6 py-6">
-      {/* Profile Header with Mascot */}
-      <div className="relative w-full rounded-3xl bg-surface p-6 md:p-8 shadow-clay-surface border border-surface-border overflow-hidden mb-6">
-        {/* Decorative background gradients */}
-        <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary/25 blur-3xl pointer-events-none"></div>
-        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-tertiary/30 blur-3xl pointer-events-none"></div>
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Hero Header Section */}
+      <div className="relative w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 p-8 md:p-12 mb-8">
+        {/* Decorative patterns */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+        </div>
         
-        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          {/* Left: Profile info */}
-          <div className="flex items-center gap-6">
-            <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center text-4xl text-on-primary shadow-clay-primary border-4 border-white">
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+            {/* Avatar Section */}
+            <div className="relative shrink-0">
+              <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-white to-blue-100 rounded-full flex items-center justify-center text-5xl md:text-6xl font-bold text-blue-600 shadow-2xl border-4 border-white">
                 {profile.displayName?.[0] || "?"}
               </div>
-              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-full flex items-center justify-center text-xl shadow-clay-secondary border-2 border-white">
+              <div className="absolute -bottom-3 -right-3 w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-2xl shadow-xl border-3 border-white">
                 {userTitle.icon}
               </div>
             </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="px-3 py-0.5 rounded-lg bg-gradient-to-r from-primary to-primary/80 text-on-primary font-label-sm text-label-sm tracking-wider uppercase shadow-clay-primary">{profile.role}</span>
-                <span className={`px-3 py-0.5 rounded-lg bg-gradient-to-r ${userTitle.color} text-white font-label-sm text-label-sm tracking-wider uppercase shadow-lg`}>{userTitle.title}</span>
+            
+            {/* User Info */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
+                <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white font-label-sm font-bold tracking-wider uppercase shadow-lg border border-white/30">
+                  {profile.role}
+                </span>
+                <span className={`px-4 py-1.5 rounded-full bg-gradient-to-r ${userTitle.color} text-white font-label-sm font-bold tracking-wider uppercase shadow-lg`}>
+                  {userTitle.title}
+                </span>
               </div>
-              <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
+              <h1 className="font-headline-2xl text-headline-2xl text-white font-extrabold mb-3">
                 {profile.displayName || "Anonymous"}
               </h1>
-              <div className="flex flex-wrap items-center gap-3 mt-2">
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-tertiary/10 text-tertiary font-label-md text-label-md">
-                  <span className="material-symbols-outlined text-[18px]">bolt</span>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white font-label-md font-semibold shadow-lg">
+                  <span className="material-symbols-outlined text-[20px]">bolt</span>
                   <span>{profile.xp} XP</span>
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface-container-high text-text-primary font-label-md text-label-md">
-                  <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white font-label-md font-semibold shadow-lg">
+                  <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
                   <span>{profile.streakCount} day streak</span>
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary font-label-md text-label-md">
-                  <span className="material-symbols-outlined text-[18px]">groups</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white font-label-md font-semibold shadow-lg">
+                  <span className="material-symbols-outlined text-[20px]">groups</span>
                   <span>{friendsCount[0]?.count || 0} friends</span>
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Right: Mascot + Friend Action */}
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
-            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2">
-              <Mascot pose="celebrate" size={128} />
-            </div>
-            {!isOwnProfile && currentUser && (
-              <div className="order-2 sm:order-1 flex gap-2">
-                {friendshipStatus === "accepted" ? (
-                  <>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+              <div className="relative w-24 h-24 md:w-28 md:h-28">
+                <Mascot pose="celebrate" size={112} />
+              </div>
+              {!isOwnProfile && currentUser && (
+                <div className="flex gap-2">
+                  {friendshipStatus === "accepted" ? (
+                    <>
+                      <form action={async () => {
+                        "use server";
+                        const { startDirectConversation } = await import("../../messaging/actions");
+                        await startDirectConversation(targetUserId);
+                      }}>
+                        <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-600 rounded-full font-label-md font-bold shadow-xl hover:bg-blue-50 transition-all active:scale-95">
+                          <span className="material-symbols-outlined text-[20px]">chat</span>
+                          <span>Message</span>
+                        </button>
+                      </form>
+                      <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-500 text-white rounded-full font-label-md font-bold shadow-xl">
+                        <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+                        <span>Friends</span>
+                      </span>
+                    </>
+                  ) : friendshipStatus === "pending" ? (
+                    <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/30 backdrop-blur-sm text-white rounded-full font-label-md font-bold shadow-xl">
+                      <span className="material-symbols-outlined text-[20px]">schedule</span>
+                      <span>Pending</span>
+                    </span>
+                  ) : friendshipStatus === "blocked" ? (
+                    <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-full font-label-md font-bold shadow-xl">
+                      <span className="material-symbols-outlined text-[20px]">block</span>
+                      <span>Blocked</span>
+                    </span>
+                  ) : (
                     <form action={async () => {
                       "use server";
-                      const { startDirectConversation } = await import("../../messaging/actions");
-                      await startDirectConversation(targetUserId);
+                      await sendFriendRequest(targetUserId);
                     }}>
-                      <button className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-full font-label-md font-bold shadow-clay-secondary hover:bg-secondary/90 transition-all active:translate-y-[2px]">
-                        <span className="material-symbols-outlined text-[18px]">chat</span>
-                        <span>Message</span>
+                      <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-600 rounded-full font-label-md font-bold shadow-xl hover:bg-blue-50 transition-all active:scale-95">
+                        <span className="material-symbols-outlined text-[20px]">person_add</span>
+                        <span>Add Friend</span>
                       </button>
                     </form>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-label-md font-bold shadow-clay-primary">
-                      <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
-                      <span>Friends</span>
-                    </span>
-                  </>
-                ) : friendshipStatus === "pending" ? (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high text-text-muted rounded-full font-label-md font-bold">
-                    <span className="material-symbols-outlined text-[18px]">schedule</span>
-                    <span>Pending</span>
-                  </span>
-                ) : friendshipStatus === "blocked" ? (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-error/10 text-error rounded-full font-label-md font-bold">
-                    <span className="material-symbols-outlined text-[18px]">block</span>
-                    <span>Blocked</span>
-                  </span>
-                ) : (
-                  <form action={async () => {
-                    "use server";
-                    await sendFriendRequest(targetUserId);
-                  }}>
-                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-full font-label-md font-bold shadow-clay-primary hover:bg-primary/90 transition-all active:translate-y-[2px]">
-                      <span className="material-symbols-outlined text-[18px]">person_add</span>
-                      <span>Add Friend</span>
-                    </button>
-                  </form>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="rounded-xl bg-gradient-to-br from-surface to-surface-container shadow-clay-surface border border-surface-border p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-primary text-[24px]">bolt</span>
-            <h3 className="font-label-sm text-text-muted font-medium">Total XP</h3>
-          </div>
-          <p className="font-headline-xl text-headline-xl text-primary font-extrabold">{profile.xp}</p>
-        </div>
-        <div className="rounded-xl bg-gradient-to-br from-surface to-surface-container shadow-clay-surface border border-surface-border p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-primary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
-            <h3 className="font-label-sm text-on-surface-variant font-medium">Lessons</h3>
-          </div>
-          <p className="font-headline-xl text-headline-xl text-primary-container font-extrabold">{completedLessons.length}</p>
-        </div>
-        <div className="rounded-xl bg-gradient-to-br from-surface to-surface-container shadow-clay-surface border border-surface-border p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-secondary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-            <h3 className="font-label-sm text-text-muted font-medium">Streak</h3>
-          </div>
-          <p className="font-headline-xl text-headline-xl text-secondary font-extrabold">{profile.streakCount}d</p>
-        </div>
-        <div className="rounded-xl bg-gradient-to-br from-surface to-surface-container shadow-clay-surface border border-surface-border p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-tertiary text-[24px]">school</span>
-            <h3 className="font-label-sm text-on-surface-variant font-medium">Courses</h3>
-          </div>
-          <p className="font-headline-xl text-headline-xl text-tertiary font-extrabold">{coursesEnrolled[0]?.count || 0}</p>
-        </div>
-      </div>
-
-      {/* Badges Section - Duolingo Style */}
-      <div className="rounded-2xl bg-gradient-to-br from-surface to-surface-container shadow-clay-surface border border-surface-border mb-6 overflow-hidden">
-        <div className="bg-gradient-to-r from-primary to-primary/80 p-4">
-          <h2 className="font-headline-md text-headline-md text-on-primary font-extrabold flex items-center gap-2">
-            <span className="material-symbols-outlined text-[28px]">military_tech</span>
-            Achievements ({userBadgesData.length}/{allBadges.length})
-          </h2>
-        </div>
-
-        {allBadges.length === 0 ? (
-          <div className="p-6 text-center font-body-md text-text-muted">
-            No badges available
-          </div>
-        ) : (
-          <div className="p-6">
-            {/* Progress Bar */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-label-md text-text-primary font-semibold">Progress</span>
-                <span className="font-label-sm text-text-muted">{Math.round((userBadgesData.length / allBadges.length) * 100)}%</span>
-              </div>
-              <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
-                  style={{ width: `${(userBadgesData.length / allBadges.length) * 100}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <h3 className="font-label-md text-text-primary font-semibold mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
-              Earned Badges
-            </h3>
-            {userBadgesData.length === 0 ? (
-              <div className="p-6 text-center font-body-md text-text-muted bg-surface-container rounded-2xl mb-6 border border-surface-border">
-                <div className="relative w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4">
-                  <Mascot pose="empty" size={64} />
+                  )}
                 </div>
-                <p className="font-body-md text-text-muted">No badges earned yet. Keep learning!</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-                {userBadgesData.map((badge: any) => (
-                  <div key={badge.id} className="text-center p-4 bg-gradient-to-br from-secondary to-secondary/20 rounded-2xl border-2 border-secondary shadow-clay-secondary transform hover:scale-105 transition-all">
-                    <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary/80 rounded-full mx-auto mb-2 flex items-center justify-center text-3xl shadow-lg border-2 border-white">
-                      🏆
-                    </div>
-                    <p className="font-label-md text-text-primary font-semibold text-sm">{badge.name}</p>
-                    <p className="font-body-xs text-text-muted mt-1 line-clamp-2">{badge.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <h3 className="font-label-md text-text-primary font-semibold mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-text-muted text-[20px]">lock</span>
-              Locked Badges
-            </h3>
-            {lockedBadges.length === 0 ? (
-              <div className="p-6 text-center font-body-md text-primary bg-primary/10 rounded-2xl border border-primary">
-                🎉 All badges earned! You're a champion!
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {lockedBadges.map((badge: any) => (
-                  <div key={badge.id} className="text-center p-4 bg-surface-container rounded-2xl border border-surface-border opacity-60 grayscale">
-                    <div className="w-16 h-16 bg-surface-container-high rounded-full mx-auto mb-2 flex items-center justify-center text-3xl border-2 border-surface-border">
-                      🔒
-                    </div>
-                    <p className="font-label-md text-text-muted font-semibold text-sm">{badge.name}</p>
-                    <p className="font-body-xs text-text-muted mt-1 line-clamp-2">{badge.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="rounded-2xl bg-surface shadow-clay-surface border border-surface-border">
-        <div className="p-4 border-b border-surface-border">
-          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Recent Activity</h2>
+      <div className="max-w-6xl mx-auto px-6 pb-12">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-blue-100 hover:shadow-2xl transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[24px]">bolt</span>
+              </div>
+              <h3 className="font-label-sm text-gray-600 font-medium">Total XP</h3>
+            </div>
+            <p className="font-headline-2xl text-headline-2xl text-blue-600 font-extrabold">{profile.xp}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-green-100 hover:shadow-2xl transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+              </div>
+              <h3 className="font-label-sm text-gray-600 font-medium">Lessons</h3>
+            </div>
+            <p className="font-headline-2xl text-headline-2xl text-green-600 font-extrabold">{completedLessons.length}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-orange-100 hover:shadow-2xl transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
+              </div>
+              <h3 className="font-label-sm text-gray-600 font-medium">Streak</h3>
+            </div>
+            <p className="font-headline-2xl text-headline-2xl text-orange-600 font-extrabold">{profile.streakCount}d</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-purple-100 hover:shadow-2xl transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[24px]">school</span>
+              </div>
+              <h3 className="font-label-sm text-gray-600 font-medium">Courses</h3>
+            </div>
+            <p className="font-headline-2xl text-headline-2xl text-purple-600 font-extrabold">{coursesEnrolled[0]?.count || 0}</p>
+          </div>
         </div>
-        
-        <div className="p-6 text-center font-body-md text-text-muted">
-          Activity tracking coming soon
+
+        {/* Badges Section */}
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 p-6">
+            <h2 className="font-headline-xl text-headline-xl text-white font-extrabold flex items-center gap-3">
+              <span className="material-symbols-outlined text-[32px]">military_tech</span>
+              Achievements ({userBadgesData.length}/{allBadges.length})
+            </h2>
+          </div>
+
+          {allBadges.length === 0 ? (
+            <div className="p-8 text-center font-body-md text-gray-500">
+              No badges available
+            </div>
+          ) : (
+            <div className="p-6">
+              {/* Progress Bar */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-label-md text-gray-700 font-semibold">Progress</span>
+                  <span className="font-label-sm text-gray-500 font-bold">{Math.round((userBadgesData.length / allBadges.length) * 100)}%</span>
+                </div>
+                <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-700 ease-out"
+                    style={{ width: `${(userBadgesData.length / allBadges.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <h3 className="font-label-lg text-gray-800 font-bold mb-5 flex items-center gap-2">
+                <span className="material-symbols-outlined text-yellow-500 text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
+                Earned Badges
+              </h3>
+              {userBadgesData.length === 0 ? (
+                <div className="p-8 text-center font-body-md text-gray-500 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl mb-6 border-2 border-dashed border-blue-200">
+                  <div className="relative w-20 h-20 rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-lg mx-auto mb-4">
+                    <Mascot pose="empty" size={80} />
+                  </div>
+                  <p className="font-body-md text-gray-600 font-semibold">No badges earned yet. Keep learning!</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 mb-8">
+                  {userBadgesData.map((badge: any) => (
+                    <div key={badge.id} className="text-center p-5 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl border-2 border-yellow-300 shadow-lg transform hover:scale-105 transition-all cursor-pointer">
+                      <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center text-4xl shadow-xl border-4 border-white">
+                        🏆
+                      </div>
+                      <p className="font-label-md text-gray-800 font-semibold text-sm">{badge.name}</p>
+                      <p className="font-body-xs text-gray-600 mt-1 line-clamp-2">{badge.description}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <h3 className="font-label-lg text-gray-800 font-bold mb-5 flex items-center gap-2">
+                <span className="material-symbols-outlined text-gray-400 text-[24px]">lock</span>
+                Locked Badges
+              </h3>
+              {lockedBadges.length === 0 ? (
+                <div className="p-8 text-center font-body-md text-green-600 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border-2 border-green-300">
+                  🎉 All badges earned! You're a champion!
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {lockedBadges.map((badge: any) => (
+                    <div key={badge.id} className="text-center p-5 bg-gray-50 rounded-2xl border-2 border-gray-200 opacity-50 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-pointer">
+                      <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center text-4xl border-2 border-gray-300">
+                        🔒
+                      </div>
+                      <p className="font-label-md text-gray-600 font-semibold text-sm">{badge.name}</p>
+                      <p className="font-body-xs text-gray-500 mt-1 line-clamp-2">{badge.description}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="font-headline-xl text-headline-xl text-gray-800 font-extrabold flex items-center gap-3">
+              <span className="material-symbols-outlined text-blue-600 text-[28px]">history</span>
+              Recent Activity
+            </h2>
+          </div>
+          
+          <div className="p-8 text-center font-body-md text-gray-500">
+            <div className="relative w-16 h-16 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center overflow-hidden shadow-lg mx-auto mb-4">
+              <Mascot pose="empty" size={64} />
+            </div>
+            <p className="font-body-md text-gray-600 font-semibold">Activity tracking coming soon</p>
+          </div>
         </div>
       </div>
     </div>
