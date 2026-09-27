@@ -470,20 +470,22 @@ export async function sendMessage(conversationId: string, body: string) {
 
   const memberIds = conversationMembersList.map(m => m.userId);
 
-  const [blocked] = await db
-    .select()
-    .from(blocks)
-    .where(
-      and(
-        eq(blocks.blockerId, user.id),
-        // Check if blocked by anyone in the conversation
-        sql`${blocks.blockedId} = ANY(${memberIds})`
+  // Check if user is blocked by anyone in the conversation
+  if (memberIds.length > 0) {
+    const [blocked] = await db
+      .select()
+      .from(blocks)
+      .where(
+        and(
+          eq(blocks.blockerId, user.id),
+          inArray(blocks.blockedId, memberIds)
+        )
       )
-    )
-    .limit(1);
+      .limit(1);
 
-  if (blocked) {
-    throw new Error("You are blocked from this conversation");
+    if (blocked) {
+      throw new Error("You are blocked from this conversation");
+    }
   }
 
   // Insert message (rate limit enforced by DB trigger)
