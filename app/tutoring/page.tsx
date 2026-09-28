@@ -1,17 +1,14 @@
 import { getTutors, getMySessions, getPendingRequests } from "./actions";
 import { createClient } from "@/utils/supabase/server";
+import { db } from "@/db";
+import { tutorEnrollments, profiles } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
 import dynamic from "next/dynamic";
 import BookSessionButton from "./BookSessionButton";
 import MessageButton from "./MessageButton";
-
-// Server action for messaging a tutor
-async function messageTutor(tutorId: string) {
-  "use server";
-  const { startDirectConversation } = await import("../messaging/actions");
-  await startDirectConversation(tutorId);
-}
+import EnrollButton from "./EnrollButton";
 
 // Lazy load messaging widget
 const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
@@ -21,7 +18,7 @@ const MessagingWidget = dynamic(() => import("@/components/MessagingWidget"), {
 export default async function TutoringPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (!user) {
     redirect("/sign-in");
   }
@@ -29,20 +26,35 @@ export default async function TutoringPage() {
   let tutors: any[] = [];
   let mySessions: any[] = [];
   let pendingRequests: any[] = [];
+  let myEnrollments: any[] = [];
 
   try {
     const results = await Promise.all([
       getTutors(),
       getMySessions(),
-      getPendingRequests()
+      getPendingRequests(),
+      // Fetch learner's enrollments
+      db
+        .select({
+          tutorId: tutorEnrollments.tutorId,
+          status: tutorEnrollments.status,
+        })
+        .from(tutorEnrollments)
+        .where(eq(tutorEnrollments.learnerId, user.id)),
     ]);
     tutors = results[0] || [];
     mySessions = results[1] || [];
     pendingRequests = results[2] || [];
+    myEnrollments = results[3] || [];
   } catch (error) {
     console.error("Error fetching tutoring data:", error);
     // Continue with empty arrays if fetch fails
   }
+
+  // Create a map of tutorId -> enrollment status
+  const enrollmentStatusMap = new Map(
+    myEnrollments.map((e) => [e.tutorId, e.status])
+  );
 
   return (
     <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
@@ -144,9 +156,18 @@ export default async function TutoringPage() {
 
       {/* My Sessions */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="material-symbols-outlined text-primary text-[24px]">event</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">My Sessions</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-[24px]">event</span>
+            <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">My Sessions</h2>
+          </div>
+          <Link
+            href="/tutoring/my-enrollments"
+            className="inline-flex items-center gap-2 font-label-sm font-semibold text-primary hover:underline"
+          >
+            <span className="material-symbols-outlined text-[18px]">folder</span>
+            My Enrollments
+          </Link>
         </div>
         {mySessions.length === 0 ? (
           <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
@@ -250,9 +271,11 @@ export default async function TutoringPage() {
                 </div>
                 <div className="flex items-center justify-end">
                   <div className="flex gap-2">
-                    <form action={messageTutor.bind(null, tutor.tutorId)}>
-                      <MessageButton tutorId={tutor.tutorId} />
-                    </form>
+                    <MessageButton tutorId={tutor.tutorId} />
+                    <EnrollButton
+                      tutorId={tutor.tutorId}
+                      initialStatus={enrollmentStatusMap.get(tutor.tutorId) || null}
+                    />
                     <BookSessionButton tutorId={tutor.tutorId} />
                   </div>
                 </div>

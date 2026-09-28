@@ -238,13 +238,22 @@ export default async function TutorDashboard() {
                 <span className="material-symbols-outlined text-secondary text-[28px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
               </div>
               <p className="font-body-sm text-on-surface-variant">{tutorProfile.totalSessions} sessions</p>
-              <Link
-                href="/tutoring/dashboard/profile"
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[16px]">edit</span>
-                Edit
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href="/tutoring/dashboard/profile"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[16px]">edit</span>
+                  Edit
+                </Link>
+                <Link
+                  href="/tutoring/groups"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[16px]">groups</span>
+                  Groups
+                </Link>
+              </div>
             </div>
           </div>
         </div>

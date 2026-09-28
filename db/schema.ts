@@ -347,6 +347,58 @@ export const tutorEnrollments = pgTable(
   (t) => [unique().on(t.tutorId, t.learnerId)]
 );
 
+// ── 21. TUTOR_GROUPS ──────────────────────────────────────────
+export const tutorGroups = pgTable("tutor_groups", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tutorId: uuid("tutor_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 22. TUTOR_GROUP_MEMBERS ───────────────────────────────────
+export const tutorGroupMembers = pgTable(
+  "tutor_group_members",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    groupId: uuid("group_id")
+      .notNull()
+      .references(() => tutorGroups.id, { onDelete: "cascade" }),
+    learnerId: uuid("learner_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    enrolledAt: timestamp("enrolled_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [unique().on(t.groupId, t.learnerId)]
+);
+
+// ── 23. TUTOR_GROUP_SESSIONS ───────────────────────────────────
+export const groupSessionStatusEnum = pgEnum("group_session_status", [
+  "scheduled",
+  "ongoing",
+  "completed",
+  "cancelled",
+]);
+
+export const tutorGroupSessions = pgTable("tutor_group_sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => tutorGroups.id, { onDelete: "cascade" }),
+  meetingUrl: text("meeting_url").notNull(),
+  startTime: timestamp("start_time", { withTimezone: true }).notNull(),
+  endTime: timestamp("end_time", { withTimezone: true }),
+  status: groupSessionStatusEnum("status").notNull().default("scheduled"),
+  jitsiRoomId: text("jitsi_room_id"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // ── 17. LIBRARY_VIEWS ─────────────────────────────────────
 export const libraryViews = pgTable("library_views", {
   id: uuid("id").primaryKey().defaultRandom(),

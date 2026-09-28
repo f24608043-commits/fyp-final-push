@@ -1,0 +1,337 @@
+import { createClient } from "@/utils/supabase/server";
+import { db } from "@/db";
+import {
+  tutorGroups,
+  tutorGroupMembers,
+  profiles,
+  tutorEnrollments,
+  tutorGroupSessions,
+} from "@/db/schema";
+import { eq, and, inArray } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import UserAvatar from "@/components/UserAvatar";
+
+export default async function GroupDetailPage({
+  params,
+}: {
+  params: Promise<{ groupId: string }>;
+}) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  const { groupId } = await params;
+
+  // Get group details
+  const [group] = await db
+    .select()
+    .from(tutorGroups)
+    .where(eq(tutorGroups.id, groupId))
+    .limit(1);
+
+  if (!group || group.tutorId !== user.id) {
+    redirect("/tutoring/groups");
+  }
+
+  // Get group members
+  const members = await db
+    .select({
+      id: tutorGroupMembers.id,
+      learnerId: tutorGroupMembers.learnerId,
+      enrolledAt: tutorGroupMembers.enrolledAt,
+      learner: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(tutorGroupMembers)
+    .innerJoin(profiles, eq(tutorGroupMembers.learnerId, profiles.id))
+    .where(eq(tutorGroupMembers.groupId, groupId));
+
+  // Get group sessions
+  const sessions = await db
+    .select()
+    .from(tutorGroupSessions)
+    .where(eq(tutorGroupSessions.groupId, groupId))
+    .orderBy(tutorGroupSessions.startTime);
+
+  // Get enrolled learners (for adding to group)
+  const enrolledLearners = await db
+    .select({
+      id: tutorEnrollments.id,
+      learnerId: tutorEnrollments.learnerId,
+      learner: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(tutorEnrollments)
+    .innerJoin(profiles, eq(tutorEnrollments.learnerId, profiles.id))
+    .where(and(eq(tutorEnrollments.tutorId, user.id), eq(tutorEnrollments.status, "accepted")));
+
+  const memberIds = members.map((m) => m.learnerId);
+  const availableLearners = enrolledLearners.filter(
+    (el) => !memberIds.includes(el.learnerId)
+  );
+
+  async function updateGroup(formData: FormData) {
+    "use server";
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const selectedLearners = formData.getAll("learners") as string[];
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/groups/${groupId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description, learnerIds: selectedLearners }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update group");
+    }
+
+    redirect(`/tutoring/groups/${groupId}`);
+  }
+
+  async function deleteGroup() {
+    "use server";
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/groups/${groupId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete group");
+    }
+
+    redirect("/tutoring/groups");
+  }
+
+  async function createSession(formData: FormData) {
+    "use server";
+    const startTime = formData.get("startTime") as string;
+    const endTime = formData.get("endTime") as string;
+    const notes = formData.get("notes") as string;
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/groups/${groupId}/sessions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ startTime, endTime, notes }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create session");
+    }
+
+    redirect(`/tutoring/groups/${groupId}`);
+  }
+
+  return (
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+      {/* Header */}
+      <div className="mb-6">
+        <Link
+          href="/tutoring/groups"
+          className="inline-flex items-center gap-2 font-label-md text-label-md text-text-muted hover:text-primary transition-colors group mb-4"
+        >
+          <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+          <span>Back to Groups</span>
+        </Link>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight">
+              {group.name}
+            </h1>
+            {group.description && (
+              <p className="font-body-lg text-body-lg text-text-muted">{group.description}</p>
+            )}
+          </div>
+          <form action={deleteGroup}>
+            <button
+              type="submit"
+              className="rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-sm font-semibold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
+            >
+              Delete Group
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Group Members */}
+        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
+          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">
+            Members ({members.length})
+          </h2>
+          {members.length === 0 ? (
+            <p className="font-body-md text-text-muted">No members in this group yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {members.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                >
+                  <UserAvatar
+                    avatarUrl={member.learner.avatarUrl}
+                    displayName={member.learner.displayName}
+                    size="md"
+                  />
+                  <div className="flex-1">
+                    <p className="font-label-md text-text-primary font-semibold">
+                      {member.learner.displayName || "Unknown"}
+                    </p>
+                    <p className="font-body-sm text-text-muted">
+                      Added {new Date(member.enrolledAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add Members Form */}
+          {availableLearners.length > 0 && (
+            <div className="mt-4 pt-4 border-t-2 border-gray-200">
+              <h3 className="font-label-md text-text-primary font-semibold mb-3">
+                Add Members
+              </h3>
+              <form action={updateGroup} className="space-y-3">
+                <input type="hidden" name="name" value={group.name} />
+                <input type="hidden" name="description" value={group.description || ""} />
+                <div className="space-y-2">
+                  {availableLearners.map((enrollment) => (
+                    <label
+                      key={enrollment.id}
+                      className="flex items-center gap-3 p-2 rounded-lg border-2 border-gray-200 hover:border-primary cursor-pointer transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        name="learners"
+                        value={enrollment.learnerId}
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <UserAvatar
+                        avatarUrl={enrollment.learner.avatarUrl}
+                        displayName={enrollment.learner.displayName}
+                        size="sm"
+                      />
+                      <span className="font-label-sm text-text-primary">
+                        {enrollment.learner.displayName || "Unknown"}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                <button
+                  type="submit"
+                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                >
+                  Add Selected
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+
+        {/* Group Sessions */}
+        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
+          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">
+            Sessions ({sessions.length})
+          </h2>
+          
+          {/* Create Session Form */}
+          <form action={createSession} className="mb-6 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-100">
+            <h3 className="font-label-md text-text-primary font-semibold mb-3">Schedule New Session</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block font-label-sm text-text-primary mb-1">Start Time *</label>
+                <input
+                  type="datetime-local"
+                  name="startTime"
+                  required
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-text-primary mb-1">End Time (Optional)</label>
+                <input
+                  type="datetime-local"
+                  name="endTime"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-text-primary mb-1">Notes (Optional)</label>
+                <textarea
+                  name="notes"
+                  rows={2}
+                  placeholder="Session notes or agenda"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm resize-none"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              >
+                Create Session
+              </button>
+            </div>
+          </form>
+
+          {/* Sessions List */}
+          {sessions.length === 0 ? (
+            <p className="font-body-md text-text-muted">No sessions scheduled yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {sessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="font-label-md text-text-primary font-semibold">
+                        {new Date(session.startTime).toLocaleString()}
+                      </p>
+                      {session.endTime && (
+                        <p className="font-body-sm text-text-muted">
+                          to {new Date(session.endTime).toLocaleString()}
+                        </p>
+                      )}
+                      <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
+                        session.status === "scheduled" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
+                        session.status === "ongoing" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
+                        session.status === "completed" ? "bg-gradient-to-r from-gray-400 to-gray-500 text-white border-white/30" :
+                        "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30"
+                      }`}>
+                        {session.status}
+                      </span>
+                    </div>
+                    {session.status === "scheduled" && session.meetingUrl && (
+                      <a
+                        href={session.meetingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">videocam</span>
+                        Start
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
