@@ -3,6 +3,7 @@ import { getPendingEnrollments, getAcceptedLearners } from "../enrollment-action
 import { getEnrolledLearnersForGroup } from "@/app/messaging/actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import Mascot from "@/components/Mascot";
 import dynamic from "next/dynamic";
 import AcceptButton from "./AcceptButton";
@@ -214,7 +215,7 @@ export default async function TutorDashboard() {
       ) : (
         <div className="mb-6 rounded-2xl bg-gradient-to-br from-white to-purple-50 p-6 shadow-xl border-4 border-purple-100">
           <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-secondary text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>person</span>
                 <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Your Profile</h2>
@@ -231,12 +232,19 @@ export default async function TutorDashboard() {
                 {tutorProfile.hourlyRate ? `$${tutorProfile.hourlyRate}/hour` : "Free"} • {tutorProfile.timezone}
               </p>
             </div>
-            <div className="text-right shrink-0">
-              <div className="flex items-center gap-1 justify-end">
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <div className="flex items-center gap-1">
                 <span className="font-headline-xl text-headline-xl text-secondary font-extrabold">{tutorProfile.rating}</span>
                 <span className="material-symbols-outlined text-secondary text-[28px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
               </div>
               <p className="font-body-sm text-on-surface-variant">{tutorProfile.totalSessions} sessions</p>
+              <Link
+                href="/tutoring/dashboard/profile"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              >
+                <span className="material-symbols-outlined text-[16px]">edit</span>
+                Edit
+              </Link>
             </div>
           </div>
         </div>
