@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { submitQuiz, type QuizSubmissionResult } from "../actions";
 import Celebration from "@/components/Celebration";
@@ -47,6 +47,34 @@ export default function LessonClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<QuizSubmissionResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const playerRef = useRef<any>(null);
+
+  // Load YouTube iframe API and set up event listener
+  useEffect(() => {
+    // Declare YT type for TypeScript
+    (window as any).onYouTubeIframeAPIReady = () => {
+      if (playerRef.current) {
+        new (window as any).YT.Player(playerRef.current, {
+          videoId: youtubeVideoId,
+          events: {
+            onStateChange: (event: any) => {
+              if (event.data === (window as any).YT.PlayerState.ENDED) {
+                // Video ended, automatically show quiz
+                setStage("quiz");
+              }
+            },
+          },
+        });
+      }
+    };
+
+    if (!(window as any).YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    }
+  }, [youtubeVideoId]);
 
   const handleOptionSelect = (challengeId: string, optionId: string) => {
     setSelectedAnswers((prev) => ({
@@ -178,11 +206,13 @@ export default function LessonClient({
             {/* Video Player */}
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-surface-border">
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}?rel=0`}
+                ref={playerRef}
+                src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}?enablejsapi=1&rel=0`}
                 title={lessonTitle}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full border-0"
+                id={`youtube-player-${lessonId}`}
               />
             </div>
 
