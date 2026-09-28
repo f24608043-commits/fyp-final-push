@@ -71,10 +71,10 @@ export default async function PathPage() {
             </p>
             <Link
               href="/library"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-label-lg font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-label-lg font-bold shadow-2xl border-2 border-white/40 transform hover:scale-105 hover:shadow-3xl transition-all duration-300 active:scale-95 group"
             >
-              <span className="material-symbols-outlined text-[24px]">school</span>
-              Browse Courses
+              <span className="material-symbols-outlined text-[28px] group-hover:rotate-12 transition-transform">school</span>
+              <span>Browse Courses</span>
             </Link>
           </div>
         </div>
