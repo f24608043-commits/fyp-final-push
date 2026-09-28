@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Profile not found" }, { status: 404 });
   }
 
-  const userRole = role || profile.role;
+  const userRole = role || profile.role || "learner"; // Default to learner if role not set
 
   if (userRole === "learner") {
     // Return learner's enrollments with tutor info
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
     .where(eq(profiles.id, user.id))
     .limit(1);
 
-  if (!profile || profile.role !== "learner") {
+  if (!profile || (profile.role && profile.role !== "learner")) {
     return NextResponse.json({ error: "Only learners can send enrollment requests" }, { status: 403 });
   }
 
