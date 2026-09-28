@@ -21,8 +21,8 @@ export default async function OnboardingPage({
   }
 
   // Check if user has already completed onboarding AND fetch published courses in parallel
-  let userProfileResult = [];
-  let publishedCourses = [];
+  let userProfileResult: any[] = [];
+  let publishedCourses: any[] = [];
   try {
     [userProfileResult, publishedCourses] = await Promise.all([
       db.select().from(profiles).where(eq(profiles.id, user.id)).limit(1),

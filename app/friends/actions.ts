@@ -358,7 +358,7 @@ export async function getSuggestedFriends() {
 
   // Get current user's XP and existing friendships with error handling
   let currentUser = null;
-  let existingFriendships = [];
+  let existingFriendships: any[] = [];
   
   try {
     [currentUser, existingFriendships] = await Promise.all([

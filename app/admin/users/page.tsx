@@ -45,7 +45,7 @@ export default async function AdminUsersPage({
 
   const resolvedSearchParams = await searchParams;
   const searchQuery = resolvedSearchParams.q || "";
-  let users = [];
+  let users: any[] = [];
   try {
     users = await getAllUsers(searchQuery);
   } catch (error) {

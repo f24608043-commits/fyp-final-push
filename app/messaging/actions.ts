@@ -812,7 +812,7 @@ export async function createGroupConversation(learnerIds: string[], name: string
     .insert(conversations)
     .values({
       type: "group",
-      name: name || "Study Group",
+      title: name || "Study Group",
       createdBy: user.id,
     })
     .returning();

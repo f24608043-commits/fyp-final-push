@@ -33,11 +33,11 @@ export default async function AdminDashboard() {
   }
 
   // Optimize: Only fetch stats, defer course list to separate component if needed
-  let totalUsers = [];
-  let totalTutors = [];
-  let totalSessions = [];
-  let totalBadges = [];
-  let allCourses = [];
+  let totalUsers: any[] = [];
+  let totalTutors: any[] = [];
+  let totalSessions: any[] = [];
+  let totalBadges: any[] = [];
+  let allCourses: any[] = [];
   try {
     [totalUsers, totalTutors, totalSessions, totalBadges, allCourses] = await Promise.all([
       db.select({ count: count() }).from(profiles),

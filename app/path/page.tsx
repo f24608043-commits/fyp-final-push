@@ -19,9 +19,9 @@ export default async function PathPage() {
   }
 
   // 1. Verify user profile and onboarding status AND fetch enrollments with error handling
-  let profileResult = [];
-  let userEnrollments = [];
-  let mySessions = [];
+  let profileResult: any[] = [];
+  let userEnrollments: any[] = [];
+  let mySessions: any[] = [];
   
   try {
     [profileResult, userEnrollments, mySessions] = await Promise.all([
@@ -104,8 +104,8 @@ export default async function PathPage() {
   const unitIds = courseUnits.map((u) => u.id);
 
   // 4. Fetch lessons and progress in parallel (they're independent)
-  let courseLessons = [];
-  let progressRows = [];
+  let courseLessons: any[] = [];
+  let progressRows: any[] = [];
   try {
     [courseLessons, progressRows] = await Promise.all([
       unitIds.length > 0
@@ -225,17 +225,17 @@ export default async function PathPage() {
       <div className="flex items-center gap-4 mb-6">
         <div className="flex flex-col items-center clay-button-primary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
-          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.streakCount || 0}</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{(profile as any).streakCount || 0}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Streak</span>
         </div>
         <div className="flex flex-col items-center clay-button-secondary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
-          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{profile.xp?.toLocaleString() || 0}</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{((profile as any).xp || 0).toLocaleString()}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">XP</span>
         </div>
         <div className="flex flex-col items-center clay-card px-5 py-3 rounded-2xl text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
-          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{Math.floor(Math.sqrt(profile.xp / 100)) + 1}</span>
+          <span className="font-label-lg text-label-lg leading-tight font-extrabold">{Math.floor(Math.sqrt(((profile as any).xp || 0) / 100)) + 1}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Level</span>
         </div>
       </div>

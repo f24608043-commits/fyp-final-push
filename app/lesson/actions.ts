@@ -167,7 +167,7 @@ export async function submitQuiz(
         .set({
           xp: profile.xp + lesson.xpReward,
           streakCount: newStreak,
-          lastActiveDate: new Date(),
+          lastActiveDate: new Date().toISOString(),
         })
         .where(eq(profiles.id, user.id));
     }

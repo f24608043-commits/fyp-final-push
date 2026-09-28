@@ -15,8 +15,8 @@ export default async function DashboardPage() {
   }
 
   let profile = null;
-  let recentEnrollments = [];
-  let recentNotifications = [];
+  let recentEnrollments: any[] = [];
+  let recentNotifications: any[] = [];
 
   try {
     const [profileResult, enrollmentsResult, notificationsResult] = await Promise.all([
