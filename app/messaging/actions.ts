@@ -38,7 +38,8 @@ async function getCurrentUser() {
     throw new Error("User profile not found");
   }
 
-  return { ...user, role: profile.role };
+  // Default to learner if role not set
+  return { ...user, role: profile.role || "learner" };
 }
 
 // Helper: Check if two users are accepted friends
@@ -202,7 +203,9 @@ export async function startDirectConversation(otherUserId: string) {
 export async function createGroup(title: string, memberIds: string[]) {
   const user = await getCurrentUser();
   
-  if (user.role !== "tutor" && user.role !== "admin") {
+  // Check if user is a tutor (has tutor profile) or admin
+  const userIsTutor = await isTutor(user.id);
+  if (!userIsTutor && user.role !== "admin") {
     throw new Error("Only tutors can create group conversations");
   }
 
@@ -785,13 +788,9 @@ export async function getConversations(limit = 50) {
 export async function createGroupConversation(learnerIds: string[], name: string) {
   const user = await getCurrentUser();
   
-  // Only tutors can create groups
-  if (user.role !== "tutor") {
-    throw new Error("Only tutors can create group conversations");
-  }
-
+  // Only tutors can create groups (check for tutor profile)
   if (!await isTutor(user.id)) {
-    throw new Error("You must have a tutor profile to create groups");
+    throw new Error("Only tutors can create group conversations");
   }
 
   // Validate all learner IDs are enrolled with this tutor
@@ -841,7 +840,8 @@ export async function createGroupConversation(learnerIds: string[], name: string
 export async function getEnrolledLearnersForGroup() {
   const user = await getCurrentUser();
   
-  if (user.role !== "tutor") {
+  // Check if user is a tutor (has tutor profile)
+  if (!await isTutor(user.id)) {
     throw new Error("Only tutors can access enrolled learners");
   }
 
