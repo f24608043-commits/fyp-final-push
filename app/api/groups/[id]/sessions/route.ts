@@ -5,8 +5,10 @@ import {
   tutorGroups,
   profiles,
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+import { rateLimit } from "@/lib/rate-limit";
 
 // GET /api/groups/:id/sessions - Returns sessions for a group
 export async function GET(
@@ -62,6 +64,15 @@ export async function POST(
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Rate limit: 30 requests per minute per user
+  const rateLimitResult = rateLimit(user.id, 30, 60000);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429 }
+    );
   }
 
   const { id } = await params;

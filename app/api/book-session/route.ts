@@ -1,9 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { requestSession } from "@/app/tutoring/actions";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Rate limit: 10 requests per minute per user
+    const rateLimitResult = rateLimit(user.id, 10, 60000);
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again later." },
+        { status: 429 }
+      );
+    }
     const formData = await request.formData();
     const tutorId = formData.get("tutorId") as string;
     const date = formData.get("date") as string;

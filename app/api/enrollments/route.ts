@@ -7,6 +7,7 @@ import {
 } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 // GET /api/enrollments - Returns enrollments for current user (learner or tutor)
 export async function GET(request: Request) {
@@ -106,6 +107,15 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Rate limit: 10 requests per minute per user
+  const rateLimitResult = rateLimit(user.id, 10, 60000);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429 }
+    );
   }
 
   const body = await request.json();
