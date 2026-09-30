@@ -10,7 +10,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Claymorphism Color Palette
         "primary": "#58CC02",
         "primary-dark": "#3C9A00",
         "secondary": "#FF9600",
@@ -24,7 +23,7 @@ const config: Config = {
         "text-muted": "#8B8578",
         "locked": "#D1D5DB",
         
-        // Legacy tokens (will be phased out)
+        // Legacy tokens for compatibility
         "on-primary-fixed-variant": "#005321",
         "on-error": "#ffffff",
         "on-secondary-fixed": "#2a1700",
@@ -79,15 +78,16 @@ const config: Config = {
         "headline-xl": ["var(--font-rubik)", "sans-serif"],
         "headline-lg": ["var(--font-rubik)", "sans-serif"],
         "headline-md": ["var(--font-rubik)", "sans-serif"],
+        "headline-2xl": ["var(--font-rubik)", "sans-serif"],
         "label-lg": ["var(--font-rubik)", "sans-serif"],
         "label-md": ["var(--font-rubik)", "sans-serif"],
         "label-sm": ["var(--font-rubik)", "sans-serif"],
         "body-lg": ["var(--font-nunito-sans)", "sans-serif"],
         "body-md": ["var(--font-nunito-sans)", "sans-serif"],
         "body-sm": ["var(--font-nunito-sans)", "sans-serif"],
+        "body-xs": ["var(--font-nunito-sans)", "sans-serif"],
       },
       boxShadow: {
-        // Claymorphism shadows
         "clay-primary": "0 8px 24px rgba(92, 154, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
         "clay-primary-pressed": "0 2px 8px rgba(92, 154, 0, 0.2), inset 0 2px 8px rgba(92, 154, 0, 0.15)",
         "clay-secondary": "0 8px 24px rgba(255, 150, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
@@ -98,8 +98,6 @@ const config: Config = {
         "clay-surface-pressed": "0 2px 8px rgba(45, 42, 38, 0.05), inset 0 2px 8px rgba(45, 42, 38, 0.03)",
         "clay-success": "0 8px 24px rgba(34, 197, 94, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
         "clay-error": "0 8px 24px rgba(255, 107, 107, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4)",
-        
-        // Legacy shadows
         "subtle": "0 1px 8px rgba(0,0,0,0.04)",
         "glow": "0 2px 0 0 #22c55e",
       },

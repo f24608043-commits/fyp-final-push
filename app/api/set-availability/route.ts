@@ -41,9 +41,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Set availability
-    await setAvailability(slots);
+    const result = await setAvailability(slots);
 
-    return NextResponse.redirect(new URL("/tutoring/dashboard", request.url));
+    if (result.success) {
+      return NextResponse.json({ success: true });
+    } else {
+      return NextResponse.json(
+        { error: "Failed to set availability" },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error("Set availability error:", error);
     return NextResponse.json(

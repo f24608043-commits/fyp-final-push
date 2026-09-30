@@ -77,7 +77,7 @@ export default async function AdminDashboard() {
         <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex flex-col gap-2 max-w-2xl">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-4 py-1 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">🛡️ Admin Panel</span>
               <span className="text-text-muted text-label-sm">•</span>
@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
             </p>
           </div>
 
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
             <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0">
               <Mascot pose="idle" size={128} />
             </div>
@@ -101,7 +101,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Link href="/admin/users" className="rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-500 p-5 shadow-xl border-4 border-white/30 hover:shadow-2xl hover:scale-105 transition-all text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>people</span>
@@ -141,8 +141,8 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link href="/admin/users" className="rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-4 border-4 border-blue-200 hover:from-blue-200 hover:to-indigo-200 transition-all flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white flex items-center justify-center shadow-xl border-2 border-white/30">
               <span className="material-symbols-outlined text-[20px]">person_add</span>
@@ -187,7 +187,7 @@ export default async function AdminDashboard() {
 
       {/* Courses Section */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Recent Courses</h2>
             <p className="mt-1 font-body-sm text-text-muted">
@@ -210,7 +210,7 @@ export default async function AdminDashboard() {
           <p className="font-body-md text-text-muted font-bold">No courses yet. Create your first course above.</p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {allCourses.map((course) => (
             <Link
               key={course.id}

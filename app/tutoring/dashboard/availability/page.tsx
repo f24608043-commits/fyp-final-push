@@ -46,10 +46,12 @@ export default function EditAvailabilityPage() {
         body: formData,
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         redirect("/tutoring/dashboard");
       } else {
-        alert("Failed to save availability");
+        alert(data.error || "Failed to save availability");
       }
     } catch (error) {
       console.error("Error saving availability:", error);

@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { tutorEnrollments, profiles } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import Mascot from "@/components/Mascot";
 import dynamic from "next/dynamic";
 import BookSessionButton from "./BookSessionButton";
@@ -57,15 +58,15 @@ export default async function TutoringPage() {
   );
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
       {/* Header with Mascot - Stitch Frame Style */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
+      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
         <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
-          <div className="flex flex-col gap-2 max-w-2xl">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutoring</span>
               <span className="text-text-muted text-label-sm">•</span>
@@ -80,7 +81,7 @@ export default async function TutoringPage() {
           </div>
 
           {/* Right: Mascot */}
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
             <div className="relative max-w-xs bg-gradient-to-br from-blue-100 to-cyan-100 p-4 rounded-2xl shadow-xl border-4 border-white/50 order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="material-symbols-outlined text-cyan-600 text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
@@ -100,17 +101,17 @@ export default async function TutoringPage() {
 
       {/* Pending Requests (for tutors) */}
       {pendingRequests.length > 0 && (
-        <div className="mb-6 rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-6 shadow-xl border-4 border-yellow-200">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-8 shadow-xl border-4 border-yellow-200">
+          <div className="flex items-center gap-2 mb-6">
             <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
-            <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">
+            <h2 className="font-headline-lg text-headline-lg text-on-secondary-container font-extrabold">
               Pending Session Requests ({pendingRequests.length})
             </h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-white p-4 shadow-lg border-4 border-yellow-100">
-                <div className="flex items-center gap-3 mb-3">
+              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-lg border-4 border-yellow-100">
+                <div className="flex items-center gap-4 mb-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white font-bold text-lg shadow-xl border-4 border-white/30">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
@@ -155,11 +156,11 @@ export default async function TutoringPage() {
       )}
 
       {/* My Sessions */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[24px]">event</span>
-            <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">My Sessions</h2>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">My Sessions</h2>
           </div>
           <Link
             href="/tutoring/my-enrollments"
@@ -170,20 +171,20 @@ export default async function TutoringPage() {
           </Link>
         </div>
         {mySessions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
             <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No sessions yet. Find a tutor to get started!</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {mySessions.map((session: any) => {
               const otherUserId = session.tutorId === user.id ? session.learnerId : session.tutorId;
               const otherUserName = session.tutorId === user.id ? "Learner" : "Tutor";
               
               return (
-                <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100">
+                <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-label-md text-on-surface font-semibold">
@@ -229,22 +230,22 @@ export default async function TutoringPage() {
 
       {/* Tutor Directory */}
       <div>
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-6">
           <span className="material-symbols-outlined text-primary text-[24px]">people</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Find a Tutor</h2>
+          <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">Find a Tutor</h2>
         </div>
         {tutors.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
             <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No tutors available yet.</p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {tutors.map((tutor: any) => (
-              <div key={tutor.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-5 shadow-xl border-4 border-blue-100 hover:shadow-2xl hover:border-blue-200 transition-all">
-                <div className="flex items-center gap-3 mb-4">
+              <div key={tutor.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100 hover:shadow-2xl hover:border-blue-200 transition-all">
+                <div className="flex items-center gap-4 mb-4">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-bold text-xl shadow-xl border-4 border-white/30">
                     {tutor.displayName?.[0] || "?"}
                   </div>
@@ -259,7 +260,7 @@ export default async function TutoringPage() {
                     </div>
                   </div>
                 </div>
-                <p className="font-body-sm text-on-surface-variant mb-3 line-clamp-2">
+                <p className="font-body-md text-on-surface-variant mb-4 line-clamp-2">
                   {tutor.bio || "No bio available"}
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">

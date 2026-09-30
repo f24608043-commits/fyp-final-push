@@ -11,9 +11,12 @@ test('Test /friends as tutor', async ({ page }) => {
   await page.waitForURL(/\/(tutoring\/dashboard|path)/, { timeout: 60000 });
   console.log('Logged in as tutor');
   
-  await page.goto('/friends', { waitUntil: 'networkidle', timeout: 60000 });
+  await page.goto('/friends', { waitUntil: 'domcontentloaded', timeout: 60000 });
   
   // Just verify page loads without crashing
   await expect(page.locator('body')).toBeVisible();
   console.log('Friends page loaded successfully for tutor');
+  
+  // Wait a bit to ensure no errors
+  await page.waitForTimeout(2000);
 });

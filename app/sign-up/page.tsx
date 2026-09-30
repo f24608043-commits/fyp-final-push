@@ -1,14 +1,11 @@
 ﻿import Link from "next/link";
-import { signUp } from "../auth/actions";
 import Mascot from "@/components/Mascot";
 
-export default async function SignUpPage({
+export default function SignUpPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const params = await searchParams;
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md rounded-2xl bg-surface p-8 shadow-clay-surface border border-surface-border">
@@ -29,15 +26,8 @@ export default async function SignUpPage({
           <p className="mt-1 font-body-md text-text-muted">Join LEGO to start your learning adventure</p>
         </div>
 
-        {/* Error Message */}
-        {params.error && (
-          <div className="mb-4 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">
-            {params.error}
-          </div>
-        )}
-
         {/* Form */}
-        <form action={signUp} className="space-y-4">
+        <form action="/auth/sign-up" method="POST" className="space-y-4">
           <div>
             <label className="block font-label-md text-text-primary mb-1">Display Name</label>
             <input

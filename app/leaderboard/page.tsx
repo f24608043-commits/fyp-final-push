@@ -23,7 +23,7 @@ export default async function LeaderboardPage() {
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
-          <div className="flex flex-col gap-2 max-w-2xl">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-0.5 rounded-lg bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm tracking-wider uppercase">Competition</span>
               <span className="text-outline text-label-sm">•</span>
@@ -38,7 +38,7 @@ export default async function LeaderboardPage() {
           </div>
 
           {/* Right: Mascot */}
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
             <div className="relative max-w-xs bg-surface-container-lowest p-4 rounded-2xl shadow-lg border-b-4 border-surface-container-high order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>

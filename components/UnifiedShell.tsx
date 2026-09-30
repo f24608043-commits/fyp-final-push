@@ -103,7 +103,7 @@ export default function UnifiedShell({
       bottom: [
         { path: "/tutoring/dashboard", label: "Dashboard", icon: "dashboard" },
         { path: "/tutoring", label: "Sessions", icon: "groups" },
-        { path: "/tutoring/learners", label: "Learners", icon: "people" },
+        { path: "/tutoring/learner-dashboard", label: "Learners", icon: "people" },
         { path: "/tutoring/history", label: "History", icon: "history" },
         { path: "/profile", label: "Profile", icon: "person" },
       ],
@@ -145,9 +145,9 @@ export default function UnifiedShell({
     : { path: "/path", label: "Learner View", icon: "home" };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background w-full">
       {/* Sidebar - Desktop: full, Tablet: icon-only, Mobile: hidden */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-surface z-50 flex-col justify-between shadow-clay-surface border-r border-surface-border">
+      <aside className="hidden lg:flex h-full w-64 flex-shrink-0 bg-surface flex-col justify-between shadow-clay-surface border-r border-surface-border z-40">
         <div className="flex flex-col">
           {/* Logo */}
           <div className="h-16 px-6 flex items-center gap-2">
@@ -213,7 +213,7 @@ export default function UnifiedShell({
       </aside>
 
       {/* Tablet Icon-Only Sidebar Rail */}
-      <aside className="hidden md:flex lg:hidden fixed left-0 top-0 h-full w-16 bg-surface z-50 flex flex-col items-center py-4 shadow-clay-surface border-r border-surface-border">
+      <aside className="hidden md:flex lg:hidden fixed left-0 top-0 h-full w-16 bg-surface flex flex-col items-center py-4 shadow-clay-surface border-r border-surface-border">
         {/* Logo Icon */}
         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-clay-primary mb-4 ${isLearner ? 'bg-primary text-white' : isAdmin ? 'bg-error text-white' : 'bg-secondary text-white'}`}>
           <span className="material-symbols-outlined text-[20px]">{logoIcon}</span>
@@ -251,9 +251,9 @@ export default function UnifiedShell({
       </aside>
 
       {/* Main Content - Responsive padding */}
-      <div className="flex-1 lg:pl-64 md:pl-16 pl-0">
+      <div className="flex-1 min-w-0 overflow-x-auto relative z-50">
         {/* Top Header - Mobile: slim, Desktop: full */}
-        <header className="fixed top-0 left-0 right-0 lg:left-64 md:left-16 h-16 bg-surface/95 backdrop-blur-xl shadow-clay-surface z-40 flex items-center justify-between px-4 lg:px-6">
+        <header className="sticky top-0 h-16 bg-surface/95 backdrop-blur-xl shadow-clay-surface z-40 flex items-center justify-between px-4 lg:px-6 gap-4">
           {/* Mobile Menu Toggle & Logo */}
           <div className="flex items-center gap-2 lg:hidden">
             <button

@@ -3,28 +3,35 @@ dotenv.config({ path: ".env.local" });
 import postgres from "postgres";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const sql = postgres(process.env.DATABASE_URL!, { ssl: { rejectUnauthorized: false } });
 
 async function runMigration() {
-  console.log("=== Running tutor_enrollments migration ===\n");
+  console.log("=== Running base migration (0003_remarkable_spyke.sql) ===\n");
 
   try {
-    // Read and execute the migration
-    const migrationPath = join(__dirname, "../drizzle/0004_tutor_enrollments.sql");
-    const migrationSQL = readFileSync(migrationPath, "utf-8");
+    // Run the base migration to create tutor tables
+    const baseMigrationPath = join(__dirname, "../drizzle/0003_remarkable_spyke.sql");
+    const baseMigrationSQL = readFileSync(baseMigrationPath, "utf-8");
 
-    console.log("Executing schema migration...");
-    await sql.unsafe(migrationSQL);
-    console.log("✓ Schema migration completed\n");
+    console.log("Executing base schema migration...");
+    await sql.unsafe(baseMigrationSQL);
+    console.log("✓ Base schema migration completed\n");
 
-    // Read and execute RLS policies
-    const rlsPath = join(__dirname, "../drizzle/0005_tutor_enrollments_rls.sql");
-    const rlsSQL = readFileSync(rlsPath, "utf-8");
+    console.log("=== Running feature migration (0010_add_tutoring_features.sql) ===\n");
 
-    console.log("Executing RLS policies...");
-    await sql.unsafe(rlsSQL);
-    console.log("✓ RLS policies completed\n");
+    // Run the feature migration to add new columns and tables
+    const featureMigrationPath = join(__dirname, "../drizzle/0010_add_tutoring_features.sql");
+    const featureMigrationSQL = readFileSync(featureMigrationPath, "utf-8");
+
+    console.log("Executing feature schema migration...");
+    await sql.unsafe(featureMigrationSQL);
+    console.log("✓ Feature schema migration completed\n");
 
     console.log("=== Migration completed successfully ===");
   } catch (error) {

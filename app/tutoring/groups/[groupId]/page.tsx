@@ -134,19 +134,19 @@ export default async function GroupDetailPage({
   }
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-8">
         <Link
           href="/tutoring/groups"
-          className="inline-flex items-center gap-2 font-label-md text-label-md text-text-muted hover:text-primary transition-colors group mb-4"
+          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-text-muted hover:text-primary transition-colors group mb-4"
         >
           <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
           <span>Back to Groups</span>
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight">
+            <h1 className="font-headline-2xl text-headline-2xl text-text-primary tracking-tight">
               {group.name}
             </h1>
             {group.description && (
@@ -156,7 +156,7 @@ export default async function GroupDetailPage({
           <form action={deleteGroup}>
             <button
               type="submit"
-              className="rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-sm font-semibold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
+              className="rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-md font-semibold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
             >
               Delete Group
             </button>
@@ -166,18 +166,18 @@ export default async function GroupDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Group Members */}
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
-          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">
+        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
             Members ({members.length})
           </h2>
           {members.length === 0 ? (
-            <p className="font-body-md text-text-muted">No members in this group yet.</p>
+            <p className="font-body-lg text-text-muted">No members in this group yet.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
                 >
                   <UserAvatar
                     avatarUrl={member.learner.avatarUrl}
@@ -188,7 +188,7 @@ export default async function GroupDetailPage({
                     <p className="font-label-md text-text-primary font-semibold">
                       {member.learner.displayName || "Unknown"}
                     </p>
-                    <p className="font-body-sm text-text-muted">
+                    <p className="font-body-md text-text-muted">
                       Added {new Date(member.enrolledAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -199,18 +199,18 @@ export default async function GroupDetailPage({
 
           {/* Add Members Form */}
           {availableLearners.length > 0 && (
-            <div className="mt-4 pt-4 border-t-2 border-gray-200">
-              <h3 className="font-label-md text-text-primary font-semibold mb-3">
+            <div className="mt-6 pt-6 border-t-2 border-gray-200">
+              <h3 className="font-label-md text-text-primary font-semibold mb-4">
                 Add Members
               </h3>
-              <form action={updateGroup} className="space-y-3">
+              <form action={updateGroup} className="space-y-4">
                 <input type="hidden" name="name" value={group.name} />
                 <input type="hidden" name="description" value={group.description || ""} />
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {availableLearners.map((enrollment) => (
                     <label
                       key={enrollment.id}
-                      className="flex items-center gap-3 p-2 rounded-lg border-2 border-gray-200 hover:border-primary cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-primary cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"
@@ -231,7 +231,7 @@ export default async function GroupDetailPage({
                 </div>
                 <button
                   type="submit"
-                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   Add Selected
                 </button>
@@ -241,44 +241,44 @@ export default async function GroupDetailPage({
         </div>
 
         {/* Group Sessions */}
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
-          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">
+        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
             Sessions ({sessions.length})
           </h2>
           
           {/* Create Session Form */}
-          <form action={createSession} className="mb-6 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-100">
-            <h3 className="font-label-md text-text-primary font-semibold mb-3">Schedule New Session</h3>
-            <div className="space-y-3">
+          <form action={createSession} className="mb-6 p-6 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-100">
+            <h3 className="font-label-md text-text-primary font-semibold mb-4">Schedule New Session</h3>
+            <div className="space-y-4">
               <div>
-                <label className="block font-label-sm text-text-primary mb-1">Start Time *</label>
+                <label className="block font-label-sm text-text-primary mb-2">Start Time *</label>
                 <input
                   type="datetime-local"
                   name="startTime"
                   required
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md"
                 />
               </div>
               <div>
-                <label className="block font-label-sm text-text-primary mb-1">End Time (Optional)</label>
+                <label className="block font-label-sm text-text-primary mb-2">End Time (Optional)</label>
                 <input
                   type="datetime-local"
                   name="endTime"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md"
                 />
               </div>
               <div>
-                <label className="block font-label-sm text-text-primary mb-1">Notes (Optional)</label>
+                <label className="block font-label-sm text-text-primary mb-2">Notes (Optional)</label>
                 <textarea
                   name="notes"
                   rows={2}
                   placeholder="Session notes or agenda"
-                  className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-sm resize-none"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-label-md font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Create Session
               </button>
@@ -287,13 +287,13 @@ export default async function GroupDetailPage({
 
           {/* Sessions List */}
           {sessions.length === 0 ? (
-            <p className="font-body-md text-text-muted">No sessions scheduled yet.</p>
+            <p className="font-body-lg text-text-muted">No sessions scheduled yet.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {sessions.map((session) => (
                 <div
                   key={session.id}
-                  className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                  className="p-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
@@ -301,7 +301,7 @@ export default async function GroupDetailPage({
                         {new Date(session.startTime).toLocaleString()}
                       </p>
                       {session.endTime && (
-                        <p className="font-body-sm text-text-muted">
+                        <p className="font-body-md text-text-muted">
                           to {new Date(session.endTime).toLocaleString()}
                         </p>
                       )}
@@ -319,7 +319,7 @@ export default async function GroupDetailPage({
                         href={session.meetingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-sm font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                        className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                       >
                         <span className="material-symbols-outlined text-[18px]">videocam</span>
                         Start

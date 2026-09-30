@@ -1,18 +1,19 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MessageButton({ tutorId }: { tutorId: string }) {
-  const { pending } = useFormStatus();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     try {
       setError(null);
-      const response = await fetch("/api/messages/conversations", {
+      setLoading(true);
+      
+      const response = await fetch("/api/messaging/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ otherUserId: tutorId }),
@@ -25,10 +26,12 @@ export default function MessageButton({ tutorId }: { tutorId: string }) {
 
       const data = await response.json();
       // Navigate to the conversation
-      router.push(`/messages?conversation=${data.conversationId}`);
+      router.push(`/messages/${data.conversationId}`);
     } catch (err: any) {
       setError(err.message);
       setTimeout(() => setError(null), 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,10 +40,10 @@ export default function MessageButton({ tutorId }: { tutorId: string }) {
       <button
         type="button"
         onClick={handleClick}
-        disabled={pending}
+        disabled={loading}
         className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
       >
-        {pending ? (
+        {loading ? (
           <>
             <span className="animate-spin">⏳</span>
             Opening...

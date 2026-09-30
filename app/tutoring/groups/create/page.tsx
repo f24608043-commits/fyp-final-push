@@ -69,17 +69,17 @@ export default async function CreateGroupPage() {
   }
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-8">
         <Link
           href="/tutoring/groups"
-          className="inline-flex items-center gap-2 font-label-md text-label-md text-text-muted hover:text-primary transition-colors group mb-4"
+          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-text-muted hover:text-primary transition-colors group mb-4"
         >
           <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
           <span>Back to Groups</span>
         </Link>
-        <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight">
+        <h1 className="font-headline-2xl text-headline-2xl text-text-primary tracking-tight">
           Create New Group
         </h1>
         <p className="font-body-lg text-body-lg text-text-muted">
@@ -89,10 +89,10 @@ export default async function CreateGroupPage() {
 
       {/* Create Group Form */}
       <div className="max-w-2xl">
-        <form action={createGroup} className="space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
-            <div className="mb-4">
-              <label htmlFor="name" className="block font-label-md text-text-primary font-semibold mb-2">
+        <form action={createGroup} className="space-y-8">
+          <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+            <div className="mb-6">
+              <label htmlFor="name" className="block font-label-md text-text-primary font-semibold mb-3">
                 Group Name *
               </label>
               <input
@@ -101,35 +101,35 @@ export default async function CreateGroupPage() {
                 name="name"
                 required
                 placeholder="e.g., Grade 10 Physics - Batch A"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-lg"
               />
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="description" className="block font-label-md text-text-primary font-semibold mb-2">
+            <div className="mb-6">
+              <label htmlFor="description" className="block font-label-md text-text-primary font-semibold mb-3">
                 Description (Optional)
               </label>
               <textarea
                 id="description"
                 name="description"
-                rows={3}
+                rows={4}
                 placeholder="Describe the group's focus or schedule"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-lg resize-none"
               />
             </div>
           </div>
 
           {/* Select Learners */}
-          <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
-            <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">
+          <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+            <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
               Select Learners ({enrolledLearners.length} available)
             </h2>
             {enrolledLearners.length === 0 ? (
-              <p className="font-body-md text-text-muted">
+              <p className="font-body-lg text-text-muted">
                 No enrolled learners available. Accept enrollment requests first.
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {enrolledLearners.map((enrollment) => (
                   <label
                     key={enrollment.id}
@@ -159,13 +159,13 @@ export default async function CreateGroupPage() {
           <div className="flex justify-end gap-4">
             <Link
               href="/tutoring/groups"
-              className="rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 px-6 py-3 font-label-md font-semibold shadow-lg hover:from-gray-100 hover:to-gray-200 transition-all"
+              className="rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 px-6 py-3 font-label-lg font-semibold shadow-lg hover:from-gray-100 hover:to-gray-200 transition-all"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-lg font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3 font-label-lg font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
             >
               Create Group
             </button>

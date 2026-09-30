@@ -506,10 +506,20 @@ export async function sendMessage(conversationId: string, body: string) {
     return { success: true, message };
   } catch (error: any) {
     console.error("Database error inserting message:", error);
+    console.error("Error details:", {
+      code: error.code,
+      message: error.message,
+      constraint: error.constraint,
+      table: error.table,
+      column: error.column,
+    });
     if (error.code === '23505') {
       throw new Error("Rate limit exceeded: Please wait before sending another message");
     }
-    throw new Error("Failed to send message. Please try again.");
+    if (error.code === '23503') {
+      throw new Error("Conversation not found or you are not a member");
+    }
+    throw new Error(`Failed to send message: ${error.message || "Please try again."}`);
   }
 }
 

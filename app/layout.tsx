@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-on-surface font-body-md">
+      <body className="min-h-full flex flex-col bg-background text-on-surface font-body-md w-full overflow-x-hidden">
         <Shell>{children}</Shell>
         <ChatWidget />
       </body>

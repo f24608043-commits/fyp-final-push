@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('PART 6: Post-signup onboarding flow - Learner completes onboarding', async ({ page }) => {
   test.setTimeout(90000);
   
-  await page.goto('http://localhost:3000/sign-in');
+  await page.goto('/sign-in');
   await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
   await page.fill('input[type="password"]', 'Test123456!');
   await page.click('button[type="submit"]');
@@ -31,7 +31,7 @@ test('PART 6: Post-signup onboarding flow - Learner completes onboarding', async
 test('PART 6: Post-signup onboarding flow - Tutor skips onboarding (goes to dashboard)', async ({ page }) => {
   test.setTimeout(90000);
   
-  await page.goto('http://localhost:3000/sign-in');
+  await page.goto('/sign-in');
   await page.fill('input[type="email"]', 'orphix.itsolutions@gmail.com');
   await page.fill('input[type="password"]', 'Qasim.11');
   await page.click('button[type="submit"]');

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { tutorProfiles, tutorAvailability, tutorSessions, sessionRequests, sessionNotes, profiles } from "@/db/schema";
+import { tutorProfiles, tutorAvailability, tutorSessions, sessionRequests, sessionNotes, profiles, tutorEnrollments, learnerStats, tasks, taskSubmissions, badges, userBadges } from "@/db/schema";
 import { eq, and, or, desc, inArray, gte, lte } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
@@ -135,6 +135,17 @@ export async function setAvailability(slots: {
   }
 
   try {
+    // Check if user has a tutor profile
+    const [tutorProfile] = await db
+      .select()
+      .from(tutorProfiles)
+      .where(eq(tutorProfiles.tutorId, user.id))
+      .limit(1);
+
+    if (!tutorProfile) {
+      throw new Error("You must create a tutor profile first");
+    }
+
     // Delete existing availability
     await db
       .delete(tutorAvailability)
@@ -157,7 +168,7 @@ export async function setAvailability(slots: {
     return { success: true };
   } catch (error) {
     console.error("Error setting availability:", error);
-    throw new Error("Failed to set availability. Please try again.");
+    throw error;
   }
 }
 
@@ -578,4 +589,924 @@ export async function getPendingRequests() {
     .limit(50);
 
   return requests;
+}
+
+// Tutor Enrollment Actions
+export async function requestTutorEnrollment(data: {
+  tutorId: string;
+  message?: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Check if enrollment already exists
+  const [existing] = await db
+    .select()
+    .from(tutorEnrollments)
+    .where(and(
+      eq(tutorEnrollments.tutorId, data.tutorId),
+      eq(tutorEnrollments.learnerId, user.id)
+    ))
+    .limit(1);
+
+  if (existing) {
+    if (existing.status === "pending") {
+      throw new Error("You already have a pending enrollment request with this tutor");
+    } else if (existing.status === "accepted") {
+      throw new Error("You are already enrolled with this tutor");
+    } else {
+      // Update existing rejected/removed enrollment to pending
+      await db
+        .update(tutorEnrollments)
+        .set({
+          status: "pending",
+          message: data.message,
+          updatedAt: new Date(),
+        })
+        .where(eq(tutorEnrollments.id, existing.id));
+      
+      // Notify tutor
+      await createNotification({
+        userId: data.tutorId,
+        type: "lesson_completed",
+        title: "New Enrollment Request",
+        message: "You have a new enrollment request",
+        data: { enrollmentId: existing.id },
+      });
+
+      revalidatePath("/tutoring");
+      return { success: true, enrollmentId: existing.id };
+    }
+  }
+
+  // Create new enrollment request
+  const [enrollment] = await db
+    .insert(tutorEnrollments)
+    .values({
+      tutorId: data.tutorId,
+      learnerId: user.id,
+      status: "pending",
+      message: data.message,
+    })
+    .returning();
+
+  // Notify tutor
+  await createNotification({
+    userId: data.tutorId,
+    type: "lesson_completed",
+    title: "New Enrollment Request",
+    message: "You have a new enrollment request",
+    data: { enrollmentId: enrollment.id },
+  });
+
+  revalidatePath("/tutoring");
+  return { success: true, enrollmentId: enrollment.id };
+}
+
+export async function acceptTutorEnrollment(enrollmentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Get the enrollment
+  const [enrollment] = await db
+    .select()
+    .from(tutorEnrollments)
+    .where(eq(tutorEnrollments.id, enrollmentId))
+    .limit(1);
+
+  if (!enrollment || enrollment.tutorId !== user.id) {
+    throw new Error("Enrollment not found or unauthorized");
+  }
+
+  if (enrollment.status !== "pending") {
+    throw new Error("Enrollment is not pending");
+  }
+
+  // Update enrollment status
+  await db
+    .update(tutorEnrollments)
+    .set({
+      status: "accepted",
+      startedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(tutorEnrollments.id, enrollmentId));
+
+  // Update tutor profile stats
+  await db
+    .update(tutorProfiles)
+    .set({
+      activeLearners: sql`${tutorProfiles.activeLearners} + 1`,
+      totalLearners: sql`${tutorProfiles.totalLearners} + 1`,
+      updatedAt: new Date(),
+    })
+    .where(eq(tutorProfiles.tutorId, user.id));
+
+  // Create learner stats if they don't exist
+  const [existingLearnerStats] = await db
+    .select()
+    .from(learnerStats)
+    .where(eq(learnerStats.learnerId, enrollment.learnerId))
+    .limit(1);
+
+  if (!existingLearnerStats) {
+    await db.insert(learnerStats).values({
+      learnerId: enrollment.learnerId,
+    });
+  } else {
+    await db
+      .update(learnerStats)
+      .set({
+        activeEnrollments: sql`${learnerStats.activeEnrollments} + 1`,
+        totalEnrollments: sql`${learnerStats.totalEnrollments} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(learnerStats.learnerId, enrollment.learnerId));
+  }
+
+  // Notify learner
+  await createNotification({
+    userId: enrollment.learnerId,
+    type: "lesson_completed",
+    title: "Enrollment Accepted",
+    message: "Your enrollment request has been accepted",
+    data: { enrollmentId },
+  });
+
+  revalidatePath("/tutoring");
+  revalidatePath("/tutoring/dashboard");
+  return { success: true };
+}
+
+export async function declineTutorEnrollment(enrollmentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Get the enrollment
+  const [enrollment] = await db
+    .select()
+    .from(tutorEnrollments)
+    .where(eq(tutorEnrollments.id, enrollmentId))
+    .limit(1);
+
+  if (!enrollment || enrollment.tutorId !== user.id) {
+    throw new Error("Enrollment not found or unauthorized");
+  }
+
+  if (enrollment.status !== "pending") {
+    throw new Error("Enrollment is not pending");
+  }
+
+  // Update enrollment status
+  await db
+    .update(tutorEnrollments)
+    .set({
+      status: "rejected",
+      updatedAt: new Date(),
+    })
+    .where(eq(tutorEnrollments.id, enrollmentId));
+
+  // Notify learner
+  await createNotification({
+    userId: enrollment.learnerId,
+    type: "lesson_completed",
+    title: "Enrollment Declined",
+    message: "Your enrollment request has been declined",
+    data: { enrollmentId },
+  });
+
+  revalidatePath("/tutoring");
+  revalidatePath("/tutoring/dashboard");
+  return { success: true };
+}
+
+export async function getTutorEnrollments(tutorId?: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  const targetTutorId = tutorId || user.id;
+
+  const enrollments = await db
+    .select({
+      id: tutorEnrollments.id,
+      status: tutorEnrollments.status,
+      message: tutorEnrollments.message,
+      createdAt: tutorEnrollments.createdAt,
+      learner: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(tutorEnrollments)
+    .innerJoin(profiles, eq(tutorEnrollments.learnerId, profiles.id))
+    .where(eq(tutorEnrollments.tutorId, targetTutorId))
+    .orderBy(desc(tutorEnrollments.createdAt))
+    .limit(50);
+
+  return enrollments;
+}
+
+export async function getLearnerEnrollments() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  const enrollments = await db
+    .select({
+      id: tutorEnrollments.id,
+      status: tutorEnrollments.status,
+      message: tutorEnrollments.message,
+      createdAt: tutorEnrollments.createdAt,
+      tutor: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+      tutorProfile: {
+        bio: tutorProfiles.bio,
+        subjects: tutorProfiles.subjects,
+        hourlyRate: tutorProfiles.hourlyRate,
+      },
+    })
+    .from(tutorEnrollments)
+    .innerJoin(profiles, eq(tutorEnrollments.tutorId, profiles.id))
+    .leftJoin(tutorProfiles, eq(tutorEnrollments.tutorId, tutorProfiles.tutorId))
+    .where(eq(tutorEnrollments.learnerId, user.id))
+    .orderBy(desc(tutorEnrollments.createdAt))
+    .limit(50);
+
+  return enrollments;
+}
+
+// Task Actions
+export async function createTask(data: {
+  targetType: "learner" | "classroom";
+  targetId: string;
+  title: string;
+  description?: string;
+  dueDate?: Date;
+  attachments?: any[];
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Verify user is a tutor
+  const [profile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  if (!profile || profile.role !== "tutor") {
+    throw new Error("Only tutors can create tasks");
+  }
+
+  // If targeting a learner, verify enrollment
+  if (data.targetType === "learner") {
+    const [enrollment] = await db
+      .select()
+      .from(tutorEnrollments)
+      .where(and(
+        eq(tutorEnrollments.tutorId, user.id),
+        eq(tutorEnrollments.learnerId, data.targetId),
+        eq(tutorEnrollments.status, "accepted")
+      ))
+      .limit(1);
+
+    if (!enrollment) {
+      throw new Error("Learner is not enrolled with you");
+    }
+  }
+
+  const [task] = await db
+    .insert(tasks)
+    .values({
+      tutorId: user.id,
+      targetType: data.targetType,
+      targetId: data.targetId,
+      title: data.title,
+      description: data.description,
+      dueDate: data.dueDate,
+      attachments: data.attachments,
+    })
+    .returning();
+
+  // Notify the learner if targeting a learner
+  if (data.targetType === "learner") {
+    await createNotification({
+      userId: data.targetId,
+      type: "lesson_completed",
+      title: "New Task Assigned",
+      message: `You have been assigned a new task: ${data.title}`,
+      data: { taskId: task.id },
+    });
+  }
+
+  revalidatePath("/tutoring");
+  revalidatePath("/tutoring/dashboard");
+  return { success: true, taskId: task.id };
+}
+
+export async function getTutorTasks() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  const tasksList = await db
+    .select({
+      id: tasks.id,
+      title: tasks.title,
+      description: tasks.description,
+      dueDate: tasks.dueDate,
+      status: tasks.status,
+      targetType: tasks.targetType,
+      targetId: tasks.targetId,
+      createdAt: tasks.createdAt,
+      learner: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(tasks)
+    .leftJoin(profiles, and(eq(tasks.targetId, profiles.id), eq(tasks.targetType, "learner")))
+    .where(eq(tasks.tutorId, user.id))
+    .orderBy(desc(tasks.createdAt))
+    .limit(50);
+
+  return tasksList;
+}
+
+export async function getLearnerTasks() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  // Get tasks assigned directly to learner
+  const directTasks = await db
+    .select({
+      id: tasks.id,
+      title: tasks.title,
+      description: tasks.description,
+      dueDate: tasks.dueDate,
+      status: tasks.status,
+      targetType: tasks.targetType,
+      targetId: tasks.targetId,
+      createdAt: tasks.createdAt,
+      tutor: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(tasks)
+    .innerJoin(profiles, eq(tasks.tutorId, profiles.id))
+    .where(and(
+      eq(tasks.targetType, "learner"),
+      eq(tasks.targetId, user.id)
+    ))
+    .orderBy(desc(tasks.createdAt))
+    .limit(50);
+
+  return directTasks;
+}
+
+export async function submitTask(data: {
+  taskId: string;
+  content: string;
+  attachments?: any[];
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Get the task
+  const [task] = await db
+    .select()
+    .from(tasks)
+    .where(eq(tasks.id, data.taskId))
+    .limit(1);
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  // Verify the task is assigned to this learner
+  if (task.targetType === "learner" && task.targetId !== user.id) {
+    throw new Error("This task is not assigned to you");
+  }
+
+  // Check if already submitted
+  const [existingSubmission] = await db
+    .select()
+    .from(taskSubmissions)
+    .where(and(
+      eq(taskSubmissions.taskId, data.taskId),
+      eq(taskSubmissions.learnerId, user.id)
+    ))
+    .limit(1);
+
+  if (existingSubmission) {
+    throw new Error("You have already submitted this task");
+  }
+
+  // Create submission
+  await db.insert(taskSubmissions).values({
+    taskId: data.taskId,
+    learnerId: user.id,
+    content: data.content,
+    attachments: data.attachments,
+  });
+
+  // Update task status
+  await db
+    .update(tasks)
+    .set({
+      status: "submitted",
+      submittedAt: new Date(),
+    })
+    .where(eq(tasks.id, data.taskId));
+
+  // Notify tutor
+  await createNotification({
+    userId: task.tutorId,
+    type: "lesson_completed",
+    title: "Task Submitted",
+    message: "A learner has submitted a task",
+    data: { taskId: data.taskId },
+  });
+
+  revalidatePath("/tutoring");
+  revalidatePath("/learner");
+  return { success: true };
+}
+
+export async function gradeTask(data: {
+  taskId: string;
+  learnerId: string;
+  score?: number;
+  grade?: string;
+  feedback?: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Get the task
+  const [task] = await db
+    .select()
+    .from(tasks)
+    .where(eq(tasks.id, data.taskId))
+    .limit(1);
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  // Verify user is the tutor who created the task
+  if (task.tutorId !== user.id) {
+    throw new Error("You can only grade your own tasks");
+  }
+
+  // Update task with grade
+  await db
+    .update(tasks)
+    .set({
+      score: data.score,
+      grade: data.grade,
+      feedback: data.feedback,
+      status: "graded",
+      gradedAt: new Date(),
+    })
+    .where(eq(tasks.id, data.taskId));
+
+  // Update learner stats
+  const [learnerStat] = await db
+    .select()
+    .from(learnerStats)
+    .where(eq(learnerStats.learnerId, data.learnerId))
+    .limit(1);
+
+  if (learnerStat) {
+    await db
+      .update(learnerStats)
+      .set({
+        completedTasks: sql`${learnerStats.completedTasks} + 1`,
+        averageTaskScore: sql`CASE WHEN ${learnerStats.completedTasks} = 0 THEN ${data.score || 0} ELSE (${learnerStats.averageTaskScore} * ${learnerStats.completedTasks} + ${data.score || 0}) / (${learnerStats.completedTasks} + 1) END`,
+        updatedAt: new Date(),
+      })
+      .where(eq(learnerStats.learnerId, data.learnerId));
+  }
+
+  // Notify learner
+  await createNotification({
+    userId: data.learnerId,
+    type: "lesson_completed",
+    title: "Task Graded",
+    message: "Your task has been graded",
+    data: { taskId: data.taskId },
+  });
+
+  revalidatePath("/tutoring");
+  revalidatePath("/learner");
+  return { success: true };
+}
+
+export async function getTaskSubmission(taskId: string, learnerId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return null;
+  }
+
+  const [submission] = await db
+    .select()
+    .from(taskSubmissions)
+    .where(and(
+      eq(taskSubmissions.taskId, taskId),
+      eq(taskSubmissions.learnerId, learnerId)
+    ))
+    .limit(1);
+
+  return submission;
+}
+
+// Badge Actions
+export async function awardBadge(data: {
+  learnerId: string;
+  badgeId: string;
+  context?: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Verify user is a tutor
+  const [profile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  if (!profile || profile.role !== "tutor") {
+    throw new Error("Only tutors can award badges");
+  }
+
+  // Verify the learner is enrolled with this tutor
+  const [enrollment] = await db
+    .select()
+    .from(tutorEnrollments)
+    .where(and(
+      eq(tutorEnrollments.tutorId, user.id),
+      eq(tutorEnrollments.learnerId, data.learnerId),
+      eq(tutorEnrollments.status, "accepted")
+    ))
+    .limit(1);
+
+  if (!enrollment) {
+    throw new Error("Learner is not enrolled with you");
+  }
+
+  // Check if badge exists
+  const [badge] = await db
+    .select()
+    .from(badges)
+    .where(eq(badges.id, data.badgeId))
+    .limit(1);
+
+  if (!badge) {
+    throw new Error("Badge not found");
+  }
+
+  // Check if learner already has this badge
+  const [existingBadge] = await db
+    .select()
+    .from(userBadges)
+    .where(and(
+      eq(userBadges.userId, data.learnerId),
+      eq(userBadges.badgeId, data.badgeId)
+    ))
+    .limit(1);
+
+  if (existingBadge) {
+    throw new Error("Learner already has this badge");
+  }
+
+  // Award the badge
+  await db.insert(userBadges).values({
+    userId: data.learnerId,
+    badgeId: data.badgeId,
+    awardedByTutorId: user.id,
+    context: data.context,
+  });
+
+  // Update tutor's badge awarded count
+  await db
+    .update(tutorProfiles)
+    .set({
+      badgesAwardedCount: sql`${tutorProfiles.badgesAwardedCount} + 1`,
+      updatedAt: new Date(),
+    })
+    .where(eq(tutorProfiles.tutorId, user.id));
+
+  // Update learner stats
+  const [learnerStat] = await db
+    .select()
+    .from(learnerStats)
+    .where(eq(learnerStats.learnerId, data.learnerId))
+    .limit(1);
+
+  if (learnerStat) {
+    await db
+      .update(learnerStats)
+      .set({
+        badgesEarnedCount: sql`${learnerStats.badgesEarnedCount} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(learnerStats.learnerId, data.learnerId));
+  }
+
+  // Notify learner
+  await createNotification({
+    userId: data.learnerId,
+    type: "lesson_completed",
+    title: "Badge Awarded!",
+    message: `You have been awarded the ${badge.name} badge!`,
+    data: { badgeId: data.badgeId },
+  });
+
+  revalidatePath("/tutoring");
+  revalidatePath("/learner");
+  return { success: true };
+}
+
+export async function getAvailableBadges() {
+  const badgesList = await db
+    .select()
+    .from(badges)
+    .orderBy(badges.name)
+    .limit(50);
+
+  return badgesList;
+}
+
+export async function getLearnerBadges(learnerId: string) {
+  const learnerBadgesList = await db
+    .select({
+      id: userBadges.id,
+      awardedAt: userBadges.awardedAt,
+      context: userBadges.context,
+      badge: {
+        id: badges.id,
+        name: badges.name,
+        description: badges.description,
+        iconUrl: badges.iconUrl,
+        category: badges.category,
+      },
+      awardedBy: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+      },
+    })
+    .from(userBadges)
+    .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+    .leftJoin(profiles, eq(userBadges.awardedByTutorId, profiles.id))
+    .where(eq(userBadges.userId, learnerId))
+    .orderBy(desc(userBadges.awardedAt))
+    .limit(50);
+
+  return learnerBadgesList;
+}
+
+export async function getTutorAwardedBadges(tutorId?: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    return [];
+  }
+
+  const targetTutorId = tutorId || user.id;
+
+  const awardedBadges = await db
+    .select({
+      id: userBadges.id,
+      awardedAt: userBadges.awardedAt,
+      context: userBadges.context,
+      badge: {
+        id: badges.id,
+        name: badges.name,
+        description: badges.description,
+        iconUrl: badges.iconUrl,
+      },
+      learner: {
+        id: profiles.id,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      },
+    })
+    .from(userBadges)
+    .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+    .innerJoin(profiles, eq(userBadges.userId, profiles.id))
+    .where(eq(userBadges.awardedByTutorId, targetTutorId))
+    .orderBy(desc(userBadges.awardedAt))
+    .limit(50);
+
+  return awardedBadges;
+}
+
+// Ranking/Level System Actions
+export async function calculateRankLevel(points: number): Promise<number> {
+  // Simple ranking system: level = floor(sqrt(points / 100)) + 1
+  // Level 1: 0-99 points
+  // Level 2: 100-399 points
+  // Level 3: 400-899 points
+  // Level 4: 900-1599 points
+  // etc.
+  return Math.floor(Math.sqrt(points / 100)) + 1;
+}
+
+export async function awardRankPoints(data: {
+  userId: string;
+  points: number;
+  reason: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Update user's rank points
+  await db
+    .update(profiles)
+    .set({
+      rankPoints: sql`${profiles.rankPoints} + ${data.points}`,
+      updatedAt: new Date(),
+    })
+    .where(eq(profiles.id, data.userId));
+
+  // Get updated profile to check for level up
+  const [updatedProfile] = await db
+    .select({ rankPoints: profiles.rankPoints, rankLevel: profiles.rankLevel })
+    .from(profiles)
+    .where(eq(profiles.id, data.userId))
+    .limit(1);
+
+  if (updatedProfile) {
+    const newLevel = await calculateRankLevel(updatedProfile.rankPoints);
+    
+    if (newLevel > updatedProfile.rankLevel) {
+      // Level up!
+      await db
+        .update(profiles)
+        .set({ rankLevel: newLevel })
+        .where(eq(profiles.id, data.userId));
+
+      // Notify user of level up
+      await createNotification({
+        userId: data.userId,
+        type: "lesson_completed",
+        title: "Level Up!",
+        message: `Congratulations! You've reached Level ${newLevel}!`,
+        data: { newLevel, reason: data.reason },
+      });
+    }
+  }
+
+  revalidatePath("/tutoring");
+  revalidatePath("/learner");
+  return { success: true };
+}
+
+export async function awardTutorRankPoints(data: {
+  tutorId: string;
+  points: number;
+  reason: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user?.id) {
+    throw new Error("You must be logged in");
+  }
+
+  // Update tutor's rank points
+  await db
+    .update(tutorProfiles)
+    .set({
+      rankPoints: sql`${tutorProfiles.rankPoints} + ${data.points}`,
+      updatedAt: new Date(),
+    })
+    .where(eq(tutorProfiles.tutorId, data.tutorId));
+
+  // Get updated profile to check for level up
+  const [updatedProfile] = await db
+    .select({ rankPoints: tutorProfiles.rankPoints, rankLevel: tutorProfiles.rankLevel })
+    .from(tutorProfiles)
+    .where(eq(tutorProfiles.tutorId, data.tutorId))
+    .limit(1);
+
+  if (updatedProfile) {
+    const newLevel = await calculateRankLevel(updatedProfile.rankPoints);
+    
+    if (newLevel > updatedProfile.rankLevel) {
+      // Level up!
+      await db
+        .update(tutorProfiles)
+        .set({ rankLevel: newLevel })
+        .where(eq(tutorProfiles.tutorId, data.tutorId));
+
+      // Notify tutor of level up
+      await createNotification({
+        userId: data.tutorId,
+        type: "lesson_completed",
+        title: "Tutor Level Up!",
+        message: `Congratulations! You've reached Tutor Level ${newLevel}!`,
+        data: { newLevel, reason: data.reason },
+      });
+    }
+  }
+
+  revalidatePath("/tutoring");
+  return { success: true };
+}
+
+export async function getLeaderboard(limit: number = 10) {
+  const leaderboard = await db
+    .select({
+      id: profiles.id,
+      displayName: profiles.displayName,
+      avatarUrl: profiles.avatarUrl,
+      rankLevel: profiles.rankLevel,
+      rankPoints: profiles.rankPoints,
+      role: profiles.role,
+    })
+    .from(profiles)
+    .orderBy(desc(profiles.rankPoints))
+    .limit(limit);
+
+  return leaderboard;
+}
+
+export async function getTutorLeaderboard(limit: number = 10) {
+  const leaderboard = await db
+    .select({
+      id: tutorProfiles.tutorId,
+      displayName: profiles.displayName,
+      avatarUrl: profiles.avatarUrl,
+      rankLevel: tutorProfiles.rankLevel,
+      rankPoints: tutorProfiles.rankPoints,
+      totalSessions: tutorProfiles.totalSessions,
+      rating: tutorProfiles.rating,
+      activeLearners: tutorProfiles.activeLearners,
+    })
+    .from(tutorProfiles)
+    .innerJoin(profiles, eq(tutorProfiles.tutorId, profiles.id))
+    .where(eq(tutorProfiles.isActive, true))
+    .orderBy(desc(tutorProfiles.rankPoints))
+    .limit(limit);
+
+  return leaderboard;
 }

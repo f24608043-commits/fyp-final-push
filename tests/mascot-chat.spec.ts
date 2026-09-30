@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Mascot Chat Feature', () => {
   test.beforeEach(async ({ page }) => {
     // Login as test learner
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('/sign-in');
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
@@ -16,7 +16,7 @@ test.describe('Mascot Chat Feature', () => {
     }
     const url = page.url();
     if (url.includes('/onboarding')) {
-      await page.goto('http://localhost:3000/path');
+      await page.goto('/path');
     }
 
     // Try to wait for networkidle, but continue if it fails
@@ -132,7 +132,7 @@ test.describe('Mascot Chat Feature', () => {
 test.describe('Mascot Chat API - Failure Scenarios', () => {
   test.beforeEach(async ({ page }) => {
     // Login as test learner for API tests
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('/sign-in');
     await page.fill('input[type="email"]', 'testlearner+test@gmail.com');
     await page.fill('input[type="password"]', 'Test123456!');
     await page.click('button[type="submit"]');
@@ -147,7 +147,7 @@ test.describe('Mascot Chat API - Failure Scenarios', () => {
     // Handle onboarding redirect
     const url = page.url();
     if (url.includes('/onboarding')) {
-      await page.goto('http://localhost:3000/path');
+      await page.goto('/path');
     }
   });
 
@@ -155,7 +155,7 @@ test.describe('Mascot Chat API - Failure Scenarios', () => {
     // This test would require temporarily invalidating the OpenRouter key
     // For now, we'll test the API endpoint directly
 
-    const response = await page.request.post('http://localhost:3000/api/mascot-chat', {
+    const response = await page.request.post('/api/mascot-chat', {
       data: {
         message: 'Test message',
         simulateOpenRouterFailure: true,
@@ -169,7 +169,7 @@ test.describe('Mascot Chat API - Failure Scenarios', () => {
   });
 
   test('OpenAI failure falls back to canned response', async ({ page }) => {
-    const response = await page.request.post('http://localhost:3000/api/mascot-chat', {
+    const response = await page.request.post('/api/mascot-chat', {
       data: {
         message: 'Test message',
         simulateOpenRouterFailure: true,

@@ -189,7 +189,7 @@ export default async function PathPage() {
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
-          <div className="flex flex-col gap-2 max-w-2xl">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-0.5 rounded-lg clay-badge text-text-muted font-label-sm text-label-sm tracking-wider uppercase">{courseData.title}</span>
               <span className="text-text-muted text-label-sm">•</span>
@@ -204,7 +204,7 @@ export default async function PathPage() {
           </div>
 
           {/* Right: Mascot + Stats */}
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
             <div className="relative max-w-xs clay-card p-4 order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>

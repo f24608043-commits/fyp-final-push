@@ -22,6 +22,20 @@
       "when": 1790344663371,
       "tag": "0002_silent_madame_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790627714830,
+      "tag": "0003_remarkable_spyke",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790760571226,
+      "tag": "0004_first_tempest",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Base styles to ensure CSS is loading */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-nunito-sans), system-ui, sans-serif;
+}
+
 /* Material Symbols Outlined */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';

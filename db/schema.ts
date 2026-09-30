@@ -50,6 +50,9 @@ export const profiles = pgTable("profiles", {
   lastActiveDate: date("last_active_date"),
   onboardingDone: boolean("onboarding_done").notNull().default(false),
   dailyGoalMinutes: integer("daily_goal_minutes").notNull().default(15),
+  // Extended fields for ranking system
+  rankLevel: integer("rank_level").default(1),
+  rankPoints: integer("rank_points").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -175,6 +178,7 @@ export const badges = pgTable("badges", {
   name: text("name").notNull().unique(),
   description: text("description"),
   iconUrl: text("icon_url"),
+  category: text("category"), // academic, behavior, participation, etc.
   criteriaType: badgeCriteriaEnum("criteria_type").notNull(),
   criteriaValue: integer("criteria_value").notNull().default(1),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -192,6 +196,8 @@ export const userBadges = pgTable(
     badgeId: uuid("badge_id")
       .notNull()
       .references(() => badges.id, { onDelete: "cascade" }),
+    awardedByTutorId: uuid("awarded_by_tutor_id").references(() => profiles.id, { onDelete: "set null" }),
+    context: text("context"), // Optional context for why badge was awarded
     awardedAt: timestamp("awarded_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [unique().on(t.userId, t.badgeId)]
@@ -256,6 +262,13 @@ export const tutorProfiles = pgTable("tutor_profiles", {
   isActive: boolean("is_active").notNull().default(true),
   rating: integer("rating").default(0), // 0-5 scale
   totalSessions: integer("total_sessions").default(0),
+  // Extended fields for ranking system
+  experienceYears: integer("experience_years").default(0),
+  rankLevel: integer("rank_level").default(1),
+  rankPoints: integer("rank_points").default(0),
+  totalLearners: integer("total_learners").default(0),
+  activeLearners: integer("active_learners").default(0),
+  badgesAwardedCount: integer("badges_awarded_count").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -283,11 +296,15 @@ export const tutorSessions = pgTable("tutor_sessions", {
     .notNull()
     .references(() => profiles.id, { onDelete: "cascade" }),
   courseId: uuid("course_id").references(() => courses.id, { onDelete: "set null" }),
+  type: text("type").notNull().default("one_to_one"), // "one_to_one" or "group"
+  title: text("title"),
   scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull(),
   durationMins: integer("duration_mins").notNull().default(60),
   status: sessionStatusEnum("status").notNull().default("requested"),
   jitsiRoomId: text("jitsi_room_id"),
+  meetingUrl: text("meeting_url"),
   notes: text("notes"),
+  recordingUrl: text("recording_url"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -341,6 +358,9 @@ export const tutorEnrollments = pgTable(
       .references(() => profiles.id, { onDelete: "cascade" }),
     status: tutorEnrollmentStatusEnum("status").notNull().default("pending"),
     message: text("message"), // Optional message from learner
+    startedAt: timestamp("started_at", { withTimezone: true }), // When enrollment was accepted
+    endedAt: timestamp("ended_at", { withTimezone: true }), // When enrollment ended
+    metadata: jsonb("metadata"), // Additional notes, goals, etc.
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -355,12 +375,16 @@ export const tutorGroups = pgTable("tutor_groups", {
     .references(() => profiles.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
+  subject: text("subject"),
+  level: text("level"), // beginner, intermediate, advanced
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ── 22. TUTOR_GROUP_MEMBERS ───────────────────────────────────
+export const groupMemberStatusEnum = pgEnum("group_member_status", ["active", "removed", "inactive"]);
+
 export const tutorGroupMembers = pgTable(
   "tutor_group_members",
   {
@@ -371,6 +395,7 @@ export const tutorGroupMembers = pgTable(
     learnerId: uuid("learner_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
+    status: groupMemberStatusEnum("status").notNull().default("active"),
     enrolledAt: timestamp("enrolled_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [unique().on(t.groupId, t.learnerId)]
@@ -530,3 +555,59 @@ export const messageReports = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
 );
+
+// ── 25. TASKS ───────────────────────────────────────────────
+export const taskTargetTypeEnum = pgEnum("task_target_type", ["learner", "classroom"]);
+export const taskStatusEnum = pgEnum("task_status", ["assigned", "submitted", "graded", "overdue"]);
+
+export const tasks = pgTable("tasks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tutorId: uuid("tutor_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  targetType: taskTargetTypeEnum("target_type").notNull(),
+  targetId: uuid("target_id").notNull(), // learnerId or classroomId
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: timestamp("due_date", { withTimezone: true }),
+  status: taskStatusEnum("status").notNull().default("assigned"),
+  attachments: jsonb("attachments"), // Array of file URLs or metadata
+  feedback: text("feedback"),
+  grade: integer("grade"),
+  score: integer("score"),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }),
+  gradedAt: timestamp("graded_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 26. TASK_SUBMISSIONS ───────────────────────────────────
+export const taskSubmissions = pgTable("task_submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  taskId: uuid("task_id")
+    .notNull()
+    .references(() => tasks.id, { onDelete: "cascade" }),
+  learnerId: uuid("learner_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  attachments: jsonb("attachments"), // Array of file URLs
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 27. LEARNER_STATS ───────────────────────────────────────
+export const learnerStats = pgTable("learner_stats", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  learnerId: uuid("learner_id")
+    .notNull()
+    .unique()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  totalEnrollments: integer("total_enrollments").default(0),
+  activeEnrollments: integer("active_enrollments").default(0),
+  completedTasks: integer("completed_tasks").default(0),
+  badgesEarnedCount: integer("badges_earned_count").default(0),
+  attendanceRate: integer("attendance_rate").default(0), // 0-100
+  averageTaskScore: integer("average_task_score").default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
