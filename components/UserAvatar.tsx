@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface UserAvatarProps {
   avatarUrl?: string | null;
@@ -29,10 +30,17 @@ export default function UserAvatar({
     : "?";
 
   if (avatarUrl) {
+    const sizeMap = {
+      sm: 32,
+      md: 48,
+      lg: 64,
+    };
     return (
-      <img
+      <Image
         src={avatarUrl}
         alt={displayName || "User"}
+        width={sizeMap[size]}
+        height={sizeMap[size]}
         className={`${sizes[size]} rounded-full object-cover border-2 border-surface-border ${className}`}
       />
     );

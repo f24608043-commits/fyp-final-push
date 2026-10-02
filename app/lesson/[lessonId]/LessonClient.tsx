@@ -2,10 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { submitQuiz, type QuizSubmissionResult } from "../actions";
-import Celebration from "@/components/Celebration";
 import Mascot from "@/components/Mascot";
 import { triggerMascotPose, triggerMascotAssembly } from "@/lib/mascot";
+
+// Dynamic import for Celebration to reduce initial bundle size
+const Celebration = dynamic(() => import("@/components/Celebration"), {
+  loading: () => null,
+  ssr: false,
+});
 
 interface OptionItem {
   id: string;

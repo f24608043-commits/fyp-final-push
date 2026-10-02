@@ -449,6 +449,17 @@ export async function sendMessage(conversationId: string, body: string) {
     throw new Error("Message too long (max 2000 characters)");
   }
 
+  // Validate conversation exists
+  const [conversation] = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.id, conversationId))
+    .limit(1);
+
+  if (!conversation) {
+    throw new Error("Invalid conversation ID. Please start a new conversation.");
+  }
+
   // Check if user is a member (server-side validation)
   const [member] = await db
     .select()
@@ -493,6 +504,12 @@ export async function sendMessage(conversationId: string, body: string) {
 
   // Insert message (rate limit enforced by DB trigger)
   try {
+    console.log("Attempting to insert message:", {
+      conversationId,
+      senderId: user.id,
+      body: body.trim(),
+    });
+
     const [message] = await db
       .insert(messages)
       .values({
@@ -502,6 +519,7 @@ export async function sendMessage(conversationId: string, body: string) {
       })
       .returning();
 
+    console.log("Message inserted successfully:", message);
     revalidatePath("/messages");
     return { success: true, message };
   } catch (error: any) {
@@ -512,12 +530,20 @@ export async function sendMessage(conversationId: string, body: string) {
       constraint: error.constraint,
       table: error.table,
       column: error.column,
+      detail: error.detail,
+      hint: error.hint,
+      cause: error.cause,
     });
     if (error.code === '23505') {
       throw new Error("Rate limit exceeded: Please wait before sending another message");
     }
     if (error.code === '23503') {
+      console.error("Foreign key violation - conversation_id or sender_id not found");
       throw new Error("Conversation not found or you are not a member");
+    }
+    if (error.code === '42501') {
+      console.error("RLS policy violation - user not allowed to insert");
+      throw new Error("Permission denied: You are not allowed to send messages in this conversation");
     }
     throw new Error(`Failed to send message: ${error.message || "Please try again."}`);
   }

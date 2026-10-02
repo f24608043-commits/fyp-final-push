@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import UserAvatar from "@/components/UserAvatar";
 
@@ -368,7 +369,7 @@ export default async function LearnerDashboardPage() {
                 >
                   <div className="text-5xl mb-3">
                     {userBadge.badge.iconUrl ? (
-                      <img src={userBadge.badge.iconUrl} alt={userBadge.badge.name} className="w-16 h-16 mx-auto" />
+                      <Image src={userBadge.badge.iconUrl} alt={userBadge.badge.name} width={64} height={64} className="w-16 h-16 mx-auto" />
                     ) : (
                       "🏆"
                     )}

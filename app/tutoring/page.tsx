@@ -24,6 +24,20 @@ export default async function TutoringPage() {
     redirect("/sign-in");
   }
 
+  // Fetch user profile to check role
+  const [profile] = await db
+    .select({ role: profiles.role })
+    .from(profiles)
+    .where(eq(profiles.id, user.id))
+    .limit(1);
+
+  // Role-based routing
+  if (profile?.role === "tutor") {
+    // Tutors should see their classes/dashboard
+    redirect("/tutoring/classes");
+  }
+
+  // Learners see the tutor directory (current view)
   let tutors: any[] = [];
   let mySessions: any[] = [];
   let pendingRequests: any[] = [];

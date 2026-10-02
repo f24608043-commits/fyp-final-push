@@ -36,6 +36,13 @@
       "when": 1790760571226,
       "tag": "0004_first_tempest",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790880901938,
+      "tag": "0005_fast_leech",
+      "breakpoints": true
     }
   ]
 }

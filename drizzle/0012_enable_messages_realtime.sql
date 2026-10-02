@@ -1,0 +1,3 @@
+-- Realtime replication for messages table is already enabled
+-- The messages table is already a member of the supabase_realtime publication
+-- No action needed

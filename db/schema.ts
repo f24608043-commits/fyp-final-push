@@ -611,3 +611,252 @@ export const learnerStats = pgTable("learner_stats", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ── 28. GROUPS (Google Classroom-like) ───────────────────────
+export const groupPrivacyEnum = pgEnum("group_privacy", ["public", "private", "invite_only"]);
+
+export const groups = pgTable("groups", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tutorId: uuid("tutor_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description"),
+  subject: text("subject"),
+  gradeLevel: text("grade_level"),
+  coverImageUrl: text("cover_image_url"),
+  groupCode: text("group_code").unique(),
+  privacy: groupPrivacyEnum("privacy").notNull().default("private"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 29. GROUP_MEMBERS ─────────────────────────────────────────
+export const groupRoleEnum = pgEnum("group_role", ["tutor", "co_tutor", "student"]);
+
+export const groupMembers = pgTable(
+  "group_members",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    groupId: uuid("group_id")
+      .notNull()
+      .references(() => groups.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    role: groupRoleEnum("role").notNull().default("student"),
+    joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [unique().on(t.groupId, t.userId)]
+);
+
+// ── 30. ASSIGNMENTS ───────────────────────────────────────────
+export const assignmentStatusEnum = pgEnum("assignment_status", ["draft", "published", "archived"]);
+
+export const assignments = pgTable("assignments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+  tutorId: uuid("tutor_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  dueDate: timestamp("due_date", { withTimezone: true }),
+  points: integer("points").notNull().default(100),
+  status: assignmentStatusEnum("status").notNull().default("draft"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 31. ASSIGNMENT_ATTACHMENTS ───────────────────────────────
+export const assignmentAttachments = pgTable("assignment_attachments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  assignmentId: uuid("assignment_id")
+    .notNull()
+    .references(() => assignments.id, { onDelete: "cascade" }),
+  fileUrl: text("file_url").notNull(),
+  fileName: text("file_name"),
+  fileType: text("file_type"),
+  fileSize: integer("file_size"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 32. SUBMISSIONS ───────────────────────────────────────────
+export const submissionStatusEnum = pgEnum("submission_status", ["submitted", "graded", "late"]);
+
+export const submissions = pgTable(
+  "submissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    assignmentId: uuid("assignment_id")
+      .notNull()
+      .references(() => assignments.id, { onDelete: "cascade" }),
+    studentId: uuid("student_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+    status: submissionStatusEnum("status").notNull().default("submitted"),
+    pointsEarned: integer("points_earned"),
+    feedback: text("feedback"),
+  },
+  (t) => [unique().on(t.assignmentId, t.studentId)]
+);
+
+// ── 33. SUBMISSION_ATTACHMENTS ───────────────────────────────
+export const submissionAttachments = pgTable("submission_attachments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  submissionId: uuid("submission_id")
+    .notNull()
+    .references(() => submissions.id, { onDelete: "cascade" }),
+  fileUrl: text("file_url").notNull(),
+  fileName: text("file_name"),
+  fileType: text("file_type"),
+  fileSize: integer("file_size"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 34. QUIZZES ───────────────────────────────────────────────
+export const quizzes = pgTable("quizzes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  assignmentId: uuid("assignment_id")
+    .notNull()
+    .references(() => assignments.id, { onDelete: "cascade" }),
+  timeLimit: integer("time_limit"), // in minutes
+  allowRetakes: boolean("allow_retakes").notNull().default(false),
+  maxAttempts: integer("max_attempts").notNull().default(1),
+  randomizeQuestions: boolean("randomize_questions").notNull().default(false),
+  showResultsAfter: boolean("show_results_after").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 35. QUIZ_QUESTIONS ───────────────────────────────────────
+export const questionTypeEnum = pgEnum("question_type", ["multiple_choice", "true_false", "short_answer", "essay"]);
+
+export const quizQuestions = pgTable("quiz_questions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  quizId: uuid("quiz_id")
+    .notNull()
+    .references(() => quizzes.id, { onDelete: "cascade" }),
+  questionText: text("question_text").notNull(),
+  questionType: questionTypeEnum("question_type").notNull(),
+  points: integer("points").notNull().default(1),
+  orderIndex: integer("order_index"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 36. QUIZ_OPTIONS ───────────────────────────────────────
+export const quizOptions = pgTable("quiz_options", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  questionId: uuid("question_id")
+    .notNull()
+    .references(() => quizQuestions.id, { onDelete: "cascade" }),
+  optionText: text("option_text").notNull(),
+  isCorrect: boolean("is_correct").notNull().default(false),
+  orderIndex: integer("order_index"),
+});
+
+// ── 37. QUIZ_ATTEMPTS ───────────────────────────────────────
+export const quizAttempts = pgTable(
+  "quiz_attempts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    quizId: uuid("quiz_id")
+      .notNull()
+      .references(() => quizzes.id, { onDelete: "cascade" }),
+    studentId: uuid("student_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    score: integer("score"),
+  }
+);
+
+// ── 38. QUIZ_ANSWERS ───────────────────────────────────────
+export const quizAnswers = pgTable("quiz_answers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  attemptId: uuid("attempt_id")
+    .notNull()
+    .references(() => quizAttempts.id, { onDelete: "cascade" }),
+  questionId: uuid("question_id")
+    .notNull()
+    .references(() => quizQuestions.id, { onDelete: "cascade" }),
+  selectedOptionId: uuid("selected_option_id").references(() => quizOptions.id, { onDelete: "set null" }),
+  textAnswer: text("text_answer"),
+  isCorrect: boolean("is_correct"),
+  pointsEarned: integer("points_earned"),
+});
+
+// ── 39. GROUP_ANNOUNCEMENTS ───────────────────────────────
+export const groupAnnouncements = pgTable("group_announcements", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+  tutorId: uuid("tutor_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  content: text("content"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 40. GROUP_COMMENTS ───────────────────────────────────────
+export const groupComments = pgTable("group_comments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  groupId: uuid("group_id")
+    .notNull()
+    .references(() => groups.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  parentId: uuid("parent_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 41. TUTOR_REVIEWS ───────────────────────────────────────
+export const tutorReviews = pgTable(
+  "tutor_reviews",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tutorId: uuid("tutor_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    studentId: uuid("student_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    rating: integer("rating").notNull(),
+    reviewText: text("review_text"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique().on(t.tutorId, t.studentId),
+    check("rating_check", sql`${t.rating} >= 1 AND ${t.rating} <= 5`)
+  ]
+);
+
+// ── 42. ENROLLMENT_REQUESTS ───────────────────────────────
+export const enrollmentRequestStatusEnum = pgEnum("enrollment_request_status", ["pending", "approved", "rejected"]);
+
+export const enrollmentRequests = pgTable(
+  "enrollment_requests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    groupId: uuid("group_id")
+      .notNull()
+      .references(() => groups.id, { onDelete: "cascade" }),
+    studentId: uuid("student_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    status: enrollmentRequestStatusEnum("status").notNull().default("pending"),
+    requestedAt: timestamp("requested_at", { withTimezone: true }).notNull().defaultNow(),
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
+    responseMessage: text("response_message"),
+  },
+  (t) => [unique().on(t.groupId, t.studentId)]
+);

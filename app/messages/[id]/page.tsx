@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 interface Message {
   message: {
@@ -67,25 +68,32 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
         }
 
         // Fetch conversation participants to show who we're messaging
-        const { data: members } = await supabase
+        const { data: members, error: membersError } = await supabase
           .from("conversation_members")
           .select("user_id")
           .eq("conversation_id", resolvedParams.id);
 
         console.log("Conversation members:", members);
+        console.log("Members error:", membersError);
         console.log("Current user ID:", user.id);
 
-        if (members && mounted) {
+        if (membersError) {
+          console.error("Error fetching conversation members:", membersError);
+        }
+
+        if (members && members.length > 0 && mounted) {
           const otherUserId = members.find((m: any) => m.user_id !== user.id)?.user_id;
           console.log("Other user ID:", otherUserId);
           
           if (otherUserId) {
-            const { data: profile } = await supabase
+            const { data: profile, error: profileError } = await supabase
               .from("profiles")
               .select("id, display_name, avatar_url")
               .eq("id", otherUserId)
               .single();
+            
             console.log("Other user profile:", profile);
+            console.log("Profile error:", profileError);
             
             if (profile && mounted) {
               setOtherParticipant({
@@ -94,7 +102,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
                 id: profile.id,
               });
             } else if (mounted) {
-              // Fallback if profile not found
+              console.error("Failed to load profile for user:", otherUserId, profileError);
               setOtherParticipant({
                 displayName: "Unknown User",
                 avatarUrl: null,
@@ -102,60 +110,34 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
               });
             }
           } else if (mounted) {
-            // No other participant found (shouldn't happen in direct message)
+            // No other participant found (group chat or self-conversation)
             console.warn("No other participant found in conversation");
+            // For group chats, show conversation name instead
+            const { data: conversation } = await supabase
+              .from("conversations")
+              .select("name, type")
+              .eq("id", resolvedParams.id)
+              .single();
+            
+            if (conversation && mounted) {
+              setOtherParticipant({
+                displayName: conversation.name || conversation.type === "group" ? "Group Chat" : "Unknown User",
+                avatarUrl: null,
+                id: resolvedParams.id,
+              });
+            }
           }
+        } else if (mounted) {
+          console.error("No members found for conversation:", resolvedParams.id);
+          setOtherParticipant({
+            displayName: "Unknown User",
+            avatarUrl: null,
+            id: resolvedParams.id,
+          });
         }
 
         // Mark as read
         await markRead(resolvedParams.id);
-
-        // Setup Realtime subscription
-        const channel = supabase
-          .channel(`messages:${resolvedParams.id}`)
-          .on(
-            'postgres_changes',
-            {
-              event: 'INSERT',
-              schema: 'public',
-              table: 'messages',
-              filter: `conversation_id=eq.${resolvedParams.id}`,
-            },
-            async (payload) => {
-              const { data: { user: authUser } } = await supabase.auth.getUser();
-              if (authUser?.id === payload.new.sender_id) {
-                // Skip if it's our own message (optimistic update)
-                return;
-              }
-
-              // Fetch sender info
-              const { data: profile } = await supabase
-                .from('profiles')
-                .select('id, display_name, avatar_url')
-                .eq('id', payload.new.sender_id)
-                .single();
-
-              const newMessage: Message = {
-                message: {
-                  id: payload.new.id,
-                  body: payload.new.body,
-                  createdAt: new Date(payload.new.created_at),
-                },
-                sender: {
-                  id: profile?.id || payload.new.sender_id,
-                  displayName: profile?.display_name,
-                  avatarUrl: profile?.avatar_url,
-                },
-              };
-
-              setMessages((prev) => [...prev, newMessage]);
-
-              await markRead(resolvedParams.id);
-            }
-          )
-          .subscribe();
-
-        channelRef.current = channel;
       } catch (error) {
         console.error("Error loading messages:", error);
         if (mounted) setIsLoading(false);
@@ -166,12 +148,83 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
 
     return () => {
       mounted = false;
-      if (channelRef.current) {
-        const supabase = createClient();
-        supabase.removeChannel(channelRef.current);
-      }
     };
   }, [params]);
+
+  // Separate useEffect for Realtime subscription with proper cleanup
+  useEffect(() => {
+    if (!conversationId || !currentUser) return;
+
+    const supabase = createClient();
+
+    // Clean up existing channel before creating new one
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+    }
+
+    // Correct chaining order: .channel() -> .on() -> .subscribe()
+    const channel = supabase
+      .channel(`messages:${conversationId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        async (payload) => {
+          const { data: { user: authUser } } = await supabase.auth.getUser();
+          if (authUser?.id === payload.new.sender_id) {
+            // Skip if it's our own message (optimistic update)
+            return;
+          }
+
+          // Fetch sender info
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id, display_name, avatar_url')
+            .eq('id', payload.new.sender_id)
+            .single();
+
+          const newMessage: Message = {
+            message: {
+              id: payload.new.id,
+              body: payload.new.body,
+              createdAt: new Date(payload.new.created_at),
+            },
+            sender: {
+              id: profile?.id || payload.new.sender_id,
+              displayName: profile?.display_name,
+              avatarUrl: profile?.avatar_url,
+            },
+          };
+
+          setMessages((prev) => [...prev, newMessage]);
+
+          await markRead(conversationId);
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log(`Subscribed to conversation: ${conversationId}`);
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error(`Failed to connect to real-time updates for conversation: ${conversationId}`);
+          console.error('This may be due to RLS policies or Realtime not being enabled for the messages table');
+        } else if (status === 'TIMED_OUT') {
+          console.warn(`Realtime subscription timed out for conversation: ${conversationId}`);
+        }
+      });
+
+    channelRef.current = channel;
+
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+    };
+  }, [conversationId, currentUser]);
 
   const handleSend = async () => {
     if (!newMessage.trim() || isSending || !conversationId) return;
@@ -245,9 +298,11 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
           {otherParticipant ? (
             <div className="flex items-center gap-3">
               {otherParticipant.avatarUrl ? (
-                <img
+                <Image
                   src={otherParticipant.avatarUrl}
                   alt={otherParticipant.displayName || "User"}
+                  width={40}
+                  height={40}
                   className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
                 />
               ) : (

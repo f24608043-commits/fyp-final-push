@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Mascot from "@/components/Mascot";
+import Image from "next/image";
 
 // Helper function for relative time
 function getRelativeTime(date: Date): string {
@@ -94,9 +95,11 @@ export default async function MessagesPage() {
                   {/* Avatar */}
                   <div className="shrink-0">
                     {item.participant?.avatarUrl ? (
-                      <img
+                      <Image
                         src={item.participant.avatarUrl}
                         alt={item.participant.displayName || "User"}
+                        width={48}
+                        height={48}
                         className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
                       />
                     ) : (
