@@ -17,13 +17,23 @@ export default async function Shell({ children }: { children: React.ReactNode })
   let profile = null;
   
   if (user) {
-    const [profileResult] = await db
-      .select()
-      .from(profiles)
-      .where(eq(profiles.id, user.id))
-      .limit(1);
-    
-    profile = profileResult;
+    try {
+      const [profileResult] = await db
+        .select({
+          id: profiles.id,
+          role: profiles.role,
+          displayName: profiles.displayName,
+          avatarUrl: profiles.avatarUrl,
+        })
+        .from(profiles)
+        .where(eq(profiles.id, user.id))
+        .limit(1);
+
+      profile = profileResult;
+    } catch (error) {
+      console.error("Error fetching profile in Shell:", error);
+      // Continue without profile data if query fails
+    }
     
     if (profile) {
       userData = {
@@ -31,8 +41,6 @@ export default async function Shell({ children }: { children: React.ReactNode })
         displayName: profile.displayName,
         email: user.email || "",
         role: profile.role as "learner" | "tutor" | "admin",
-        xp: profile.xp,
-        streakCount: profile.streakCount,
       };
       userRole = profile.role as "learner" | "tutor" | "admin";
     }
@@ -49,8 +57,8 @@ export default async function Shell({ children }: { children: React.ReactNode })
       return (
         <UnifiedShell 
           role={userRole}
-          initialXp={userData?.xp || 0}
-          initialStreak={userData?.streakCount || 0}
+          initialXp={0}
+          initialStreak={0}
           initialDisplayName={userData?.displayName || ""}
         >
           {children}

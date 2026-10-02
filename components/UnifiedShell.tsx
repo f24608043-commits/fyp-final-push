@@ -60,7 +60,7 @@ export default function UnifiedShell({
     return () => { mounted = false; };
   }, [initialXp, initialDisplayName]);
 
-  // Role-specific configuration
+  // Role-specific configuration with Skill-UI theme colors
   const isLearner = role === "learner";
   const isTutor = role === "tutor";
   const isAdmin = role === "admin";
@@ -69,6 +69,13 @@ export default function UnifiedShell({
   const roleLabel = isLearner ? "Learner Desk" : isAdmin ? "Admin Panel" : "Tutor Portal";
   const headerLabel = isLearner ? "Python Fundamentals" : isAdmin ? "Admin Dashboard" : "Tutoring Hub";
   const userRoleLabel = role.toUpperCase();
+
+  // Skill-UI theme colors based on role
+  const themeColors = isLearner 
+    ? { primary: 'var(--learner-primary)', primaryDark: 'var(--learner-primary-dark)', secondary: 'var(--learner-secondary)', bg: 'var(--learner-bg)' }
+    : isTutor 
+    ? { primary: 'var(--tutor-primary)', primaryDark: 'var(--tutor-primary-dark)', secondary: 'var(--tutor-secondary)', bg: 'var(--tutor-bg)' }
+    : { primary: '#EF4444', primaryDark: '#DC2626', secondary: '#7C3AED', bg: '#F8FAFC' };
 
   // Nav config per role - used for both sidebar and bottom bar
   const navConfig = {

@@ -103,41 +103,80 @@ export default async function TutorDashboard() {
   const pastSessions = mySessions.filter((s: any) => new Date(s.scheduledAt) <= now);
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-purple-50 to-pink-50 min-h-screen">
-      {/* Header with Mascot - Stitch Frame Style */}
-      <div className="relative w-full bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-slate-50 via-amber-50 to-indigo-50 min-h-screen">
+      {/* Header Banner with Statistics Cards */}
+      <div className="relative w-full bg-gradient-to-br from-amber-500 via-orange-500 to-indigo-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
         <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
         <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
         
-        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          {/* Left: Header info */}
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutor Portal</span>
-              <span className="text-text-muted text-label-sm">•</span>
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-rose-500 to-red-500 text-white font-label-sm text-label-sm font-bold shadow-lg border-2 border-white/30">Dashboard</span>
-            </div>
-            <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
-              Tutor Dashboard 📊
-            </h1>
-            <p className="font-body-lg text-body-lg text-text-muted leading-relaxed">
-              Manage your tutoring sessions and availability
-            </p>
-          </div>
-
-          {/* Right: Mascot */}
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
-            <div className="relative max-w-xs bg-gradient-to-br from-purple-100 to-pink-100 p-4 rounded-2xl shadow-xl border-4 border-white/50 order-2 sm:order-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-purple-600 text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>dashboard</span>
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-purple-700 font-bold">Stay Organized</span>
+        <div className="relative z-10 flex flex-col gap-6">
+          {/* Welcome Section */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutor Portal</span>
               </div>
-              <p className="font-headline-md text-label-md text-text-primary font-bold leading-snug">
-                "Track your sessions and manage your teaching schedule efficiently!"
+              <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
+                Welcome back, {tutorProfile?.displayName || "Tutor"}! 👋
+              </h1>
+              <p className="font-body-lg text-body-lg text-text-muted leading-relaxed">
+                Here's your teaching overview for today
               </p>
             </div>
-            <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 order-1 sm:order-2">
-              <Mascot pose="idle" size={128} />
+          </div>
+
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Total Students */}
+            <div className="rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-beautiful-md border border-amber-200 hover:scale-[1.02] transition-transform duration-150">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-beautiful-sm">
+                  <span className="material-symbols-outlined text-[20px]">people</span>
+                </div>
+                <span className="font-label-sm text-amber-700 font-bold uppercase tracking-wider">Students</span>
+              </div>
+              <p className="font-headline-2xl text-headline-2xl text-amber-900 font-extrabold">
+                {acceptedLearners?.length || 0}
+              </p>
+            </div>
+
+            {/* Active Groups */}
+            <div className="rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 p-6 shadow-beautiful-md border border-indigo-200 hover:scale-[1.02] transition-transform duration-150">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-beautiful-sm">
+                  <span className="material-symbols-outlined text-[20px]">groups</span>
+                </div>
+                <span className="font-label-sm text-indigo-700 font-bold uppercase tracking-wider">Groups</span>
+              </div>
+              <p className="font-headline-2xl text-headline-2xl text-indigo-900 font-extrabold">
+                {enrolledLearnersForGroup?.length || 0}
+              </p>
+            </div>
+
+            {/* Pending Assignments */}
+            <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 p-6 shadow-beautiful-md border border-rose-200 hover:scale-[1.02] transition-transform duration-150">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-beautiful-sm">
+                  <span className="material-symbols-outlined text-[20px]">assignment</span>
+                </div>
+                <span className="font-label-sm text-rose-700 font-bold uppercase tracking-wider">Requests</span>
+              </div>
+              <p className="font-headline-2xl text-headline-2xl text-rose-900 font-extrabold">
+                {pendingRequests?.length || 0}
+              </p>
+            </div>
+
+            {/* Upcoming Sessions */}
+            <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 shadow-beautiful-md border border-emerald-200 hover:scale-[1.02] transition-transform duration-150">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-beautiful-sm">
+                  <span className="material-symbols-outlined text-[20px]">event</span>
+                </div>
+                <span className="font-label-sm text-emerald-700 font-bold uppercase tracking-wider">Sessions</span>
+              </div>
+              <p className="font-headline-2xl text-headline-2xl text-emerald-900 font-extrabold">
+                {upcomingSessions?.length || 0}
+              </p>
             </div>
           </div>
         </div>
@@ -146,12 +185,12 @@ export default async function TutorDashboard() {
 
       {/* Tutor Profile Status */}
       {!tutorProfile ? (
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-8 shadow-xl border-4 border-yellow-200">
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 p-8 shadow-clay-surface border border-amber-200">
           <div className="flex items-center gap-2 mb-3">
-            <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
-            <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Set Up Your Tutor Profile</h2>
+            <span className="material-symbols-outlined text-amber-600 text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+            <h2 className="font-headline-lg text-headline-lg text-amber-900 font-extrabold">Set Up Your Tutor Profile</h2>
           </div>
-          <p className="font-body-md text-on-secondary-container mb-4">Complete your profile to start accepting students.</p>
+          <p className="font-body-md text-amber-800 mb-4">Complete your profile to start accepting students.</p>
           <form action={async (formData: FormData) => {
             "use server";
             const { createTutorProfile } = await import("../actions");
@@ -169,42 +208,42 @@ export default async function TutorDashboard() {
           }}>
             <div className="space-y-5 mb-6">
               <div>
-                <label className="block font-label-sm font-semibold mb-1">Bio</label>
+                <label className="block font-label-sm font-semibold mb-1 text-amber-900">Bio</label>
                 <textarea 
                   name="bio" 
                   required
-                  className="w-full rounded-xl border-2 border-yellow-200 p-4 focus:border-yellow-400 focus:outline-none text-base"
+                  className="w-full rounded-xl border-2 border-amber-200 p-4 focus:border-amber-400 focus:outline-none text-base shadow-clay-inset bg-white"
                   placeholder="Describe your teaching experience..."
                   rows={4}
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1">Subjects (comma-separated)</label>
+                <label className="block font-label-sm font-semibold mb-1 text-amber-900">Subjects (comma-separated)</label>
                 <input 
                   type="text" 
                   name="subjects"
                   required
-                  className="w-full rounded-xl border-2 border-yellow-200 p-4 focus:border-yellow-400 focus:outline-none text-base"
+                  className="w-full rounded-xl border-2 border-amber-200 p-4 focus:border-amber-400 focus:outline-none text-base shadow-clay-inset bg-white"
                   placeholder="Math, Science, Python"
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1">Hourly Rate (leave blank for free)</label>
+                <label className="block font-label-sm font-semibold mb-1 text-amber-900">Hourly Rate (leave blank for free)</label>
                 <input 
                   type="number" 
                   name="hourlyRate"
-                  className="w-full rounded-xl border-2 border-yellow-200 p-4 focus:border-yellow-400 focus:outline-none text-base"
+                  className="w-full rounded-xl border-2 border-amber-200 p-4 focus:border-amber-400 focus:outline-none text-base shadow-clay-inset bg-white"
                   placeholder="25"
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1">Timezone</label>
+                <label className="block font-label-sm font-semibold mb-1 text-amber-900">Timezone</label>
                 <input 
                   type="text" 
                   name="timezone"
                   required
                   defaultValue="UTC"
-                  className="w-full rounded-xl border-2 border-yellow-200 p-3 focus:border-yellow-400 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-amber-200 p-3 focus:border-amber-400 focus:outline-none shadow-clay-inset bg-white"
                   placeholder="UTC"
                 />
               </div>
@@ -213,45 +252,45 @@ export default async function TutorDashboard() {
           </form>
         </div>
       ) : (
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-white to-purple-50 p-8 shadow-xl border-4 border-purple-100">
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-white to-indigo-50 p-8 shadow-clay-surface border border-indigo-200">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <span className="material-symbols-outlined text-secondary text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>person</span>
-                <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">Your Profile</h2>
+                <span className="material-symbols-outlined text-indigo-600 text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>person</span>
+                <h2 className="font-headline-lg text-headline-lg text-indigo-900 font-extrabold">Your Profile</h2>
               </div>
-              <p className="font-body-md text-on-surface-variant mt-2">{tutorProfile.bio || "No bio set"}</p>
+              <p className="font-body-md text-indigo-800 mt-2">{tutorProfile.bio || "No bio set"}</p>
               <div className="flex flex-wrap gap-2 mt-4">
                 {tutorProfile.subjects?.map((subject: string, idx: number) => (
-                  <span key={idx} className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 font-label-sm font-semibold shadow-lg border-2 border-white/30">
+                  <span key={idx} className="rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 font-label-sm font-semibold shadow-clay-primary border-2 border-white/30">
                     {subject}
                   </span>
                 ))}
               </div>
-              <p className="font-body-md text-on-surface-variant mt-4">
+              <p className="font-body-md text-indigo-700 mt-4 font-semibold">
                 {tutorProfile.hourlyRate ? `$${tutorProfile.hourlyRate}/hour` : "Free"} • {tutorProfile.timezone}
               </p>
             </div>
             <div className="flex flex-col items-end gap-3 shrink-0">
               <div className="flex items-center gap-1">
-                <span className="font-headline-xl text-headline-xl text-secondary font-extrabold">{tutorProfile.rating}</span>
-                <span className="material-symbols-outlined text-secondary text-[28px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                <span className="font-headline-xl text-headline-xl text-amber-600 font-extrabold">{tutorProfile.rating}</span>
+                <span className="material-symbols-outlined text-amber-500 text-[28px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
               </div>
-              <p className="font-body-md text-on-surface-variant">{tutorProfile.totalSessions} sessions</p>
+              <p className="font-body-md text-indigo-600">{tutorProfile.totalSessions} sessions</p>
               <div className="flex gap-2">
                 <Link
                   href="/tutoring/dashboard/profile"
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-label-sm font-semibold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[16px]">edit</span>
                   Edit
                 </Link>
                 <Link
-                  href="/tutoring/groups"
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                  href="/tutoring/classes"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-label-sm font-semibold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[16px]">groups</span>
-                  Groups
+                  Classes
                 </Link>
               </div>
             </div>
@@ -261,31 +300,31 @@ export default async function TutorDashboard() {
 
       {/* Pending Requests */}
       {pendingRequests.length > 0 && (
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 p-8 shadow-xl border-4 border-blue-200">
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 p-8 shadow-clay-surface border border-indigo-200">
           <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-on-primary-fixed text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
-            <h2 className="font-headline-lg text-headline-lg text-on-primary-fixed font-extrabold">
+            <span className="material-symbols-outlined text-indigo-600 text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
+            <h2 className="font-headline-lg text-headline-lg text-indigo-900 font-extrabold">
               Session Requests ({pendingRequests.length})
             </h2>
           </div>
           <div className="space-y-4">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-lg border-4 border-blue-100">
+              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-clay-surface border border-indigo-100">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 text-white font-bold text-lg shadow-xl border-4 border-white/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 text-white font-bold text-lg shadow-clay-primary border-2 border-white/30">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
                   <div>
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-indigo-900 font-semibold">
                       {request.learner.displayName || "Unknown"}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant">
+                    <p className="font-body-sm text-indigo-700">
                       Requested {new Date(request.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 {request.message && (
-                  <p className="font-body-sm text-on-surface-variant mb-3 italic">
+                  <p className="font-body-sm text-indigo-600 mb-3 italic">
                     "{request.message}"
                   </p>
                 )}
@@ -305,42 +344,42 @@ export default async function TutorDashboard() {
 
       {/* Pending Enrollment Requests */}
       {pendingEnrollments.length > 0 && (
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 p-8 shadow-xl border-4 border-amber-200">
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 p-8 shadow-clay-surface border border-amber-200">
           <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
-            <h2 className="font-headline-lg text-headline-lg text-on-secondary-container font-extrabold">
+            <span className="material-symbols-outlined text-amber-600 text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+            <h2 className="font-headline-lg text-headline-lg text-amber-900 font-extrabold">
               Enrollment Requests ({pendingEnrollments.length})
             </h2>
           </div>
           <div className="space-y-4">
             {pendingEnrollments.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-lg border-4 border-amber-100">
+              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-clay-surface border border-amber-100">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold text-lg shadow-xl border-4 border-white/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold text-lg shadow-clay-primary border-2 border-white/30">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
                   <div>
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-amber-900 font-semibold">
                       {request.learner.displayName || "Unknown"}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant">
+                    <p className="font-body-sm text-amber-700">
                       Requested {new Date(request.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 {request.message && (
-                  <p className="font-body-sm text-on-surface-variant mb-3 italic">
+                  <p className="font-body-sm text-amber-600 mb-3 italic">
                     "{request.message}"
                   </p>
                 )}
                 <div className="flex gap-2">
                   <form action={acceptEnrollment.bind(null, request.id)}>
-                    <button className="shrink-0 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                    <button className="shrink-0 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Accept
                     </button>
                   </form>
                   <form action={rejectEnrollment.bind(null, request.id)}>
-                    <button className="shrink-0 rounded-full bg-gradient-to-r from-red-500 to-rose-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                    <button className="shrink-0 rounded-full bg-gradient-to-r from-rose-500 to-red-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Reject
                     </button>
                   </form>
@@ -354,31 +393,31 @@ export default async function TutorDashboard() {
       {/* Upcoming Sessions */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-6">
-          <span className="material-symbols-outlined text-primary text-[24px]">event</span>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">Upcoming Sessions</h2>
+          <span className="material-symbols-outlined text-emerald-600 text-[24px]">event</span>
+          <h2 className="font-headline-lg text-headline-lg text-emerald-900 font-extrabold">Upcoming Sessions</h2>
         </div>
         {upcomingSessions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
-              <Mascot pose="empty" size={64} />
+          <div className="rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-10 text-center shadow-clay-surface border border-slate-300">
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center overflow-hidden shadow-clay-primary mx-auto mb-4 border-2 border-white/30">
+              <span className="material-symbols-outlined text-slate-600 text-[40px]">event_busy</span>
             </div>
-            <p className="font-body-md text-text-muted font-bold">No upcoming sessions scheduled.</p>
+            <p className="font-body-md text-slate-600 font-bold">No upcoming sessions scheduled.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {upcomingSessions.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-purple-50 p-6 shadow-xl border-4 border-purple-100">
+              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-emerald-50 p-6 shadow-clay-surface border border-emerald-200">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-emerald-900 font-semibold">
                       {new Date(session.scheduledAt).toLocaleString()}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant mt-1">
+                    <p className="font-body-sm text-emerald-700 mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
                     <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      session.status === "confirmed" ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white border-white/30" :
+                      "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-600 border-slate-300"
                     }`}>
                       {session.status}
                     </span>
@@ -389,7 +428,7 @@ export default async function TutorDashboard() {
                         href={`https://meet.jit.si/${session.jitsiRoomId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                        className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                       >
                         <span className="material-symbols-outlined text-[20px]">videocam</span>
                         Join Session
@@ -411,32 +450,32 @@ export default async function TutorDashboard() {
       {/* Past Sessions */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-6">
-          <span className="material-symbols-outlined text-primary text-[24px]">history</span>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">Past Sessions</h2>
+          <span className="material-symbols-outlined text-slate-600 text-[24px]">history</span>
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-extrabold">Past Sessions</h2>
         </div>
         {pastSessions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
-              <Mascot pose="empty" size={64} />
+          <div className="rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-10 text-center shadow-clay-surface border border-slate-300">
+            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center overflow-hidden shadow-clay-primary mx-auto mb-4 border-2 border-white/30">
+              <span className="material-symbols-outlined text-slate-600 text-[40px]">history</span>
             </div>
-            <p className="font-body-md text-text-muted font-bold">No past sessions yet.</p>
+            <p className="font-body-md text-slate-600 font-bold">No past sessions yet.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {pastSessions.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-purple-50 p-6 shadow-xl border-4 border-purple-100">
+              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-slate-50 p-6 shadow-clay-surface border border-slate-200">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-slate-900 font-semibold">
                       {new Date(session.scheduledAt).toLocaleString()}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant mt-1">
+                    <p className="font-body-sm text-slate-700 mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
-                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold ${
-                      session.status === "completed" ? "bg-tertiary-fixed text-on-tertiary-fixed" :
-                      session.status === "cancelled" ? "bg-error-container text-on-error-container" :
-                      "bg-surface-container-high text-on-surface-variant"
+                    <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
+                      session.status === "completed" ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white border-white/30" :
+                      session.status === "cancelled" ? "bg-gradient-to-r from-rose-400 to-red-500 text-white border-white/30" :
+                      "bg-gradient-to-br from-slate-200 to-slate-300 text-slate-600 border-slate-300"
                     }`}>
                       {session.status}
                     </span>
@@ -446,7 +485,7 @@ export default async function TutorDashboard() {
                     const { updateSessionStatus } = await import("../actions");
                     await updateSessionStatus(session.id, "completed");
                   }}>
-                    <button className="shrink-0 rounded-xl bg-primary-container text-on-primary px-4 py-2 font-label-md font-bold shadow-glow hover:bg-primary transition-all active:translate-y-[2px]">
+                    <button className="shrink-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
                       Mark Complete
                     </button>
                   </form>

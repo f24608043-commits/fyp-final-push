@@ -5,7 +5,12 @@ import { eq, and, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 
-export default async function LearnerAssignmentsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function LearnerAssignmentsPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -29,7 +34,7 @@ export default async function LearnerAssignmentsPage({ params }: { params: { id:
   const [group] = await db
     .select()
     .from(groups)
-    .where(eq(groups.id, params.id))
+    .where(eq(groups.id, id))
     .limit(1);
 
   if (!group) {
@@ -42,7 +47,7 @@ export default async function LearnerAssignmentsPage({ params }: { params: { id:
     .from(groupMembers)
     .where(
       and(
-        eq(groupMembers.groupId, params.id),
+        eq(groupMembers.groupId, id),
         eq(groupMembers.userId, user.id)
       )
     )
@@ -63,7 +68,7 @@ export default async function LearnerAssignmentsPage({ params }: { params: { id:
       createdAt: assignments.createdAt,
     })
     .from(assignments)
-    .where(eq(assignments.groupId, params.id))
+    .where(eq(assignments.groupId, id))
     .orderBy(desc(assignments.createdAt));
 
   // Fetch user's submissions for each assignment
@@ -96,7 +101,7 @@ export default async function LearnerAssignmentsPage({ params }: { params: { id:
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
-                href={`/classes/${params.id}`}
+                href={`/classes/${id}`}
                 className="inline-flex items-center gap-1 text-text-muted hover:text-primary font-label-sm font-semibold"
               >
                 <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -132,7 +137,7 @@ export default async function LearnerAssignmentsPage({ params }: { params: { id:
           {assignmentsWithSubmissions.map((assignment) => (
             <Link
               key={assignment.id}
-              href={`/classes/${params.id}/assignments/${assignment.id}`}
+              href={`/classes/${id}/assignments/${assignment.id}`}
               className="block rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between gap-4">

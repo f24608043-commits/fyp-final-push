@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
 
 export async function createGroup(formData: FormData) {
   const supabase = await createClient();
@@ -32,6 +33,7 @@ export async function createGroup(formData: FormData) {
     groupCode = nanoid(6).toUpperCase();
   }
 
+  let groupId: string;
   try {
     const [group] = await db
       .insert(groups)
@@ -43,19 +45,30 @@ export async function createGroup(formData: FormData) {
         gradeLevel: gradeLevel || null,
         coverImageUrl: coverImageUrl?.trim() || null,
         groupCode: groupCode.toUpperCase(),
-        privacy: (privacy as any) || "private",
+        privacy: (privacy === "public" || privacy === "private" || privacy === "invite_only") ? privacy : "private",
       })
       .returning();
 
+    groupId = group.id;
     revalidatePath("/tutoring/classes");
-    redirect(`/tutoring/classes/${group.id}`);
   } catch (error: any) {
     console.error("Error creating group:", error);
+    console.error("Error details:", {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      hint: error.hint,
+    });
     if (error.code === "23505") {
       throw new Error("A class with this code already exists. Please use a different code.");
     }
-    throw new Error("Failed to create class. Please try again.");
+    if (error.code === "23503") {
+      throw new Error("Invalid tutor ID. Please ensure your profile is set up correctly.");
+    }
+    throw new Error(`Failed to create class: ${error.message || "Unknown error"}`);
   }
+
+  redirect(`/tutoring/classes/${groupId}`);
 }
 
 export async function getTutorGroups(tutorId: string) {
@@ -109,6 +122,7 @@ export async function createAssignment(formData: FormData) {
     throw new Error("Valid points value is required");
   }
 
+  let assignmentId: string;
   try {
     const [assignment] = await db
       .insert(assignments)
@@ -119,16 +133,128 @@ export async function createAssignment(formData: FormData) {
         description: description?.trim() || null,
         dueDate: dueDate ? new Date(dueDate) : null,
         points: parseInt(points),
-        status: (status as any) || "draft",
+        status: (status === "published" || status === "draft") ? status : "draft",
       })
       .returning();
 
+    assignmentId = assignment.id;
     revalidatePath(`/tutoring/classes/${groupId}`);
-    redirect(`/tutoring/classes/${groupId}/assignments/${assignment.id}`);
   } catch (error: any) {
     console.error("Error creating assignment:", error);
     throw new Error("Failed to create assignment. Please try again.");
   }
+
+  redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}`);
+}
+
+export async function deleteAssignment(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const assignmentId = formData.get("assignmentId") as string;
+  const groupId = formData.get("groupId") as string;
+
+  if (!assignmentId) {
+    throw new Error("Assignment ID is required");
+  }
+
+  // Verify assignment belongs to the user
+  const [assignment] = await db
+    .select()
+    .from(assignments)
+    .where(eq(assignments.id, assignmentId))
+    .limit(1);
+
+  if (!assignment) {
+    throw new Error("Assignment not found");
+  }
+
+  if (assignment.tutorId !== user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  try {
+    await db
+      .delete(assignments)
+      .where(eq(assignments.id, assignmentId));
+
+    revalidatePath(`/tutoring/classes/${groupId}`);
+    revalidatePath(`/tutoring/classes/${groupId}/assignments`);
+  } catch (error: any) {
+    console.error("Error deleting assignment:", error);
+    throw new Error("Failed to delete assignment. Please try again.");
+  }
+
+  redirect(`/tutoring/classes/${groupId}/assignments`);
+}
+
+export async function editAssignment(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const assignmentId = formData.get("assignmentId") as string;
+  const groupId = formData.get("groupId") as string;
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const dueDate = formData.get("dueDate") as string;
+  const points = formData.get("points") as string;
+  const status = formData.get("status") as string;
+
+  if (!assignmentId) {
+    throw new Error("Assignment ID is required");
+  }
+
+  if (!title || title.trim().length === 0) {
+    throw new Error("Assignment title is required");
+  }
+
+  if (!points || isNaN(parseInt(points))) {
+    throw new Error("Valid points value is required");
+  }
+
+  // Verify assignment belongs to the user
+  const [existingAssignment] = await db
+    .select()
+    .from(assignments)
+    .where(eq(assignments.id, assignmentId))
+    .limit(1);
+
+  if (!existingAssignment) {
+    throw new Error("Assignment not found");
+  }
+
+  if (existingAssignment.tutorId !== user.id) {
+    throw new Error("Unauthorized");
+  }
+
+  try {
+    await db
+      .update(assignments)
+      .set({
+        title: title.trim(),
+        description: description?.trim() || null,
+        dueDate: dueDate ? new Date(dueDate) : null,
+        points: parseInt(points),
+        status: (status === "published" || status === "draft") ? status : "draft",
+      })
+      .where(eq(assignments.id, assignmentId));
+
+    revalidatePath(`/tutoring/classes/${groupId}`);
+    revalidatePath(`/tutoring/classes/${groupId}/assignments`);
+  } catch (error: any) {
+    console.error("Error updating assignment:", error);
+    throw new Error("Failed to update assignment. Please try again.");
+  }
+
+  redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}`);
 }
 
 export async function createQuiz(formData: FormData) {
@@ -151,6 +277,7 @@ export async function createQuiz(formData: FormData) {
     throw new Error("Assignment ID is required");
   }
 
+  let quizId: string;
   try {
     const [quiz] = await db
       .insert(quizzes)
@@ -164,10 +291,12 @@ export async function createQuiz(formData: FormData) {
       })
       .returning();
 
+    quizId = quiz.id;
     revalidatePath(`/tutoring/classes/${groupId}`);
-    redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quiz.id}/questions`);
   } catch (error: any) {
     console.error("Error creating quiz:", error);
     throw new Error("Failed to create quiz. Please try again.");
   }
+
+  redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quizId}/questions`);
 }

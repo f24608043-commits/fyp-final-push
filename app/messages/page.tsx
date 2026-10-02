@@ -69,8 +69,8 @@ export default async function MessagesPage() {
 
       {/* Conversations List */}
       {conversations.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
-          <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-beautiful-md border-4 border-white/50">
+          <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-beautiful-sm mx-auto mb-4 border-4 border-white/30">
             <Mascot pose="empty" size={64} />
           </div>
           <h3 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-2">No conversations yet</h3>
@@ -86,7 +86,7 @@ export default async function MessagesPage() {
               href={`/messages/${item.conversation.id}`}
               className="block"
             >
-              <div className={`rounded-2xl p-5 shadow-xl border-4 transform hover:scale-[1.02] transition-all active:scale-[0.98] ${
+              <div className={`rounded-2xl p-5 shadow-beautiful-md border-4 transform hover:scale-[1.02] transition-transform duration-150 active:scale-[0.98] ${
                 item.unreadCount > 0 
                   ? "bg-gradient-to-br from-white to-blue-50 border-blue-100" 
                   : "bg-gradient-to-br from-white to-gray-50 border-gray-100"

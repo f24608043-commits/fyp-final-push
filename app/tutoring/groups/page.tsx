@@ -66,28 +66,28 @@ export default async function TutorGroupsPage() {
   }));
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-slate-50 via-amber-50 to-indigo-50 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <Link
           href="/tutoring/dashboard"
-          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-text-muted hover:text-primary transition-colors group mb-4"
+          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-slate-600 hover:text-amber-600 transition-colors group mb-4"
         >
           <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
           <span>Back to Dashboard</span>
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-headline-2xl text-headline-2xl text-text-primary tracking-tight">
+            <h1 className="font-headline-2xl text-headline-2xl text-slate-900 tracking-tight">
               My Groups
             </h1>
-            <p className="font-body-lg text-body-lg text-text-muted">
+            <p className="font-body-lg text-body-lg text-slate-600">
               Organize your enrolled learners into groups for group sessions
             </p>
           </div>
           <Link
             href="/tutoring/groups/create"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-label-lg font-bold uppercase tracking-wider shadow-clay-primary active:shadow-clay-primary-pressed hover:bg-primary-dark transition-all active:translate-y-[2px]"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
             Create Group
@@ -97,9 +97,12 @@ export default async function TutorGroupsPage() {
 
       {/* Groups List */}
       {groupsWithCounts.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
-          <p className="font-body-lg text-text-muted font-bold mb-4">No groups created yet.</p>
-          <p className="font-body-md text-text-muted">
+        <div className="rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 p-10 text-center shadow-clay-surface border border-slate-300">
+          <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center overflow-hidden shadow-clay-primary mx-auto mb-4 border-2 border-white/30">
+            <span className="material-symbols-outlined text-slate-600 text-[40px]">groups</span>
+          </div>
+          <p className="font-body-lg text-slate-600 font-bold mb-4">No groups created yet.</p>
+          <p className="font-body-md text-slate-500">
             Create your first group to organize your enrolled learners for group sessions.
           </p>
         </div>
@@ -108,32 +111,32 @@ export default async function TutorGroupsPage() {
           {groupsWithCounts.map((group) => (
             <div
               key={group.id}
-              className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100 hover:shadow-2xl hover:border-blue-200 transition-all"
+              className="rounded-2xl bg-gradient-to-br from-white to-indigo-50 p-6 shadow-clay-surface border border-indigo-200 hover:shadow-clay-primary hover:border-indigo-300 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="font-label-lg text-text-primary font-semibold mb-2">
+                  <h3 className="font-label-lg text-indigo-900 font-semibold mb-2">
                     {group.name}
                   </h3>
                   {group.description && (
-                    <p className="font-body-md text-text-muted line-clamp-2">
+                    <p className="font-body-md text-indigo-700 line-clamp-2">
                       {group.description}
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-label-md font-semibold">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-label-md font-semibold shadow-clay-secondary">
                   <span className="material-symbols-outlined text-[18px]">people</span>
                   {group.memberCount}
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-body-md text-text-muted">
+                <span className="font-body-md text-slate-600">
                   Created {new Date(group.createdAt).toLocaleDateString()}
                 </span>
                 <div className="flex gap-2">
                   <Link
                     href={`/tutoring/groups/${group.id}`}
-                    className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-4 py-2 font-label-md font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all"
+                    className="rounded-full border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 px-4 py-2 font-label-md font-bold shadow-clay-secondary hover:from-indigo-100 hover:to-purple-100 transition-all"
                   >
                     Manage
                   </Link>
@@ -147,22 +150,22 @@ export default async function TutorGroupsPage() {
       {/* Available Learners for Group Creation */}
       {enrolledLearners.length > 0 && (
         <div className="mt-8">
-          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-extrabold mb-6">
             Enrolled Learners ({enrolledLearners.length})
           </h2>
-          <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-gray-100">
+          <div className="rounded-2xl bg-white p-6 shadow-clay-surface border border-slate-200">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {enrolledLearners.map((enrollment) => (
                 <div
                   key={enrollment.id}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 shadow-clay-secondary"
                 >
                   <UserAvatar
                     avatarUrl={enrollment.learner.avatarUrl}
                     displayName={enrollment.learner.displayName}
                     size="md"
                   />
-                  <span className="font-label-md text-text-primary font-semibold">
+                  <span className="font-label-md text-slate-900 font-semibold">
                     {enrollment.learner.displayName || "Unknown"}
                   </span>
                 </div>

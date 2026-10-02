@@ -135,10 +135,10 @@ export default async function FriendsPage() {
           </div>
           <div className="space-y-4">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+              <div key={request.id} className="rounded-2xl bg-surface p-6 shadow-beautiful-md border border-surface-border">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xl shadow-clay-surface">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xl shadow-beautiful-sm">
                       {request.requester?.displayName?.[0] || "?"}
                     </div>
                     <div className="min-w-0">
@@ -152,12 +152,12 @@ export default async function FriendsPage() {
                   </div>
                   <div className="flex gap-3 shrink-0">
                     <form action={acceptRequest.bind(null, request.id)}>
-                      <button className="rounded-full bg-primary text-white px-5 py-2.5 font-label-md font-bold shadow-clay-primary hover:shadow-clay-primary-pressed transition-all">
+                      <button className="rounded-full bg-primary text-white px-5 py-2.5 font-label-md font-bold shadow-beautiful-sm hover:shadow-beautiful-md transition-shadow duration-150">
                         Accept
                       </button>
                     </form>
                     <form action={rejectRequest.bind(null, request.id)}>
-                      <button className="rounded-2xl border-2 border-surface-border bg-surface text-text-muted px-5 py-2.5 font-label-md font-semibold hover:bg-surface-border transition-all shadow-clay-surface">
+                      <button className="rounded-2xl border-2 border-surface-border bg-surface text-text-muted px-5 py-2.5 font-label-md font-semibold hover:bg-surface-border transition-colors duration-150 shadow-beautiful-sm">
                         Reject
                       </button>
                     </form>
@@ -180,13 +180,13 @@ export default async function FriendsPage() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {suggestedFriends.map((suggested: any) => (
-              <div key={suggested.id} className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all">
+              <div key={suggested.id} className="rounded-2xl bg-surface p-6 shadow-beautiful-md border border-surface-border hover:shadow-beautiful-lg transition-shadow duration-150">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="relative">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/10 text-secondary font-bold text-xl shadow-clay-surface">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/10 text-secondary font-bold text-xl shadow-beautiful-sm">
                       {suggested.displayName?.[0] || "?"}
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-secondary rounded-full flex items-center justify-center text-xs border-2 border-white shadow-clay-surface">
+                    <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-secondary rounded-full flex items-center justify-center text-xs border-2 border-white shadow-beautiful-sm">
                       🔥
                     </div>
                   </div>
@@ -229,8 +229,8 @@ export default async function FriendsPage() {
           My Friends ({friends.length})
         </h2>
         {friends.length === 0 ? (
-          <div className="rounded-2xl bg-surface p-12 text-center shadow-clay-surface border border-surface-border">
-            <div className="relative w-24 h-24 rounded-2xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-6">
+          <div className="rounded-2xl bg-surface p-12 text-center shadow-beautiful-md border border-surface-border">
+            <div className="relative w-24 h-24 rounded-2xl bg-surface-border flex items-center justify-center overflow-hidden shadow-beautiful-sm mx-auto mb-6">
               <Mascot pose="empty" size={80} />
             </div>
             <p className="font-body-lg text-text-muted font-bold mb-2">No friends yet</p>
@@ -239,9 +239,9 @@ export default async function FriendsPage() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {friends.map((friend: any) => (
-              <div key={friend.id} className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all">
+              <div key={friend.id} className="rounded-2xl bg-surface p-6 shadow-beautiful-md border border-surface-border hover:shadow-beautiful-lg transition-shadow duration-150">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xl shadow-clay-surface">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xl shadow-beautiful-sm">
                     {friend.displayName?.[0] || "?"}
                   </div>
                   <div className="min-w-0">

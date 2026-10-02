@@ -134,29 +134,29 @@ export default async function GroupDetailPage({
   }
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-slate-50 via-amber-50 to-indigo-50 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <Link
           href="/tutoring/groups"
-          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-text-muted hover:text-primary transition-colors group mb-4"
+          className="inline-flex items-center gap-2 font-label-lg text-label-lg text-slate-600 hover:text-amber-600 transition-colors group mb-4"
         >
           <span className="material-symbols-outlined text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
           <span>Back to Groups</span>
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-headline-2xl text-headline-2xl text-text-primary tracking-tight">
+            <h1 className="font-headline-2xl text-headline-2xl text-slate-900 tracking-tight">
               {group.name}
             </h1>
             {group.description && (
-              <p className="font-body-lg text-body-lg text-text-muted">{group.description}</p>
+              <p className="font-body-lg text-body-lg text-slate-600">{group.description}</p>
             )}
           </div>
           <form action={deleteGroup}>
             <button
               type="submit"
-              className="rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-md font-semibold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
+              className="rounded-full border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-red-50 text-rose-600 px-4 py-2 font-label-md font-semibold shadow-clay-secondary hover:from-rose-100 hover:to-red-100 transition-all"
             >
               Delete Group
             </button>
@@ -166,18 +166,21 @@ export default async function GroupDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Group Members */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
-          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
+        <div className="rounded-2xl bg-white p-8 shadow-clay-surface border border-slate-200">
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-extrabold mb-6">
             Members ({members.length})
           </h2>
           {members.length === 0 ? (
-            <p className="font-body-lg text-text-muted">No members in this group yet.</p>
+            <div className="text-center py-8">
+              <span className="material-symbols-outlined text-slate-400 text-[48px]">people</span>
+              <p className="font-body-lg text-slate-500 mt-2">No members in this group yet.</p>
+            </div>
           ) : (
             <div className="space-y-4">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 shadow-clay-secondary"
                 >
                   <UserAvatar
                     avatarUrl={member.learner.avatarUrl}
@@ -185,10 +188,10 @@ export default async function GroupDetailPage({
                     size="md"
                   />
                   <div className="flex-1">
-                    <p className="font-label-md text-text-primary font-semibold">
+                    <p className="font-label-md text-slate-900 font-semibold">
                       {member.learner.displayName || "Unknown"}
                     </p>
-                    <p className="font-body-md text-text-muted">
+                    <p className="font-body-md text-slate-600">
                       Added {new Date(member.enrolledAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -199,8 +202,8 @@ export default async function GroupDetailPage({
 
           {/* Add Members Form */}
           {availableLearners.length > 0 && (
-            <div className="mt-6 pt-6 border-t-2 border-gray-200">
-              <h3 className="font-label-md text-text-primary font-semibold mb-4">
+            <div className="mt-6 pt-6 border-t-2 border-slate-200">
+              <h3 className="font-label-md text-slate-900 font-semibold mb-4">
                 Add Members
               </h3>
               <form action={updateGroup} className="space-y-4">
@@ -210,20 +213,20 @@ export default async function GroupDetailPage({
                   {availableLearners.map((enrollment) => (
                     <label
                       key={enrollment.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-primary cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-lg border-2 border-slate-200 hover:border-amber-400 cursor-pointer transition-colors shadow-clay-secondary"
                     >
                       <input
                         type="checkbox"
                         name="learners"
                         value={enrollment.learnerId}
-                        className="w-4 h-4 rounded border-2 border-gray-300 text-primary focus:ring-primary"
+                        className="w-4 h-4 rounded border-2 border-slate-300 text-amber-500 focus:ring-amber-500"
                       />
                       <UserAvatar
                         avatarUrl={enrollment.learner.avatarUrl}
                         displayName={enrollment.learner.displayName}
                         size="sm"
                       />
-                      <span className="font-label-sm text-text-primary">
+                      <span className="font-label-sm text-slate-900">
                         {enrollment.learner.displayName || "Unknown"}
                       </span>
                     </label>
@@ -231,7 +234,7 @@ export default async function GroupDetailPage({
                 </div>
                 <button
                   type="submit"
-                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                  className="w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3 font-label-md font-semibold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   Add Selected
                 </button>
@@ -241,44 +244,44 @@ export default async function GroupDetailPage({
         </div>
 
         {/* Group Sessions */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
-          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
+        <div className="rounded-2xl bg-white p-8 shadow-clay-surface border border-slate-200">
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-extrabold mb-6">
             Sessions ({sessions.length})
           </h2>
           
           {/* Create Session Form */}
-          <form action={createSession} className="mb-6 p-6 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-100">
-            <h3 className="font-label-md text-text-primary font-semibold mb-4">Schedule New Session</h3>
+          <form action={createSession} className="mb-6 p-6 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 shadow-clay-secondary">
+            <h3 className="font-label-md text-slate-900 font-semibold mb-4">Schedule New Session</h3>
             <div className="space-y-4">
               <div>
-                <label className="block font-label-sm text-text-primary mb-2">Start Time *</label>
+                <label className="block font-label-sm text-slate-900 mb-2">Start Time *</label>
                 <input
                   type="datetime-local"
                   name="startTime"
                   required
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-amber-400 focus:outline-none transition-colors font-body-md shadow-clay-inset bg-white"
                 />
               </div>
               <div>
-                <label className="block font-label-sm text-text-primary mb-2">End Time (Optional)</label>
+                <label className="block font-label-sm text-slate-900 mb-2">End Time (Optional)</label>
                 <input
                   type="datetime-local"
                   name="endTime"
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-amber-400 focus:outline-none transition-colors font-body-md shadow-clay-inset bg-white"
                 />
               </div>
               <div>
-                <label className="block font-label-sm text-text-primary mb-2">Notes (Optional)</label>
+                <label className="block font-label-sm text-slate-900 mb-2">Notes (Optional)</label>
                 <textarea
                   name="notes"
                   rows={2}
                   placeholder="Session notes or agenda"
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-md resize-none"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-amber-400 focus:outline-none transition-colors font-body-md resize-none shadow-clay-inset bg-white"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-label-md font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-3 font-label-md font-semibold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Create Session
               </button>
@@ -287,29 +290,32 @@ export default async function GroupDetailPage({
 
           {/* Sessions List */}
           {sessions.length === 0 ? (
-            <p className="font-body-lg text-text-muted">No sessions scheduled yet.</p>
+            <div className="text-center py-8">
+              <span className="material-symbols-outlined text-slate-400 text-[48px]">event</span>
+              <p className="font-body-lg text-slate-500 mt-2">No sessions scheduled yet.</p>
+            </div>
           ) : (
             <div className="space-y-4">
               {sessions.map((session) => (
                 <div
                   key={session.id}
-                  className="p-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200"
+                  className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 shadow-clay-secondary"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <p className="font-label-md text-text-primary font-semibold">
+                      <p className="font-label-md text-slate-900 font-semibold">
                         {new Date(session.startTime).toLocaleString()}
                       </p>
                       {session.endTime && (
-                        <p className="font-body-md text-text-muted">
+                        <p className="font-body-md text-slate-600">
                           to {new Date(session.endTime).toLocaleString()}
                         </p>
                       )}
                       <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                        session.status === "scheduled" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                        session.status === "ongoing" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                        session.status === "completed" ? "bg-gradient-to-r from-gray-400 to-gray-500 text-white border-white/30" :
-                        "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30"
+                        session.status === "scheduled" ? "bg-gradient-to-r from-indigo-400 to-purple-500 text-white border-white/30" :
+                        session.status === "ongoing" ? "bg-gradient-to-r from-emerald-400 to-green-500 text-white border-white/30" :
+                        session.status === "completed" ? "bg-gradient-to-r from-slate-400 to-slate-500 text-white border-white/30" :
+                        "bg-gradient-to-r from-rose-400 to-red-500 text-white border-white/30"
                       }`}>
                         {session.status}
                       </span>
@@ -319,7 +325,7 @@ export default async function GroupDetailPage({
                         href={session.meetingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                        className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                       >
                         <span className="material-symbols-outlined text-[18px]">videocam</span>
                         Start

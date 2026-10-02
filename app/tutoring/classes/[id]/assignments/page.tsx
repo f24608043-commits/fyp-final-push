@@ -4,8 +4,14 @@ import { groups, groupMembers, profiles, assignments, submissions } from "@/db/s
 import { eq, and, count, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { deleteAssignment } from "@/app/tutoring/classes/actions";
 
-export default async function TutorAssignmentsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function TutorAssignmentsPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -29,7 +35,7 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
   const [group] = await db
     .select()
     .from(groups)
-    .where(eq(groups.id, params.id))
+    .where(eq(groups.id, id))
     .limit(1);
 
   if (!group) {
@@ -52,7 +58,7 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
       createdAt: assignments.createdAt,
     })
     .from(assignments)
-    .where(eq(assignments.groupId, params.id))
+    .where(eq(assignments.groupId, id))
     .orderBy(desc(assignments.createdAt));
 
   // Fetch submission counts for each assignment
@@ -79,11 +85,11 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
-                href={`/tutoring/classes/${params.id}`}
+                href={`/tutoring/classes/${id}/assignments`}
                 className="inline-flex items-center gap-1 text-text-muted hover:text-primary font-label-sm font-semibold"
               >
                 <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                Back to Class
+                Back to Assignments
               </Link>
             </div>
             <div className="flex flex-col gap-2">
@@ -104,7 +110,7 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
       {/* Create Assignment Button */}
       <div className="mb-6">
         <Link
-          href={`/tutoring/classes/${params.id}/assignments/create`}
+          href={`/tutoring/classes/${id}/assignments/create`}
           className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
@@ -121,7 +127,7 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
             Create your first assignment to get started
           </p>
           <Link
-            href={`/tutoring/classes/${params.id}/assignments/create`}
+            href={`/tutoring/classes/${id}/assignments/create`}
             className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
@@ -131,16 +137,20 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
       ) : (
         <div className="space-y-4">
           {assignmentsWithCounts.map((assignment) => (
-            <Link
+            <div
               key={assignment.id}
-              href={`/tutoring/classes/${params.id}/assignments/${assignment.id}`}
-              className="block rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all cursor-pointer"
+              className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-2">
-                    {assignment.title}
-                  </h3>
+                  <Link
+                    href={`/tutoring/classes/${id}/assignments/${assignment.id}`}
+                    className="block"
+                  >
+                    <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-2 hover:text-primary transition-colors">
+                      {assignment.title}
+                    </h3>
+                  </Link>
                   {assignment.description && (
                     <p className="font-body-sm text-text-muted mb-3 line-clamp-2">
                       {assignment.description}
@@ -169,10 +179,34 @@ export default async function TutorAssignmentsPage({ params }: { params: { id: s
                       {assignment.submissionCount} submissions
                     </span>
                   </div>
-                  <span className="material-symbols-outlined text-text-muted text-[24px]">arrow_forward</span>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/tutoring/classes/${id}/assignments/${assignment.id}/edit`}
+                      className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+                      title="Edit assignment"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">edit</span>
+                    </Link>
+                    <form action={deleteAssignment}>
+                      <input type="hidden" name="assignmentId" value={assignment.id} />
+                      <input type="hidden" name="groupId" value={id} />
+                      <button
+                        type="submit"
+                        className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-all"
+                        title="Delete assignment"
+                        onClick={(e) => {
+                          if (!confirm("Are you sure you want to delete this assignment? This action cannot be undone.")) {
+                            e.preventDefault();
+                          }
+                        }}
+                      >
+                        <span className="material-symbols-outlined text-[20px]">delete</span>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

@@ -1,4 +1,4 @@
-import { getSession, getSessionNotes, addSessionNote } from "../../actions";
+import { getSession, getSessionNotes, addSessionNote } from "@/app/tutoring/actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";

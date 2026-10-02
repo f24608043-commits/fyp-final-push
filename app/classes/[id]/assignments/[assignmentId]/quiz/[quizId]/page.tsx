@@ -6,7 +6,12 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import QuizClient from "./QuizClient";
 
-export default async function QuizPage({ params }: { params: { id: string; assignmentId: string; quizId: string } }) {
+interface PageProps {
+  params: Promise<{ id: string; assignmentId: string; quizId: string }>;
+}
+
+export default async function QuizPage({ params }: PageProps) {
+  const { id, assignmentId, quizId } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -26,11 +31,27 @@ export default async function QuizPage({ params }: { params: { id: string; assig
     redirect("/tutoring/classes");
   }
 
+  // Fetch assignment
+  const [assignment] = await db
+    .select()
+    .from(assignments)
+    .where(eq(assignments.id, assignmentId))
+    .limit(1);
+
+  if (!assignment) {
+    notFound();
+  }
+
+  // Verify assignment belongs to the group
+  if (assignment.groupId !== id) {
+    redirect(`/classes/${id}`);
+  }
+
   // Fetch quiz details
   const [quiz] = await db
     .select()
     .from(quizzes)
-    .where(eq(quizzes.id, params.quizId))
+    .where(eq(quizzes.id, quizId))
     .limit(1);
 
   if (!quiz) {
@@ -38,9 +59,16 @@ export default async function QuizPage({ params }: { params: { id: string; assig
   }
 
   // Verify quiz belongs to the assignment
-  if (quiz.assignmentId !== params.assignmentId) {
-    redirect(`/classes/${params.id}`);
+  if (quiz.assignmentId !== assignmentId) {
+    redirect(`/classes/${id}`);
   }
+
+  // Fetch group to verify membership
+  const [group] = await db
+    .select()
+    .from(groups)
+    .where(eq(groups.id, id))
+    .limit(1);
 
   // Verify user is a member of this group
   const [member] = await db
@@ -48,14 +76,14 @@ export default async function QuizPage({ params }: { params: { id: string; assig
     .from(groupMembers)
     .where(
       and(
-        eq(groupMembers.groupId, params.id),
+        eq(groupMembers.groupId, id),
         eq(groupMembers.userId, user.id)
       )
     )
     .limit(1);
 
   if (!member) {
-    redirect(`/classes/${params.id}`);
+    redirect(`/classes/${id}`);
   }
 
   // Fetch quiz questions with options
@@ -68,7 +96,7 @@ export default async function QuizPage({ params }: { params: { id: string; assig
       orderIndex: quizQuestions.orderIndex,
     })
     .from(quizQuestions)
-    .where(eq(quizQuestions.quizId, params.quizId))
+    .where(eq(quizQuestions.quizId, quizId))
     .orderBy(quizQuestions.orderIndex);
 
   // Fetch options for each question
@@ -97,7 +125,7 @@ export default async function QuizPage({ params }: { params: { id: string; assig
     .from(quizAttempts)
     .where(
       and(
-        eq(quizAttempts.quizId, params.quizId),
+        eq(quizAttempts.quizId, quizId),
         eq(quizAttempts.studentId, user.id)
       )
     )
@@ -115,7 +143,7 @@ export default async function QuizPage({ params }: { params: { id: string; assig
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
-                href={`/classes/${params.id}`}
+                href={`/classes/${id}`}
                 className="inline-flex items-center gap-1 text-text-muted hover:text-primary font-label-sm font-semibold"
               >
                 <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -185,9 +213,9 @@ export default async function QuizPage({ params }: { params: { id: string; assig
       {/* Quiz Interface */}
       {attemptsRemaining > 0 ? (
         <QuizClient
-          quizId={params.quizId}
-          assignmentId={params.assignmentId}
-          groupId={params.id}
+          quizId={quizId}
+          assignmentId={assignmentId}
+          groupId={id}
           questions={questionsWithOptions}
           quiz={quiz}
           attemptsRemaining={attemptsRemaining}

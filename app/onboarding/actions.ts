@@ -58,5 +58,11 @@ export async function completeOnboarding(formData: FormData) {
 
   console.log("Onboarding complete - updated profile:", result[0]);
 
-  redirect("/path");
+  // Redirect based on user role
+  const userRole = result[0]?.role;
+  if (userRole === "tutor") {
+    redirect("/tutoring/dashboard");
+  } else {
+    redirect("/path");
+  }
 }

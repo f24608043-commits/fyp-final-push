@@ -363,7 +363,7 @@ export async function getSuggestedFriends() {
   try {
     [currentUser, existingFriendships] = await Promise.all([
       db
-        .select({ xp: profiles.xp })
+        .select({ xp: profiles.xp, role: profiles.role })
         .from(profiles)
         .where(eq(profiles.id, userId))
         .limit(1),
@@ -384,7 +384,7 @@ export async function getSuggestedFriends() {
   } catch (error) {
     console.error('Error fetching user data for friends suggestions:', error);
     // Fallback: continue with empty data
-    currentUser = [{ xp: 0 }];
+    currentUser = [{ xp: 0, role: 'learner' }];
     existingFriendships = [];
   }
 
@@ -398,7 +398,8 @@ export async function getSuggestedFriends() {
     }
   });
 
-  // Get suggested users (learners only, not current user, not already friends/blocked)
+  // Get suggested users - filter by same role as current user (learner with learners, tutor with tutors)
+  const userRole = currentUser[0]?.role || 'learner';
   const suggestedUsers = await db
     .select({
       id: profiles.id,
@@ -409,7 +410,7 @@ export async function getSuggestedFriends() {
       role: profiles.role,
     })
     .from(profiles)
-    .where(eq(profiles.role, "learner"))
+    .where(eq(profiles.role, userRole as "learner" | "tutor" | "admin"))
     .orderBy(desc(profiles.xp))
     .limit(20); // Get more to filter
 

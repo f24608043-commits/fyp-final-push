@@ -6,7 +6,12 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import Mascot from "@/components/Mascot";
 
-export default async function GroupDetailPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function GroupDetailPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -30,7 +35,7 @@ export default async function GroupDetailPage({ params }: { params: { id: string
   const [group] = await db
     .select()
     .from(groups)
-    .where(eq(groups.id, params.id))
+    .where(eq(groups.id, id))
     .limit(1);
 
   if (!group) {
@@ -54,20 +59,20 @@ export default async function GroupDetailPage({ params }: { params: { id: string
     })
     .from(groupMembers)
     .innerJoin(profiles, eq(groupMembers.userId, profiles.id))
-    .where(eq(groupMembers.groupId, params.id));
+    .where(eq(groupMembers.groupId, id));
 
   // Fetch assignments
   const groupAssignments = await db
     .select()
     .from(assignments)
-    .where(eq(assignments.groupId, params.id))
+    .where(eq(assignments.groupId, id))
     .orderBy(desc(assignments.createdAt));
 
   // Fetch announcements
   const groupAnnouncementsData = await db
     .select()
     .from(groupAnnouncementsTable)
-    .where(eq(groupAnnouncementsTable.groupId, params.id))
+    .where(eq(groupAnnouncementsTable.groupId, id))
     .orderBy(desc(groupAnnouncementsTable.createdAt))
     .limit(5);
 
@@ -116,7 +121,7 @@ export default async function GroupDetailPage({ params }: { params: { id: string
               </div>
               <div className="flex items-center gap-3">
                 <Link
-                  href={`/tutoring/classes/${params.id}/assignments`}
+                  href={`/tutoring/classes/${id}/assignments`}
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[20px]">assignment</span>
@@ -204,7 +209,7 @@ export default async function GroupDetailPage({ params }: { params: { id: string
               {groupAssignments.slice(0, 3).map((assignment) => (
                 <Link
                   key={assignment.id}
-                  href={`/tutoring/classes/${params.id}/assignments/${assignment.id}`}
+                  href={`/tutoring/classes/${id}/assignments/${assignment.id}`}
                   className="block rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">

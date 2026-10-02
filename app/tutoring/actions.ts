@@ -1105,15 +1105,24 @@ export async function gradeTask(data: {
   }
 
   // Update task with grade
+  const updateData: any = {
+    score: data.score,
+    feedback: data.feedback,
+    status: "graded",
+    gradedAt: new Date(),
+  };
+  
+  // Only include grade if it's a numeric value
+  if (data.grade !== undefined) {
+    const numericGrade = parseInt(data.grade, 10);
+    if (!isNaN(numericGrade)) {
+      updateData.grade = numericGrade;
+    }
+  }
+  
   await db
     .update(tasks)
-    .set({
-      score: data.score,
-      grade: data.grade,
-      feedback: data.feedback,
-      status: "graded",
-      gradedAt: new Date(),
-    })
+    .set(updateData)
     .where(eq(tasks.id, data.taskId));
 
   // Update learner stats
@@ -1394,10 +1403,10 @@ export async function awardRankPoints(data: {
     .where(eq(profiles.id, data.userId))
     .limit(1);
 
-  if (updatedProfile) {
+  if (updatedProfile && updatedProfile.rankPoints !== null) {
     const newLevel = await calculateRankLevel(updatedProfile.rankPoints);
     
-    if (newLevel > updatedProfile.rankLevel) {
+    if (updatedProfile.rankLevel !== null && newLevel > updatedProfile.rankLevel) {
       // Level up!
       await db
         .update(profiles)
@@ -1448,10 +1457,10 @@ export async function awardTutorRankPoints(data: {
     .where(eq(tutorProfiles.tutorId, data.tutorId))
     .limit(1);
 
-  if (updatedProfile) {
+  if (updatedProfile && updatedProfile.rankPoints !== null) {
     const newLevel = await calculateRankLevel(updatedProfile.rankPoints);
     
-    if (newLevel > updatedProfile.rankLevel) {
+    if (updatedProfile.rankLevel !== null && newLevel > updatedProfile.rankLevel) {
       // Level up!
       await db
         .update(tutorProfiles)

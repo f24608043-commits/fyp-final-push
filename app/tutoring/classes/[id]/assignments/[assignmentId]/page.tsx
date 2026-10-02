@@ -5,7 +5,12 @@ import { eq, and, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 
-export default async function TutorAssignmentDetailPage({ params }: { params: { id: string; assignmentId: string } }) {
+interface PageProps {
+  params: Promise<{ id: string; assignmentId: string }>;
+}
+
+export default async function TutorAssignmentDetailPage({ params }: PageProps) {
+  const { id, assignmentId } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -29,7 +34,7 @@ export default async function TutorAssignmentDetailPage({ params }: { params: { 
   const [assignment] = await db
     .select()
     .from(assignments)
-    .where(eq(assignments.id, params.assignmentId))
+    .where(eq(assignments.id, assignmentId))
     .limit(1);
 
   if (!assignment) {
@@ -37,15 +42,15 @@ export default async function TutorAssignmentDetailPage({ params }: { params: { 
   }
 
   // Verify assignment belongs to the group
-  if (assignment.groupId !== params.id) {
-    redirect(`/tutoring/classes/${params.id}`);
+  if (assignment.groupId !== id) {
+    redirect(`/tutoring/classes/${id}`);
   }
 
   // Fetch group to verify ownership
   const [group] = await db
     .select()
     .from(groups)
-    .where(eq(groups.id, params.id))
+    .where(eq(groups.id, id))
     .limit(1);
 
   if (!group || group.tutorId !== user.id) {
@@ -64,7 +69,7 @@ export default async function TutorAssignmentDetailPage({ params }: { params: { 
     })
     .from(submissions)
     .innerJoin(profiles, eq(submissions.studentId, profiles.id))
-    .where(eq(submissions.assignmentId, params.assignmentId))
+    .where(eq(submissions.assignmentId, assignmentId))
     .orderBy(desc(submissions.submittedAt));
 
   return (
@@ -76,7 +81,7 @@ export default async function TutorAssignmentDetailPage({ params }: { params: { 
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
-                href={`/tutoring/classes/${params.id}/assignments`}
+                href={`/tutoring/classes/${id}/assignments`}
                 className="inline-flex items-center gap-1 text-text-muted hover:text-primary font-label-sm font-semibold"
               >
                 <span className="material-symbols-outlined text-[18px]">arrow_back</span>

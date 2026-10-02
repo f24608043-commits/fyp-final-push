@@ -1,9 +1,28 @@
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { sendFriendRequest } from "../actions";
+
+async function sendFriendRequestAction(formData: FormData) {
+  const email = formData.get("email") as string;
+  
+  // Look up user by email or username using profiles table
+  const [userProfile] = await db
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(eq(profiles.displayName, email))
+    .limit(1);
+  
+  if (!userProfile) {
+    throw new Error("User not found");
+  }
+  
+  await sendFriendRequest(userProfile.id);
+  redirect("/friends");
+}
 
 export default async function AddFriendPage() {
   const supabase = await createClient();
@@ -46,7 +65,7 @@ export default async function AddFriendPage() {
 
       {/* Add Friend Form */}
       <div className="rounded-2xl bg-surface p-8 shadow-clay-surface border border-surface-border max-w-2xl">
-        <form action={sendFriendRequest} className="space-y-6">
+        <form action={sendFriendRequestAction} className="space-y-6">
           <div>
             <label htmlFor="email" className="block font-label-md font-semibold text-text-primary mb-2">
               Email or Username *

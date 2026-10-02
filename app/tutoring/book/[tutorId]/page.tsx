@@ -1,4 +1,4 @@
-import { getTutorAvailability, getTutorProfile } from "../../actions";
+import { getTutorAvailability, getTutorProfile } from "@/app/tutoring/actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";

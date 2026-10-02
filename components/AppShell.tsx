@@ -12,8 +12,8 @@ interface AppShellProps {
     displayName: string | null;
     email: string;
     role: "learner" | "tutor" | "admin";
-    xp: number;
-    streakCount: number;
+    xp?: number;
+    streakCount?: number;
   };
 }
 

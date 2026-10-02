@@ -26,6 +26,62 @@ body {
   direction: ltr;
 }
 
+/* ============================================
+   SKILL-UI DESIGN TOKENS
+   ============================================ */
+
+/* Tutor Portal Theme Colors - Warm amber, deep indigo, clean slate gray */
+:root {
+  --tutor-primary: #F59E0B;
+  --tutor-primary-dark: #D97706;
+  --tutor-secondary: #4F46E5;
+  --tutor-secondary-dark: #4338CA;
+  --tutor-accent: #64748B;
+  --tutor-bg: #F8FAFC;
+  --tutor-surface: #FFFFFF;
+}
+
+/* Learner Desk Theme Colors - Vibrant emerald, playful violet, warm cream, soft sky blue */
+:root {
+  --learner-primary: #10B981;
+  --learner-primary-dark: #059669;
+  --learner-secondary: #8B5CF6;
+  --learner-secondary-dark: #7C3AED;
+  --learner-accent: #FCD34D;
+  --learner-bg: #FEF3C7;
+  --learner-surface: #FFFFFF;
+}
+
+/* Beautiful Shadows - Polished layered neutral elevation */
+.shadow-beautiful-sm {
+  box-shadow: 0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08);
+}
+
+.shadow-beautiful-md {
+  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.06), 0px 1px 1px -0.5px rgba(0,0,0,0.06), 0px 3px 3px -1.5px rgba(0,0,0,0.06), 0px 6px 6px -3px rgba(0,0,0,0.06), 0px 12px 12px -6px rgba(0,0,0,0.06), 0px 24px 24px -12px rgba(0,0,0,0.06);
+}
+
+.shadow-beautiful-lg {
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+/* Claymorphic Standard Utilities */
+.shadow-clay-primary {
+  box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.9);
+}
+
+.shadow-clay-secondary {
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.06), -4px -4px 8px rgba(255,255,255,0.85);
+}
+
+.shadow-clay-inset {
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.06), inset -2px -2px 4px rgba(255,255,255,0.8);
+}
+
+.shadow-clay-surface {
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.05), -4px -4px 8px rgba(255,255,255,0.9);
+}
+
 /* Premium Claymorphism Effects */
 .clay-card {
   background: linear-gradient(145deg, #ffffff 0%, #f8f4f0 100%);
@@ -215,7 +271,7 @@ body {
 
 .shimmer {
   background: linear-gradient(
-    90deg,
+    218deg,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.4) 50%,
     rgba(255, 255, 255, 0) 100%
