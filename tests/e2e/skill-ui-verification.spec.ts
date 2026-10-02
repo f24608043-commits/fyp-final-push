@@ -78,9 +78,9 @@ test.describe('Skill-UI Feature Verification', () => {
       await expect(icons.first()).toBeVisible();
     });
 
-    test('Tutor Dashboard: should display stat cards with claymorphic styling', async ({ page }) => {
-      // Check for claymorphic shadow classes
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+    test('Tutor Dashboard: should display stat cards with beautiful shadows', async ({ page }) => {
+      // Check for beautiful shadow classes
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
       
       // Check for gradient backgrounds
@@ -106,12 +106,12 @@ test.describe('Skill-UI Feature Verification', () => {
       }
     });
 
-    test('Tutor Groups Hub: should have claymorphic card styling', async ({ page }) => {
+    test('Tutor Groups Hub: should have beautiful shadow card styling', async ({ page }) => {
       await page.goto(`${BASE_URL}/tutoring/groups`);
       await page.waitForLoadState('networkidle');
       
-      // Check for claymorphic shadows
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+      // Check for beautiful shadows
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
       
       // Check for gradient elements
@@ -138,8 +138,8 @@ test.describe('Skill-UI Feature Verification', () => {
       const header = page.locator('h1').first();
       await expect(header).toBeVisible();
       
-      // Check for claymorphic styling
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+      // Check for beautiful shadow styling
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
       
       // Check for gradient elements
@@ -172,8 +172,8 @@ test.describe('Skill-UI Feature Verification', () => {
       const header = page.locator('h1').first();
       await expect(header).toBeVisible();
       
-      // Check for claymorphic styling
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+      // Check for beautiful shadow styling
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
     });
 
@@ -202,8 +202,8 @@ test.describe('Skill-UI Feature Verification', () => {
       const header = page.locator('h1').first();
       await expect(header).toBeVisible();
       
-      // Check for claymorphic styling
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+      // Check for beautiful shadow styling
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
     });
 
@@ -246,12 +246,12 @@ test.describe('Skill-UI Feature Verification', () => {
       expect(tabCount).toBeGreaterThan(0);
     });
 
-    test('Settings: should have claymorphic form styling', async ({ page }) => {
+    test('Settings: should have beautiful shadow form styling', async ({ page }) => {
       await page.goto(`${BASE_URL}/settings`);
       await page.waitForLoadState('networkidle');
       
-      // Check for claymorphic shadows
-      const shadowElements = page.locator('[class*="shadow-clay"]');
+      // Check for beautiful shadows
+      const shadowElements = page.locator('[class*="shadow-beautiful"]');
       await expect(shadowElements.first()).toBeVisible();
       
       // Check for form inputs
