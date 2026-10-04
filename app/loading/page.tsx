@@ -52,11 +52,11 @@ export default function LoadingPage() {
   const currentStage = loadingStages[stage];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-blue-50 to-purple-50 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 p-4">
       <div className="w-full max-w-md rounded-3xl bg-surface p-8 shadow-clay-surface border-4 border-surface-border text-center">
         {/* Animated Mascot */}
         <div className="mb-6 flex flex-col items-center">
-          <div className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center overflow-hidden shadow-clay-primary mb-4">
+          <div className="relative w-32 h-32 rounded-[24px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center overflow-hidden shadow-clay-primary mb-4">
             <Mascot pose="thinking" size={96} />
           </div>
           <h1 className="font-headline-lg text-text-primary tracking-tight font-extrabold">Loading LEGO</h1>
@@ -64,7 +64,7 @@ export default function LoadingPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden mb-4">
+        <div className="w-full h-3 bg-surface-border rounded-full overflow-hidden mb-4">
           <div 
             className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
@@ -84,7 +84,7 @@ export default function LoadingPage() {
         </div>
 
         {/* Fun Fact */}
-        <div className="mt-6 p-4 rounded-2xl bg-surface-container border border-surface-border">
+        <div className="mt-6 p-4 rounded-[24px] bg-surface-border border border-surface-border">
           <p className="font-label-sm text-text-muted">
             💡 Did you know? Consistent learning boosts retention by up to 60%!
           </p>

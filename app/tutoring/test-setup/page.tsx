@@ -140,20 +140,20 @@ export default function TestSetupPage() {
   };
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
           <div className="flex items-center gap-4">
-            <Link href="/tutoring" className="text-gray-500 hover:text-gray-700">
+            <Link href="/tutoring" className="text-text-muted hover:text-text-muted">
               <span className="material-symbols-outlined text-[24px]">arrow_back</span>
             </Link>
             <div className="flex-1">
-              <h1 className="font-headline-xl text-headline-xl text-on-secondary-container font-extrabold">
+              <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold">
                 Live Class Setup Test
               </h1>
-              <p className="font-body-sm text-on-surface-variant">
+              <p className="font-body-sm text-text-muted">
                 Test your camera, microphone, and speakers before joining a live session
               </p>
             </div>
@@ -167,13 +167,13 @@ export default function TestSetupPage() {
       {/* Test Grid */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Camera Test */}
-        <div className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100">
+        <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface border-4 border-tertiary/30">
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-blue-500 text-[24px]">videocam</span>
-            <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Camera</h2>
+            <span className="material-symbols-outlined text-tertiary text-[24px]">videocam</span>
+            <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Camera</h2>
           </div>
           
-          <div className="relative bg-black rounded-xl overflow-hidden mb-4 aspect-video">
+          <div className="relative bg-text-primary rounded-xl overflow-hidden mb-4 aspect-video">
             {cameraStream ? (
               <video
                 ref={videoRef}
@@ -183,28 +183,28 @@ export default function TestSetupPage() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="flex items-center justify-center h-full text-text-primary">
                 <span className="material-symbols-outlined text-[48px]">videocam_off</span>
               </div>
             )}
           </div>
 
           {cameraError && (
-            <p className="text-red-500 text-sm mb-3">{cameraError}</p>
+            <p className="text-error text-sm mb-3">{cameraError}</p>
           )}
 
           <div className="flex gap-2">
             {!cameraStream ? (
               <button
                 onClick={startCamera}
-                className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="flex-1 rounded-xl bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Start Camera
               </button>
             ) : (
               <button
                 onClick={stopCamera}
-                className="flex-1 rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-md font-bold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
+                className="flex-1 rounded-xl border-2 border-error bg-error/10 text-error px-4 py-2 font-label-md font-bold shadow-clay-surface hover:from-error/10 hover:to-error/10 transition-all"
               >
                 Stop Camera
               </button>
@@ -213,18 +213,18 @@ export default function TestSetupPage() {
         </div>
 
         {/* Microphone Test */}
-        <div className="rounded-2xl bg-gradient-to-br from-white to-green-50 p-6 shadow-xl border-4 border-green-100">
+        <div className="rounded-[24px] bg-gradient-to-br from-surface to-primary/10 p-6 shadow-clay-surface border-4 border-primary/30">
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-green-500 text-[24px]">mic</span>
-            <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Microphone</h2>
+            <span className="material-symbols-outlined text-primary text-[24px]">mic</span>
+            <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Microphone</h2>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 mb-4">
+          <div className="surface rounded-xl p-6 mb-4">
             <div className="flex items-end gap-1 h-24">
               {[...Array(20)].map((_, i) => (
                 <div
                   key={i}
-                  className="flex-1 bg-gradient-to-t from-green-500 to-emerald-400 rounded-t transition-all"
+                  className="flex-1 bg-gradient-to-t from-primary to-success rounded-t transition-all"
                   style={{
                     height: `${Math.max(4, (micLevel / 255) * 100)}px`,
                   }}
@@ -234,21 +234,21 @@ export default function TestSetupPage() {
           </div>
 
           {micError && (
-            <p className="text-red-500 text-sm mb-3">{micError}</p>
+            <p className="text-error text-sm mb-3">{micError}</p>
           )}
 
           <div className="flex gap-2">
             {!micStream ? (
               <button
                 onClick={startMic}
-                className="flex-1 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="flex-1 rounded-xl bg-primary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Start Mic
               </button>
             ) : (
               <button
                 onClick={stopMic}
-                className="flex-1 rounded-xl border-2 border-red-300 bg-gradient-to-br from-red-50 to-rose-50 text-red-600 px-4 py-2 font-label-md font-bold shadow-lg hover:from-red-100 hover:to-rose-100 transition-all"
+                className="flex-1 rounded-xl border-2 border-error bg-error/10 text-error px-4 py-2 font-label-md font-bold shadow-clay-surface hover:from-error/10 hover:to-error/10 transition-all"
               >
                 Stop Mic
               </button>
@@ -257,19 +257,19 @@ export default function TestSetupPage() {
         </div>
 
         {/* Speaker Test */}
-        <div className="rounded-2xl bg-gradient-to-br from-white to-purple-50 p-6 shadow-xl border-4 border-purple-100">
+        <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface border-4 border-tertiary/30">
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-purple-500 text-[24px]">volume_up</span>
-            <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">Speaker</h2>
+            <span className="material-symbols-outlined text-tertiary text-[24px]">volume_up</span>
+            <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Speaker</h2>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 mb-4 flex items-center justify-center">
+          <div className="surface rounded-xl p-6 mb-4 flex items-center justify-center">
             {speakerPlaying ? (
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="w-2 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full animate-pulse"
+                    className="w-2 bg-tertiary rounded-full animate-pulse"
                     style={{
                       height: `${20 + Math.random() * 40}px`,
                       animationDelay: `${i * 0.1}s`,
@@ -278,18 +278,18 @@ export default function TestSetupPage() {
                 ))}
               </div>
             ) : (
-              <span className="material-symbols-outlined text-gray-400 text-[48px]">speaker_notes_off</span>
+              <span className="material-symbols-outlined text-text-primary text-[48px]">speaker_notes_off</span>
             )}
           </div>
 
           {speakerError && (
-            <p className="text-red-500 text-sm mb-3">{speakerError}</p>
+            <p className="text-error text-sm mb-3">{speakerError}</p>
           )}
 
           <button
             onClick={testSpeaker}
             disabled={speakerPlaying}
-            className="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-xl bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Test Speaker
           </button>
@@ -297,16 +297,16 @@ export default function TestSetupPage() {
       </div>
 
       {/* Tips */}
-      <div className="mt-6 rounded-2xl bg-gradient-to-br from-yellow-50 to-orange-50 p-6 shadow-xl border-4 border-yellow-200">
+      <div className="mt-6 rounded-[24px] bg-secondary/10 p-6 shadow-clay-surface border-4 border-secondary/30">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-white text-[24px]">tips_and_updates</span>
+          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-text-primary text-[24px]">tips_and_updates</span>
           </div>
           <div>
-            <h3 className="font-headline-md text-headline-md text-on-surface font-extrabold mb-2">
+            <h3 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-2">
               Tips for Better Experience
             </h3>
-            <ul className="font-body-sm text-on-surface-variant space-y-1">
+            <ul className="font-body-sm text-text-muted space-y-1">
               <li>• Use a wired connection for stable video/audio</li>
               <li>• Ensure good lighting for your camera</li>
               <li>• Use headphones to prevent echo</li>

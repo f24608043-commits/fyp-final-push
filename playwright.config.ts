@@ -14,7 +14,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://localhost:4005',
     trace: 'on-first-retry',
   },
 
@@ -26,8 +26,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'echo "Using existing server on port 3001"',
-    url: 'http://localhost:3001',
+    command: 'echo "Using existing server on port 4005"',
+    url: 'http://localhost:4005',
     reuseExistingServer: true,
     timeout: 120 * 1000,
     stdout: 'pipe',

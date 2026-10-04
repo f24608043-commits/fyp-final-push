@@ -1,0 +1,1239 @@
+◇ injected env (6) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+Running 207 tests using 1 worker
+
+◇ injected env (0) from .env.local // tip: ⌘ enable debugging { debug: true }
+
+[1/207] [chromium] › tests\admin-access.spec.ts:4:7 › Admin Navigation and Access Control › admin dashboard page loads
+[2/207] [chromium] › tests\admin-access.spec.ts:13:7 › Admin Navigation and Access Control › admin users page loads
+[3/207] [chromium] › tests\admin-access.spec.ts:22:7 › Admin Navigation and Access Control › admin badges page loads
+[4/207] [chromium] › tests\admin-access.spec.ts:31:7 › Admin Navigation and Access Control › admin courses page loads
+[5/207] [chromium] › tests\admin-access.spec.ts:40:7 › Admin Navigation and Access Control › admin tutoring page loads
+[6/207] [chromium] › tests\admin-access.spec.ts:49:7 › Admin Navigation and Access Control › admin routes redirect unauthorized users
+[7/207] [chromium] › tests\admin-actions.spec.ts:14:7 › Admin Actions - Form Submissions › admin badge creation form exists and is fillable
+[8/207] [chromium] › tests\admin-actions.spec.ts:44:7 › Admin Actions - Form Submissions › admin course creation form exists and is fillable
+[9/207] [chromium] › tests\admin-actions.spec.ts:74:7 › Admin Actions - Form Submissions › admin users table displays data
+[10/207] [chromium] › tests\admin-authenticated.spec.ts:14:7 › Admin Authenticated Tests › admin badges page responds
+[11/207] [chromium] › tests\admin-authenticated.spec.ts:23:7 › Admin Authenticated Tests › admin courses page responds
+[12/207] [chromium] › tests\admin-authenticated.spec.ts:32:7 › Admin Authenticated Tests › admin tutoring page responds
+[13/207] [chromium] › tests\admin-functionality.spec.ts:34:7 › Admin Pages Functionality › Admin badges page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:34:7 › Admin Pages Functionality › Admin badges page - Page loads
+⚠️ Admin login failed, skipping test
+
+[14/207] [chromium] › tests\admin-functionality.spec.ts:47:7 › Admin Pages Functionality › Admin users page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:47:7 › Admin Pages Functionality › Admin users page - Page loads
+⚠️ Admin login failed, skipping test
+
+[15/207] [chromium] › tests\admin-functionality.spec.ts:60:7 › Admin Pages Functionality › Admin users page - Search functionality
+[chromium] › tests\admin-functionality.spec.ts:60:7 › Admin Pages Functionality › Admin users page - Search functionality
+⚠️ Admin login failed, skipping test
+
+[16/207] [chromium] › tests\admin-functionality.spec.ts:86:7 › Admin Pages Functionality › Admin tutoring page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:86:7 › Admin Pages Functionality › Admin tutoring page - Page loads
+⚠️ Admin login failed, skipping test
+
+[17/207] [chromium] › tests\admin-functionality.spec.ts:99:7 › Admin Pages Functionality › Admin courses page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:99:7 › Admin Pages Functionality › Admin courses page - Page loads
+⚠️ Admin login failed, skipping test
+
+[18/207] [chromium] › tests\comprehensive-admin.spec.ts:6:5 › COMPREHENSIVE ADMIN E2E - Full workflow
+[19/207] [chromium] › tests\comprehensive-learner.spec.ts:6:5 › COMPREHENSIVE LEARNER E2E - Full workflow
+[chromium] › tests\comprehensive-learner.spec.ts:6:5 › COMPREHENSIVE LEARNER E2E - Full workflow
+✓ Learner logged in
+
+✓ Navigated to learning path
+
+✓ Learning path loaded
+
+✓ Navigated to tutoring page
+
+✓ Clicked Message button on tutor
+
+✓ Navigated to friends page
+
+  1) [chromium] › tests\comprehensive-learner.spec.ts:6:5 › COMPREHENSIVE LEARNER E2E - Full workflow 
+
+    Test timeout of 300000ms exceeded.
+
+    Error: locator.click: Test timeout of 300000ms exceeded.
+    Call log:
+      - waiting for locator('button:has-text("Add Friend")').nth(1)
+        - locator resolved to <button type="submit" class="font-label-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2">Add Friend</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+      - element was detached from the DOM, retrying
+
+
+      52 |     const requestsToSend = Math.min(addFriendCount, 3);
+      53 |     for (let i = 0; i < requestsToSend; i++) {
+    > 54 |       await addFriendButtons.nth(i).click();
+         |                                     ^
+      55 |       await page.waitForTimeout(1500);
+      56 |     }
+      57 |     console.log(`✓ Sent ${requestsToSend} friend request(s)`);
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\comprehensive-learner.spec.ts:54:37
+
+    Error Context: test-results\comprehensive-learner-COMP-4da33-LEARNER-E2E---Full-workflow-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ enable debugging { debug: true }
+
+[20/207] [chromium] › tests\comprehensive-tutor.spec.ts:6:5 › COMPREHENSIVE TUTOR E2E - Full workflow
+[chromium] › tests\comprehensive-tutor.spec.ts:6:5 › COMPREHENSIVE TUTOR E2E - Full workflow
+✓ Tutor logged in
+
+✓ Navigated to tutor dashboard
+
+✓ Navigated to tutoring page
+
+ℹ No pending session requests to accept
+
+✓ Navigated to messages page
+
+✓ Opened conversation
+
+✓ Navigated to friends page
+
+✓ Sent friend request
+
+✅ COMPREHENSIVE TUTOR E2E TEST COMPLETED
+
+[21/207] [chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load
+[chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load
+Admin page /admin: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/users: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/courses: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/courses/new: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/badges: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/tutoring: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/units/test-unit-id: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/lessons/test-lesson-id: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+Admin page /admin/courses/test-course-id: 200
+
+  → Loaded with [object Promise] claymorphic elements
+
+  2) [chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load 
+
+    Error: locator.count: Test ended.
+
+      29 |       } else {
+      30 |         // Check for claymorphic layout elements
+    > 31 |         const clayElements = page.locator('[class*="shadow"], [class*="rounded"], [class*="surface"]').count();
+         |                                                                                                        ^
+      32 |         console.log(`  → Loaded with ${clayElements} claymorphic elements`);
+      33 |       }
+      34 |     } catch (error) {
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\comprehensive-verification.spec.ts:31:104
+
+    Error Context: test-results\comprehensive-verification-046cd--admin-pages-exist-and-load-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌁ auth for agents [www.vestauth.com]
+
+[22/207] [chromium] › tests\comprehensive-verification.spec.ts:40:5 › COMPREHENSIVE - Verify all tutor pages exist and load
+[chromium] › tests\comprehensive-verification.spec.ts:40:5 › COMPREHENSIVE - Verify all tutor pages exist and load
+Tutor page /tutoring: Loaded
+
+  → 47 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Tutor page /tutoring/dashboard: Loaded
+
+  → 105 claymorphic elements
+
+  → 6 buttons found
+
+  → Has heading: true
+
+Tutor page /tutoring/history: Loaded
+
+  → 48 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Tutor page /tutoring/session/test-session-id: Loaded
+
+  → 0 claymorphic elements
+
+  → 1 buttons found
+
+  → Has heading: true
+
+Tutor page /tutoring/test-setup: Loaded
+
+  → 76 claymorphic elements
+
+  → 5 buttons found
+
+  → Has heading: true
+
+[23/207] [chromium] › tests\comprehensive-verification.spec.ts:82:5 › COMPREHENSIVE - Verify all learner pages exist and load
+[chromium] › tests\comprehensive-verification.spec.ts:82:5 › COMPREHENSIVE - Verify all learner pages exist and load
+Learner page /path: Loaded
+
+  → 40 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Learner page /friends: Loaded
+
+  → 66 claymorphic elements
+
+  → 7 buttons found
+
+  → Has heading: true
+
+Learner page /tutoring: Loaded
+
+  → 73 claymorphic elements
+
+  → 7 buttons found
+
+  → Has heading: true
+
+Learner page /messages: Loaded
+
+  → 54 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Learner page /messages/test-conversation-id: Loaded
+
+  → 41 claymorphic elements
+
+  → 3 buttons found
+
+  → Has heading: true
+
+Learner page /leaderboard: Loaded
+
+  → 440 claymorphic elements
+
+  → 5 buttons found
+
+  → Has heading: true
+
+Learner page /library: Loaded
+
+  → 46 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Learner page /notifications: Loaded
+
+  → 52 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Learner page /settings: Loaded
+
+  → 77 claymorphic elements
+
+  → 10 buttons found
+
+  → Has heading: true
+
+Learner page /profile/test-user-id: Loaded
+
+  → 0 claymorphic elements
+
+  → 1 buttons found
+
+  → Has heading: true
+
+Learner page /lesson/test-lesson-id: Loaded
+
+  → 40 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+Learner page /lesson/test-lesson-id/practice: Loaded
+
+  → 0 claymorphic elements
+
+  → 1 buttons found
+
+  → Has heading: true
+
+Learner page /onboarding: Loaded
+
+  → 40 claymorphic elements
+
+  → 2 buttons found
+
+  → Has heading: true
+
+[24/207] [chromium] › tests\comprehensive-verification.spec.ts:132:5 › COMPREHENSIVE - Verify button functionality on key pages
+[chromium] › tests\comprehensive-verification.spec.ts:132:5 › COMPREHENSIVE - Verify button functionality on key pages
+Friends page - Add Friend buttons: 5, Message buttons: 0
+
+Tutoring page - Book Session buttons: 0
+
+Messages page loaded successfully
+
+[25/207] [chromium] › tests\comprehensive-verification.spec.ts:160:5 › COMPREHENSIVE - Verify claymorphic layout consistency
+[chromium] › tests\comprehensive-verification.spec.ts:160:5 › COMPREHENSIVE - Verify claymorphic layout consistency
+/path - Claymorphic elements:
+
+  Shadows: true, Rounded: true, Surface: true, Container: false
+
+  Has background color: true
+
+/friends - Claymorphic elements:
+
+  Shadows: true, Rounded: true, Surface: true, Container: false
+
+  Has background color: true
+
+/tutoring - Claymorphic elements:
+
+  Shadows: true, Rounded: true, Surface: true, Container: false
+
+  Has background color: true
+
+/messages - Claymorphic elements:
+
+  Shadows: true, Rounded: true, Surface: true, Container: true
+
+  Has background color: true
+
+[26/207] [chromium] › tests\dashboard-stats.spec.ts:4:7 › Dashboard Stats Verification › learner path page displays progress
+[27/207] [chromium] › tests\debug-tutoring-page.spec.ts:4:7 › Debug Tutoring Page › check tutoring page content
+[chromium] › tests\debug-tutoring-page.spec.ts:4:7 › Debug Tutoring Page › check tutoring page content
+Page URL: http://localhost:3001/tutoring
+
+Page title: LEGO - Learn And Go
+
+Tutor cards found: 0
+
+Book buttons found: 0
+
+Screenshot saved to tutoring-page-debug.png
+
+Page content preview: terminalLEGOLearn And GoLearner DeskhomePathmenu_bookLibraryschoolMy ClassesgroupsTutoringdiversity_3FriendschatMessagessettingsSettingsterminalhomemenu_bookschoolgroupsdiversity_3chatsettingsmenuLEGOnotifications0local_fire_department0streakbolt0XPlocal_fire_department0bolt0person1Test LearnerLVL 1•learner👨‍🏫 Tutoring•Expert HelpTutoring Hub 🎓Connect with expert tutors for personalized learning sessionsschoolLearn Together"Get personalized help from expert tutors to accelerate your learning!
+
+[28/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › mobile - /path
+[29/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › mobile - /messages
+[30/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › mobile - /tutoring
+[31/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › mobile - /admin
+[32/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › desktop - /path
+[33/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › desktop - /messages
+[34/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › desktop - /tutoring
+[35/207] [chromium] › tests\design-verification.spec.ts:12:11 › Design Verification - Claymorphism + Mobile Nav › desktop - /admin
+[36/207] [chromium] › tests\e2e\critical-operations.spec.ts:39:9 › Critical User Operations - Comprehensive E2E › Learner Messaging to Tutor › should send message from learner to tutor
+[chromium] › tests\e2e\critical-operations.spec.ts:39:9 › Critical User Operations - Comprehensive E2E › Learner Messaging to Tutor › should send message from learner to tutor
+Messaging test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:42:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[37/207] [chromium] › tests\e2e\critical-operations.spec.ts:86:9 › Critical User Operations - Comprehensive E2E › Adding Friends and Viewing Profiles › should add friend and view their profile
+[chromium] › tests\e2e\critical-operations.spec.ts:86:9 › Critical User Operations - Comprehensive E2E › Adding Friends and Viewing Profiles › should add friend and view their profile
+Friends test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:89:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[38/207] [chromium] › tests\e2e\critical-operations.spec.ts:131:9 › Critical User Operations - Comprehensive E2E › Completing Lesson with Quiz › should complete lesson and take quiz
+[chromium] › tests\e2e\critical-operations.spec.ts:131:9 › Critical User Operations - Comprehensive E2E › Completing Lesson with Quiz › should complete lesson and take quiz
+Lesson/Quiz test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:134:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[39/207] [chromium] › tests\e2e\critical-operations.spec.ts:184:9 › Critical User Operations - Comprehensive E2E › Tutor Creating Class and Groups › should create class and groups as tutor
+[chromium] › tests\e2e\critical-operations.spec.ts:184:9 › Critical User Operations - Comprehensive E2E › Tutor Creating Class and Groups › should create class and groups as tutor
+Class creation test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:187:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[40/207] [chromium] › tests\e2e\critical-operations.spec.ts:237:9 › Critical User Operations - Comprehensive E2E › Adding Multiple Badges › should add 10+ badges for different achievements
+[chromium] › tests\e2e\critical-operations.spec.ts:237:9 › Critical User Operations - Comprehensive E2E › Adding Multiple Badges › should add 10+ badges for different achievements
+Badges test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:240:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[41/207] [chromium] › tests\e2e\critical-operations.spec.ts:276:9 › Critical User Operations - Comprehensive E2E › Tutor Enrollment › should enroll as tutor and complete profile
+[chromium] › tests\e2e\critical-operations.spec.ts:276:9 › Critical User Operations - Comprehensive E2E › Tutor Enrollment › should enroll as tutor and complete profile
+Tutor enrollment test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:279:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[42/207] [chromium] › tests\e2e\critical-operations.spec.ts:322:9 › Critical User Operations - Comprehensive E2E › Group Creation and Chat › should create group and send messages
+[chromium] › tests\e2e\critical-operations.spec.ts:322:9 › Critical User Operations - Comprehensive E2E › Group Creation and Chat › should create group and send messages
+Group chat test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at processImmediate (node:internal/timers:472:9)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:325:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[43/207] [chromium] › tests\e2e\critical-operations.spec.ts:379:9 › Critical User Operations - Comprehensive E2E › Profile Settings › should update profile settings
+[chromium] › tests\e2e\critical-operations.spec.ts:379:9 › Critical User Operations - Comprehensive E2E › Profile Settings › should update profile settings
+Profile settings test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at processImmediate (node:internal/timers:472:9)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:382:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[44/207] [chromium] › tests\e2e\critical-operations.spec.ts:423:9 › Critical User Operations - Comprehensive E2E › Conducting Live Class › should start and conduct live class session
+[chromium] › tests\e2e\critical-operations.spec.ts:423:9 › Critical User Operations - Comprehensive E2E › Conducting Live Class › should start and conduct live class session
+Live class test skipped - feature may not be fully implemented: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:426:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[45/207] [chromium] › tests\e2e\critical-operations.spec.ts:485:9 › Critical User Operations - Comprehensive E2E › Comprehensive User Flow - End to End › should complete full learner journey
+[chromium] › tests\e2e\critical-operations.spec.ts:485:9 › Critical User Operations - Comprehensive E2E › Comprehensive User Flow - End to End › should complete full learner journey
+Learner journey test skipped: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:488:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[46/207] [chromium] › tests\e2e\critical-operations.spec.ts:526:9 › Critical User Operations - Comprehensive E2E › Comprehensive User Flow - End to End › should complete full tutor journey
+[chromium] › tests\e2e\critical-operations.spec.ts:526:9 › Critical User Operations - Comprehensive E2E › Comprehensive User Flow - End to End › should complete full tutor journey
+Tutor journey test skipped: Error: Invalid credentials
+    at signIn (C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:31:13)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\e2e\critical-operations.spec.ts:529:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1655:9
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1135:11
+    at TimeoutManager.withRunnable (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:403:14)
+    at TestInfoImpl._runWithTimeout (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1133:7)
+    at C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1653:7
+    at WorkerMain._runTest (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1626:5)
+    at WorkerMain.runTestGroup (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\worker\workerProcessEntry.js:1521:9)
+    at process.<anonymous> (C:\Users\Abu Bakar\Documents\fyp-project-2\node_modules\playwright\lib\common\index.js:1941:25)
+
+[47/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:20:9 › Skill-UI Feature Verification › Authentication Flow › should load sign-in page
+[48/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:25:9 › Skill-UI Feature Verification › Authentication Flow › should sign in as tutor
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:25:9 › Skill-UI Feature Verification › Authentication Flow › should sign in as tutor
+Invalid test credentials - skipping login verification
+
+[49/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:49:9 › Skill-UI Feature Verification › Authentication Flow › should sign in as learner
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:49:9 › Skill-UI Feature Verification › Authentication Flow › should sign in as learner
+Invalid test credentials - skipping login verification
+
+[50/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:84:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Dashboard: should load without errors
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:84:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Dashboard: should load without errors
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping UI checks - redirected to sign-in
+
+[51/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:108:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Dashboard: should display stat cards with beautiful shadows
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:108:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Dashboard: should display stat cards with beautiful shadows
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping shadow checks - redirected to sign-in
+
+[52/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:124:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Groups Hub: should load and display groups
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:124:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Groups Hub: should load and display groups
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping groups check - redirected to sign-in
+
+[53/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:148:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Groups Hub: should have beautiful shadow card styling
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:148:9 › Skill-UI Feature Verification › Tutor Flow Verification › Tutor Groups Hub: should have beautiful shadow card styling
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping shadow checks - redirected to sign-in
+
+[54/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:180:9 › Skill-UI Feature Verification › Learner Flow Verification › Learner Classes: should load with emerald/violet theme
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:180:9 › Skill-UI Feature Verification › Learner Flow Verification › Learner Classes: should load with emerald/violet theme
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping classes check - redirected to sign-in
+
+[55/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:206:9 › Skill-UI Feature Verification › Learner Flow Verification › Learner Classes: should display enrolled classes or empty state
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:206:9 › Skill-UI Feature Verification › Learner Flow Verification › Learner Classes: should display enrolled classes or empty state
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping classes check - redirected to sign-in
+
+[56/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:226:9 › Skill-UI Feature Verification › Learner Flow Verification › Friends Page: should load and display friends
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:226:9 › Skill-UI Feature Verification › Learner Flow Verification › Friends Page: should load and display friends
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping friends check - redirected to sign-in
+
+[57/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:248:9 › Skill-UI Feature Verification › Learner Flow Verification › Friends Page: should display suggested friends or friend list
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:248:9 › Skill-UI Feature Verification › Learner Flow Verification › Friends Page: should display suggested friends or friend list
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping friends check - redirected to sign-in
+
+[58/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:268:9 › Skill-UI Feature Verification › Learner Flow Verification › Messages: should load and display conversations
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:268:9 › Skill-UI Feature Verification › Learner Flow Verification › Messages: should load and display conversations
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping messages check - redirected to sign-in
+
+[59/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:290:9 › Skill-UI Feature Verification › Learner Flow Verification › Messages: should display conversation list or empty state
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:290:9 › Skill-UI Feature Verification › Learner Flow Verification › Messages: should display conversation list or empty state
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping messages check - redirected to sign-in
+
+[60/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:323:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Settings: should load with tabbed navigation
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:323:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Settings: should load with tabbed navigation
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping settings check - redirected to sign-in
+
+[61/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:346:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Settings: should have beautiful shadow form styling
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:346:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Settings: should have beautiful shadow form styling
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping shadow checks - redirected to sign-in
+
+[62/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:366:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Role-Based Theming: Tutor pages should have gradient styling
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:366:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Role-Based Theming: Tutor pages should have gradient styling
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping theme check - redirected to sign-in
+
+[63/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:385:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Role-Based Theming: Learner pages should have gradient styling
+[chromium] › tests\e2e\skill-ui-verification.spec.ts:385:9 › Skill-UI Feature Verification › Settings & Role-Based Theming › Role-Based Theming: Learner pages should have gradient styling
+Redirected to sign-in (expected for unauthenticated access)
+
+Skipping theme check - redirected to sign-in
+
+[64/207] [chromium] › tests\e2e\skill-ui-verification.spec.ts:406:9 › Skill-UI Feature Verification › Navigation & Routing › should navigate between pages without errors
+[65/207] [chromium] › tests\learner-flow.spec.ts:4:7 › Learner Flow › sign up page loads
+[66/207] [chromium] › tests\learner-flow.spec.ts:14:7 › Learner Flow › sign in page loads
+[67/207] [chromium] › tests\learner-flow.spec.ts:23:7 › Learner Flow › library page loads (redirects to sign-in if not auth)
+[68/207] [chromium] › tests\learner-flow.spec.ts:32:7 › Learner Flow › tutoring page loads (redirects to sign-in if not auth)
+[69/207] [chromium] › tests\learner-flow.spec.ts:41:7 › Learner Flow › learning path page loads (redirects to sign-in if not auth)
+[70/207] [chromium] › tests\lesson-completion.spec.ts:4:7 › Lesson Completion Flow › learning path page loads
+[71/207] [chromium] › tests\lesson-completion.spec.ts:13:7 › Lesson Completion Flow › lesson page structure loads if accessible
+[72/207] [chromium] › tests\lesson-completion.spec.ts:24:7 › Lesson Completion Flow › lesson practice page structure loads if accessible
+[73/207] [chromium] › tests\live-browser-test.spec.ts:5:5 › LIVE TEST - Tutor Dashboard - Edit Availability
+[chromium] › tests\live-browser-test.spec.ts:5:5 › LIVE TEST - Tutor Dashboard - Edit Availability
+Testing Edit Availability button...
+
+After clicking Edit Availability, URL: http://localhost:3001/tutoring/dashboard/availability
+
+✓ Edit Availability test completed
+
+[74/207] [chromium] › tests\live-browser-test.spec.ts:38:5 › LIVE TEST - Tutoring Page - Message and Book Session buttons
+[chromium] › tests\live-browser-test.spec.ts:38:5 › LIVE TEST - Tutoring Page - Message and Book Session buttons
+Testing Message button...
+
+After clicking Message, URL: http://localhost:3001/messages/ae2a5e59-23de-42c9-acde-e33ef8773d70
+
+Testing Book Session button...
+
+No Book Session buttons found
+
+✓ Tutoring buttons test completed
+
+[75/207] [chromium] › tests\live-browser-test.spec.ts:88:5 › LIVE TEST - Messages Page
+[chromium] › tests\live-browser-test.spec.ts:88:5 › LIVE TEST - Messages Page
+Testing Messages page...
+
+Messages page loaded: http://localhost:3001/messages
+
+✓ Messages page test completed
+
+[76/207] [chromium] › tests\live-browser-test.spec.ts:112:5 › LIVE TEST - Friends Page
+[chromium] › tests\live-browser-test.spec.ts:112:5 › LIVE TEST - Friends Page
+Testing Friends page...
+
+Found 5 Add Friend buttons
+
+Clicked Add Friend button
+
+✓ Friends page test completed
+
+[77/207] [chromium] › tests\live-browser-test.spec.ts:144:5 › LIVE TEST - Sign-up flow
+[chromium] › tests\live-browser-test.spec.ts:144:5 › LIVE TEST - Sign-up flow
+Testing Sign-up flow...
+
+After sign-up, URL: http://localhost:3001/onboarding
+
+✓ Sign-up successful, redirected to onboarding
+
+[78/207] [chromium] › tests\live-login-test.spec.ts:4:7 › Live Login Test - Basic Verification › learner can login successfully
+[chromium] › tests\live-login-test.spec.ts:4:7 › Live Login Test - Basic Verification › learner can login successfully
+✅ Login successful, redirected to /path
+
+[79/207] [chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created
+[chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created
+⚠️ Login timeout, checking current URL
+
+  3) [chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.goto: net::ERR_NETWORK_IO_SUSPENDED at http://localhost:3000/tutoring
+    Call log:
+      - navigating to "http://localhost:3000/tutoring", waiting until "load"
+
+
+      37 |
+      38 |     // Step 2: Navigate to tutoring page
+    > 39 |     await page.goto('http://localhost:3000/tutoring');
+         |                ^
+      40 |     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+      41 |
+      42 |     // Step 3: Find any tutor card
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\live-session-booking.spec.ts:39:16
+
+    Error Context: test-results\live-session-booking-Live--e4ac3-ion-requests-row-is-created-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+[80/207] [chromium] › tests\live-tutor-availability.spec.ts:15:7 › Live Tutor Availability Edit - Database Verification › tutor availability exists in database
+[81/207] [chromium] › tests\live-tutor-profile.spec.ts:13:7 › Live Tutor Profile Creation - Database Verification › tutor creates profile and tutor_profiles row is created
+[chromium] › tests\live-tutor-profile.spec.ts:13:7 › Live Tutor Profile Creation - Database Verification › tutor creates profile and tutor_profiles row is created
+⚠️ Login timeout, checking current URL
+
+Create profile buttons found: 0
+
+Edit profile links found: 0
+
+[82/207] [chromium] › tests\login-verification.spec.ts:4:7 › Login Verification › learner can log in
+[83/207] [chromium] › tests\login-verification.spec.ts:16:7 › Login Verification › tutor can log in
+[84/207] [chromium] › tests\login-verification.spec.ts:28:7 › Login Verification › admin can log in
+[85/207] [chromium] › tests\manual-message-test.spec.ts:7:7 › MANUAL DEBUG - Message button behavior › MANUAL DEBUG - Message button behavior
+[86/207] [chromium] › tests\mascot-chat-api.spec.ts:4:7 › Mascot Chat API Tests › OpenRouter failure falls back to canned response
+[87/207] [chromium] › tests\mascot-chat-api.spec.ts:8:7 › Mascot Chat API Tests › OpenAI failure falls back to canned response
+[88/207] [chromium] › tests\mascot-chat-api.spec.ts:12:7 › Mascot Chat API Tests › Rate limit enforcement
+[89/207] [chromium] › tests\mascot-chat.spec.ts:30:7 › Mascot Chat Feature › chat widget opens and closes
+[90/207] [chromium] › tests\mascot-chat.spec.ts:51:7 › Mascot Chat Feature › send message and receive AI response
+[91/207] [chromium] › tests\mascot-chat.spec.ts:72:7 › Mascot Chat Feature › quick action buttons work
+[92/207] [chromium] › tests\mascot-chat.spec.ts:91:7 › Mascot Chat Feature › assembly animation trigger works
+[93/207] [chromium] › tests\mascot-chat.spec.ts:108:7 › Mascot Chat Feature › rate limit enforcement
+[94/207] [chromium] › tests\mascot-chat.spec.ts:154:7 › Mascot Chat API - Failure Scenarios › OpenRouter failure falls back to canned response
+[95/207] [chromium] › tests\mascot-chat.spec.ts:171:7 › Mascot Chat API - Failure Scenarios › OpenAI failure falls back to canned response
+[96/207] [chromium] › tests\mascot-evidence.spec.ts:20:7 › Mascot Evidence Screenshots › screenshot chat widget collapsed
+[chromium] › tests\mascot-evidence.spec.ts:20:7 › Mascot Evidence Screenshots › screenshot chat widget collapsed
+✓ Screenshot: chat-widget-collapsed.png
+
+[97/207] [chromium] › tests\mascot-evidence.spec.ts:30:7 › Mascot Evidence Screenshots › screenshot chat widget open
+  4) [chromium] › tests\mascot-evidence.spec.ts:30:7 › Mascot Evidence Screenshots › screenshot chat widget open 
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+      "domcontentloaded" event fired
+    ============================================================
+
+       9 |     await page.fill('input[type="password"]', 'Test123456!');
+      10 |     await page.click('button[type="submit"]');
+    > 11 |     await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+         |                ^
+      12 |     
+      13 |     // Handle onboarding redirect
+      14 |     const url = page.url();
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\mascot-evidence.spec.ts:11:16
+
+    Error Context: test-results\mascot-evidence-Mascot-Evi-14659-screenshot-chat-widget-open-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ◈ secrets for agents [www.dotenvx.com]
+
+[98/207] [chromium] › tests\mascot-evidence.spec.ts:41:7 › Mascot Evidence Screenshots › screenshot chat widget with message
+  5) [chromium] › tests\mascot-evidence.spec.ts:41:7 › Mascot Evidence Screenshots › screenshot chat widget with message 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForTimeout: Test timeout of 30000ms exceeded.
+
+      49 |     await page.click('button:has-text("Send")');
+      50 |     
+    > 51 |     await page.waitForTimeout(3000);
+         |                ^
+      52 |     await page.screenshot({ path: 'screenshots/mascot/chat-widget-with-message.png' });
+      53 |     console.log('✓ Screenshot: chat-widget-with-message.png');
+      54 |   });
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\mascot-evidence.spec.ts:51:16
+
+    Error Context: test-results\mascot-evidence-Mascot-Evi-d483a-ot-chat-widget-with-message-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ suppress logs { quiet: true }
+
+[99/207] [chromium] › tests\mascot-evidence.spec.ts:56:7 › Mascot Evidence Screenshots › screenshot assembly animation
+[chromium] › tests\mascot-evidence.spec.ts:56:7 › Mascot Evidence Screenshots › screenshot assembly animation
+✓ Screenshot: assembly-animation.png
+
+[100/207] [chromium] › tests\mascot-evidence.spec.ts:70:7 › Mascot Evidence Screenshots › screenshot new poses
+  6) [chromium] › tests\mascot-evidence.spec.ts:70:7 › Mascot Evidence Screenshots › screenshot new poses 
+
+    TimeoutError: page.waitForURL: Timeout 15000ms exceeded.
+    =========================== logs ===========================
+      "domcontentloaded" event fired
+    ============================================================
+
+       9 |     await page.fill('input[type="password"]', 'Test123456!');
+      10 |     await page.click('button[type="submit"]');
+    > 11 |     await page.waitForURL(/\/(path|onboarding)/, { timeout: 15000 });
+         |                ^
+      12 |     
+      13 |     // Handle onboarding redirect
+      14 |     const url = page.url();
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\mascot-evidence.spec.ts:11:16
+
+    Error Context: test-results\mascot-evidence-Mascot-Evi-7d209-nshots-screenshot-new-poses-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+[101/207] [chromium] › tests\measure-latency.spec.ts:3:5 › Measure load times for key pages
+[chromium] › tests\measure-latency.spec.ts:3:5 › Measure load times for key pages
+/tutoring: 9472ms
+
+/friends: 24006ms
+
+/messages: 18155ms
+
+/tutoring/dashboard: 3054ms
+
+=== LATENCY RESULTS ===
+
+/tutoring: 9472ms
+
+/friends: 24006ms
+
+/messages: 18155ms
+
+/tutoring/dashboard: 3054ms
+
+[102/207] [chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time
+[chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time
+⚠️ Navigation timeout. Current URL: http://localhost:3000/sign-in?error=Invalid%20login%20credentials
+
+  7) [chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+      navigated to "http://localhost:3000/sign-in?error=Invalid%20login%20credentials"
+    ============================================================
+
+      18 |     // Wait for navigation with increased timeout
+      19 |     try {
+    > 20 |       await page.waitForURL(/\/(path|onboarding)/, { timeout: 30000 });
+         |                  ^
+      21 |     } catch (error) {
+      22 |       // If waitForURL fails, check current URL and log it
+      23 |       const currentUrl = page.url();
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\measure-login-time.spec.ts:20:18
+
+    Error Context: test-results\measure-login-time-Login-Time-Measurement-measure-login-time-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌁ auth for agents [www.vestauth.com]
+
+[103/207] [chromium] › tests\measure-messages.spec.ts:3:5 › Measure /messages load time
+[chromium] › tests\measure-messages.spec.ts:3:5 › Measure /messages load time
+/messages: 4823ms
+
+[104/207] [chromium] › tests\messaging-integration.spec.ts:4:7 › Messaging Integration Tests › learner path dashboard shows tutoring sessions section
+[chromium] › tests\messaging-integration.spec.ts:4:7 › Messaging Integration Tests › learner path dashboard shows tutoring sessions section
+Path page loaded
+
+[105/207] [chromium] › tests\messaging-integration.spec.ts:18:7 › Messaging Integration Tests › tutoring page has messaging widget on session cards
+[106/207] [chromium] › tests\messaging-integration.spec.ts:24:7 › Admin YouTube Import Tests › admin course creation page loads with form
+[107/207] [chromium] › tests\messaging.spec.ts:10:7 › Messaging System › tutor can message another user via profile
+[108/207] [chromium] › tests\messaging.spec.ts:14:7 › Messaging System › messages navigation exists in shell
+[109/207] [chromium] › tests\messaging.spec.ts:18:7 › Messaging System › message button exists on tutor cards
+[110/207] [chromium] › tests\messaging.spec.ts:22:7 › Messaging System › message button exists on friends list
+[111/207] [chromium] › tests\messaging.spec.ts:26:7 › Messaging System › test-setup page loads with camera/mic/speaker test
+[112/207] [chromium] › tests\messaging.spec.ts:30:7 › Messaging System › admin can access messages
+[113/207] [chromium] › tests\messaging.spec.ts:34:7 › Messaging System › unauthenticated user redirected from messages
+[114/207] [chromium] › tests\messaging.spec.ts:38:7 › Messaging System › unauthenticated user redirected from message thread
+[115/207] [chromium] › tests\messaging.spec.ts:42:7 › Messaging System › course creation page loads
+[116/207] [chromium] › tests\messaging.spec.ts:46:7 › Messaging System › lesson completion flow works
+[117/207] [chromium] › tests\messaging.spec.ts:50:7 › Messaging System › friends page loads and functions
+[118/207] [chromium] › tests\messaging.spec.ts:54:7 › Messaging System › tutoring page loads with tutor list
+[119/207] [chromium] › tests\messaging.spec.ts:58:7 › Messaging System › profile page loads
+[120/207] [chromium] › tests\navigation.spec.ts:4:7 › Navigation Links Functionality › sign in page has link to sign up
+[121/207] [chromium] › tests\navigation.spec.ts:16:7 › Navigation Links Functionality › sign up page has link to sign in
+[122/207] [chromium] › tests\performance-messaging.spec.ts:7:7 › Performance Measurement - Messaging Impact › measure /messages page load time
+[123/207] [chromium] › tests\performance-messaging.spec.ts:11:7 › Performance Measurement - Messaging Impact › measure /messages/[id] page load time
+[124/207] [chromium] › tests\performance-messaging.spec.ts:15:7 › Performance Measurement - Messaging Impact › measure /tutoring/test-setup page load time
+[125/207] [chromium] › tests\performance-messaging.spec.ts:19:7 › Performance Measurement - Messaging Impact › measure bundle size impact
+[126/207] [chromium] › tests\performance-messaging.spec.ts:23:7 › Performance Measurement - Messaging Impact › measure navigation shell performance
+[127/207] [chromium] › tests\realtime-messaging.spec.ts:9:7 › Realtime Messaging › messages page loads for both users
+r-context.md
+
+
+◇ injected env (0) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+
+[128/207] [chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread
+[chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread
+⚠️ Login timeout, continuing
+
+  7) [chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('h1').first()
+    Expected substring: "Messages"
+    Received string:    "Welcome Back! 👋"
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toContainText" locator('h1').first() with timeout 10000ms
+      - waiting for locator('h1').first()
+        23 × locator resolved to <h1 class="font-headline-lg text-text-primary tracking-tight font-black text-2xl">Welcome Back! 👋</h1>
+           - unexpected value "Welcome Back! 👋"
+
+
+       95 |
+       96 |     // Verify messages page loads and has structure
+    >  97 |     await expect(page.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
+          |                                              ^
+       98 |
+       99 |     // Check if there's a conversation list or empty state
+      100 |     const conversationList = page.locator('[class*="conversation"], [class*="message"]').first();
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\realtime-messaging.spec.ts:97:46
+
+    Error Context: test-results\realtime-messaging-Realtim-a59ed-is-active-on-message-thread-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌁ auth for agents [www.vestauth.com]
+
+[129/207] [chromium] › tests\realtime-messaging.spec.ts:113:7 › Realtime Messaging › messages table is in realtime publication
+[130/207] [chromium] › tests\responsive-shell.spec.ts:13:9 › Responsive Shell - Viewport Tests › Mobile (390px) › learner - sidebar hidden, bottom bar visible
+[131/207] [chromium] › tests\responsive-shell.spec.ts:17:9 › Responsive Shell - Viewport Tests › Mobile (390px) › tutor - sidebar hidden, bottom bar visible
+[132/207] [chromium] › tests\responsive-shell.spec.ts:21:9 › Responsive Shell - Viewport Tests › Mobile (390px) › admin - sidebar hidden, bottom bar visible
+[133/207] [chromium] › tests\responsive-shell.spec.ts:25:9 › Responsive Shell - Viewport Tests › Mobile (390px) › no horizontal scrollbar on mobile
+[134/207] [chromium] › tests\responsive-shell.spec.ts:34:9 › Responsive Shell - Viewport Tests › Tablet (768px) › learner - icon-only sidebar visible
+[135/207] [chromium] › tests\responsive-shell.spec.ts:38:9 › Responsive Shell - Viewport Tests › Tablet (768px) › tutor - icon-only sidebar visible
+[136/207] [chromium] › tests\responsive-shell.spec.ts:42:9 › Responsive Shell - Viewport Tests › Tablet (768px) › admin - icon-only sidebar visible
+[137/207] [chromium] › tests\responsive-shell.spec.ts:46:9 › Responsive Shell - Viewport Tests › Tablet (768px) › no horizontal scrollbar on tablet
+[138/207] [chromium] › tests\responsive-shell.spec.ts:55:9 › Responsive Shell - Viewport Tests › Desktop (1440px) › learner - full sidebar visible, bottom bar hidden
+[139/207] [chromium] › tests\responsive-shell.spec.ts:59:9 › Responsive Shell - Viewport Tests › Desktop (1440px) › tutor - full sidebar visible, bottom bar hidden
+[140/207] [chromium] › tests\responsive-shell.spec.ts:63:9 › Responsive Shell - Viewport Tests › Desktop (1440px) › admin - full sidebar visible, bottom bar hidden
+[141/207] [chromium] › tests\responsive-shell.spec.ts:67:9 › Responsive Shell - Viewport Tests › Desktop (1440px) › no horizontal scrollbar on desktop
+[142/207] [chromium] › tests\responsive-shell.spec.ts:76:9 › Responsive Shell - Viewport Tests › Content Width › mobile content uses full screen width
+[143/207] [chromium] › tests\responsive-shell.spec.ts:85:9 › Responsive Shell - Viewport Tests › Bottom Bar Navigation › learner bottom tabs navigate correctly
+[144/207] [chromium] › tests\responsive-shell.spec.ts:89:9 › Responsive Shell - Viewport Tests › Bottom Bar Navigation › tutor bottom tabs navigate correctly
+[145/207] [chromium] › tests\responsive-shell.spec.ts:93:9 › Responsive Shell - Viewport Tests › Bottom Bar Navigation › admin bottom tabs navigate correctly
+[146/207] [chromium] › tests\role-based-learning.spec.ts:9:7 › Role-Based Learning Methods - Admin Learner Flow › Admin can create course and learner can access it
+[147/207] [chromium] › tests\role-based-learning.spec.ts:13:7 › Role-Based Learning Methods - Admin Learner Flow › Learner can complete lesson and earn XP
+[148/207] [chromium] › tests\role-based-learning.spec.ts:24:7 › Role-Based Learning Methods - Tutor Learner Flow › Tutor can set availability and learner can book session
+[149/207] [chromium] › tests\role-based-learning.spec.ts:28:7 › Role-Based Learning Methods - Tutor Learner Flow › Messaging works between tutor and learner
+[150/207] [chromium] › tests\role-based-learning.spec.ts:41:7 › Cross-Role Feature Access › Admin can access admin pages, tutor cannot
+[151/207] [chromium] › tests\role-based-learning.spec.ts:45:7 › Cross-Role Feature Access › Learner can access learning pages, not admin pages
+[152/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot path page - desktop
+[153/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot path page - mobile
+[154/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot library page - desktop
+  8) [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot library page - desktop 
+
+    Error: page.screenshot: Protocol error (Page.captureScreenshot): Unable to capture screenshot
+    Call log:
+      - taking page screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+
+
+      16 |       await page.goto(path, { timeout: 60000 });
+      17 |       await page.waitForLoadState('domcontentloaded', { timeout: 60000 });
+    > 18 |       await page.screenshot({
+         |                  ^
+      19 |         path: `screenshots/desktop/${name}.png`,
+      20 |         fullPage: true,
+      21 |         timeout: 30000
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\screenshot-pages.spec.ts:18:18
+
+    Error Context: test-results\screenshot-pages-Page-Scre-ea482-shot-library-page---desktop-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+[155/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot library page - mobile
+[156/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot friends page - desktop
+[157/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot friends page - mobile
+[158/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot leaderboard page - desktop
+[159/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot leaderboard page - mobile
+[160/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot notifications page - desktop
+[161/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot notifications page - mobile
+[162/207] [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot tutoring page - desktop
+[163/207] [chromium] › tests\screenshot-pages.spec.ts:25:9 › Page Screenshots › screenshot tutoring page - mobile
+[164/207] [chromium] › tests\screenshot-shell.spec.ts:7:7 › Shell Screenshots › screenshot at 390px mobile
+[165/207] [chromium] › tests\screenshot-shell.spec.ts:11:7 › Shell Screenshots › screenshot at 1440px desktop
+[166/207] [chromium] › tests\session-booking.spec.ts:4:7 › Session Booking Tests › tutoring page displays tutor list
+[167/207] [chromium] › tests\session-booking.spec.ts:25:7 › Session Booking Tests › book session button is present on tutor cards
+[168/207] [chromium] › tests\session-booking.spec.ts:40:7 › Session Booking Tests › no console errors on tutoring page (FK check)
+[169/207] [chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state
+[chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state
+⚠️ Login timeout, continuing to friends page
+
+Logged in as learner
+
+  9) [chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.goto: net::ERR_NETWORK_IO_SUSPENDED at http://localhost:3000/friends
+    Call log:
+      - navigating to "http://localhost:3000/friends", waiting until "load"
+
+
+      24 |   console.log('Logged in as learner');
+      25 |
+    > 26 |   await page.goto('http://localhost:3000/friends');
+         |              ^
+      27 |   try {
+      28 |     await page.waitForLoadState('networkidle', { timeout: 30000 });
+      29 |   } catch (error) {
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\test-button-feedback.spec.ts:26:14
+
+    Error Context: test-results\test-button-feedback-Butto-b7987--Friend-shows-loading-state-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+[170/207] [chromium] › tests\test-button-feedback.spec.ts:60:5 › Button instant feedback - Book Session shows loading state
+[chromium] › tests\test-button-feedback.spec.ts:60:5 › Button instant feedback - Book Session shows loading state
+⚠️ Login timeout, continuing to tutoring page
+
+Logged in as learner
+
+Book Session buttons found: 0
+
+✅ Tutoring page loaded successfully (no Book Session buttons needed)
+
+[171/207] [chromium] › tests\test-friends-crash.spec.ts:3:5 › Reproduce /friends crash
+[chromium] › tests\test-friends-crash.spec.ts:3:5 › Reproduce /friends crash
+Logged in as learner
+
+Friends page loaded successfully
+
+[172/207] [chromium] › tests\test-friends-tutor.spec.ts:3:5 › Test /friends as tutor
+[chromium] › tests\test-friends-tutor.spec.ts:3:5 › Test /friends as tutor
+Logged in as tutor
+
+Friends page loaded successfully for tutor
+
+[173/207] [chromium] › tests\test-full-messaging-flow.spec.ts:3:5 › Full messaging flow: learner sends, tutor receives
+[chromium] › tests\test-full-messaging-flow.spec.ts:3:5 › Full messaging flow: learner sends, tutor receives
+PART 1: Learner sends message
+
+✓ Logged in as learner
+
+✓ Clicked Message button
+
+Current URL after click: http://localhost:3001/messages/ae2a5e59-23de-42c9-acde-e33ef8773d70
+
+✓ Navigated to conversation
+
+✓ Filled message input
+
+✓ Clicked send button
+
+✓ Message appears in chat
+
+
+PART 2: Logout
+
+✓ Logged out
+
+
+PART 3: Login as tutor to verify message received
+
+✓ Logged in as tutor
+
+✓ Navigated to messages page
+
+Found 2 conversations
+
+✓ Clicked conversation 1
+
+Found 0 messages in conversation 1
+
+✓ Clicked conversation 2
+
+Found 0 messages in conversation 2
+
+⚠ No messages visible to tutor in any conversation
+
+[174/207] [chromium] › tests\test-jitsi-access.spec.ts:3:5 › PART 5: Jitsi video call access - Check Jitsi link in conversation (group)
+[chromium] › tests\test-jitsi-access.spec.ts:3:5 › PART 5: Jitsi video call access - Check Jitsi link in conversation (group)
+Logged in as learner
+
+Opened conversation
+
+No Jitsi links found in conversation
+
+[175/207] [chromium] › tests\test-message-button.spec.ts:3:5 › Test Message button and conversation page
+[chromium] › tests\test-message-button.spec.ts:3:5 › Test Message button and conversation page
+Logged in as learner
+
+Clicked Message button
+
+Current URL after click: http://localhost:3001/tutoring
+
+[176/207] [chromium] › tests\test-messaging-reachability.spec.ts:3:5 › PART 4.1: /messages loads for learner
+[chromium] › tests\test-messaging-reachability.spec.ts:3:5 › PART 4.1: /messages loads for learner
+Logged in as learner
+
+Messages page loaded successfully for learner
+
+[177/207] [chromium] › tests\test-messaging-reachability.spec.ts:20:5 › PART 4.1: /messages loads for tutor
+[chromium] › tests\test-messaging-reachability.spec.ts:20:5 › PART 4.1: /messages loads for tutor
+Logged in as tutor
+
+Messages page loaded successfully for tutor
+
+[178/207] [chromium] › tests\test-messaging-send.spec.ts:3:5 › PART 4.2: Send message from learner to tutor
+[chromium] › tests\test-messaging-send.spec.ts:3:5 › PART 4.2: Send message from learner to tutor
+Logged in as learner
+
+Clicked Message button
+
+[179/207] [chromium] › tests\test-navigation-per-role.spec.ts:3:5 › PART 7: Navigation - Learner redirects to /path or /onboarding
+[180/207] [chromium] › tests\test-navigation-per-role.spec.ts:7:5 › PART 7: Navigation - Tutor redirects to /tutoring/dashboard
+[chromium] › tests\test-navigation-per-role.spec.ts:7:5 › PART 7: Navigation - Tutor redirects to /tutoring/dashboard
+Tutor redirected to: http://localhost:3001/tutoring/dashboard
+
+[181/207] [chromium] › tests\test-navigation-per-role.spec.ts:24:5 › PART 7: Navigation - Learner can access /friends
+[182/207] [chromium] › tests\test-navigation-per-role.spec.ts:28:5 › PART 7: Navigation - Learner can access /tutoring
+[183/207] [chromium] › tests\test-navigation-per-role.spec.ts:32:5 › PART 7: Navigation - Tutor can access /messages
+[184/207] [chromium] › tests\test-onboarding-flow.spec.ts:3:5 › PART 6: Post-signup onboarding flow - Learner completes onboarding
+[chromium] › tests\test-onboarding-flow.spec.ts:3:5 › PART 6: Post-signup onboarding flow - Learner completes onboarding
+Logged in as learner
+
+User already completed onboarding, redirected to /path
+
+[185/207] [chromium] › tests\test-onboarding-flow.spec.ts:31:5 › PART 6: Post-signup onboarding flow - Tutor skips onboarding (goes to dashboard)
+[chromium] › tests\test-onboarding-flow.spec.ts:31:5 › PART 6: Post-signup onboarding flow - Tutor skips onboarding (goes to dashboard)
+Logged in as tutor
+
+Tutor redirected to: http://localhost:3001/tutoring/dashboard
+
+[186/207] [chromium] › tests\thorough-all-features.spec.ts:3:5 › THOROUGH TEST - All Fixed Features
+  10) [chromium] › tests\thorough-all-features.spec.ts:3:5 › THOROUGH TEST - All Fixed Features ────
+
+    TimeoutError: page.waitForURL: Timeout 60000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+      navigated to "http://localhost:3001/sign-in?error=fetch%20failed"
+    ============================================================
+
+       9 |   await page.fill('input[type="password"]', 'Test123456!');
+      10 |   await page.click('button[type="submit"]');
+    > 11 |   await page.waitForURL(/\/(path|onboarding)/, { timeout: 60000 });
+         |              ^
+      12 |   
+      13 |   console.log('✓ Learner logged in');
+      14 |   
+        at C:\Users\Abu Bakar\Documents\fyp-project-2\tests\thorough-all-features.spec.ts:11:14
+
+    Error Context: test-results\thorough-all-features-THOROUGH-TEST---All-Fixed-Features-chromium\error-context.md
+
+
+◇ injected env (0) from .env.local // tip: ⌘ suppress logs { quiet: true }
+
+[187/207] [chromium] › tests\thorough-message-button.spec.ts:3:5 › THOROUGH TEST - Message button in /tutoring
+[chromium] › tests\thorough-message-button.spec.ts:3:5 › THOROUGH TEST - Message button in /tutoring
+✓ Learner logged in
+
+✓ Navigated to tutoring page
+
+✓ Found 3 Message button(s)
+
+✓ Clicked first Message button
+
+✅ THOROUGH MESSAGE BUTTON TEST COMPLETED
+
+[188/207] [chromium] › tests\tutor-actions.spec.ts:14:7 › Tutor Actions - Profile and Sessions › tutor can access create profile button
+[chromium] › tests\tutor-actions.spec.ts:14:7 › Tutor Actions - Profile and Sessions › tutor can access create profile button
+Tutor dashboard loaded
+
+[189/207] [chromium] › tests\tutor-actions.spec.ts:20:7 › Tutor Actions - Profile and Sessions › tutor can access edit availability button
+  11) [chromium] › tests\tutor-actions.spec.ts:20:7 › Tutor Actions - Profile and Sessions › tutor can access edit availability button 
+
+    Error: worker process exited unexpectedly (code=1073807364, signal=null)
+
+
+[190/207] [chromium] › tests\tutor-actions.spec.ts:24:7 › Tutor Actions - Profile and Sessions › tutor dashboard shows session history
+  12) [chromium] › tests\tutor-actions.spec.ts:24:7 › Tutor Actions - Profile and Sessions › tutor dashboard shows session history 
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[191/207] [chromium] › tests\tutor-actions.spec.ts:30:7 › Tutor Actions - Profile and Sessions › tutor can access tutoring page to see learners
+[192/207] [chromium] › tests\tutor-authenticated.spec.ts:14:7 › Tutor Authenticated Tests › tutor can access dashboard
+  13) [chromium] › tests\tutor-authenticated.spec.ts:14:7 › Tutor Authenticated Tests › tutor can access dashboard 
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[193/207] [chromium] › tests\tutor-authenticated.spec.ts:19:7 › Tutor Authenticated Tests › tutor can access history page
+[194/207] [chromium] › tests\tutor-authenticated.spec.ts:23:7 › Tutor Authenticated Tests › tutor can access tutoring page
+[195/207] [chromium] › tests\tutor-authenticated.spec.ts:27:7 › Tutor Authenticated Tests › tutor is blocked from admin dashboard
+[196/207] [chromium] › tests\tutor-authenticated.spec.ts:31:7 › Tutor Authenticated Tests › tutor is blocked from admin users page
+[197/207] [chromium] › tests\tutor-authenticated.spec.ts:35:7 › Tutor Authenticated Tests › tutor is blocked from admin courses page
+[198/207] [chromium] › tests\tutor-profile.spec.ts:4:7 › Tutor Profile and Availability › tutor dashboard page loads
+  14) [chromium] › tests\tutor-profile.spec.ts:4:7 › Tutor Profile and Availability › tutor dashboard page loads 
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[199/207] [chromium] › tests\tutor-profile.spec.ts:13:7 › Tutor Profile and Availability › tutor history page loads
+[200/207] [chromium] › tests\tutor-profile.spec.ts:22:7 › Tutor Profile and Availability › no console errors on tutor dashboard
+[201/207] [chromium] › tests\tutor-session.spec.ts:4:7 › Tutor Session Booking › tutoring page loads
+  15) [chromium] › tests\tutor-session.spec.ts:4:7 › Tutor Session Booking › tutoring page loads ───
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[202/207] [chromium] › tests\tutor-session.spec.ts:13:7 › Tutor Session Booking › no console errors on tutoring page
+[203/207] [chromium] › tests\verify-all-roles.spec.ts:3:5 › VERIFY ADMIN - Login and access admin dashboard
+  16) [chromium] › tests\verify-all-roles.spec.ts:3:5 › VERIFY ADMIN - Login and access admin dashboard 
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[204/207] [chromium] › tests\verify-all-roles.spec.ts:26:5 › VERIFY TUTOR - Login and access tutor features
+[205/207] [chromium] › tests\verify-all-roles.spec.ts:56:5 › VERIFY LEARNER - Login and access learner features
+[206/207] [chromium] › tests\verify-online-class.spec.ts:3:5 › VERIFY ONLINE CLASS - Check Jitsi video call implementation
+  17) [chromium] › tests\verify-online-class.spec.ts:3:5 › VERIFY ONLINE CLASS - Check Jitsi video call implementation 
+
+    Error: worker process exited unexpectedly (code=3221226091, signal=null)
+
+
+[207/207] [chromium] › tests\verify-online-class.spec.ts:51:5 › VERIFY ONLINE CLASS - Check session details page
+  17 failed
+    [chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load 
+    [chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created 
+    [chromium] › tests\mascot-chat.spec.ts:72:7 › Mascot Chat Feature › quick action buttons work ──
+    [chromium] › tests\mascot-evidence.spec.ts:30:7 › Mascot Evidence Screenshots › screenshot chat widget open 
+    [chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time 
+    [chromium] › tests\realtime-messaging.spec.ts:9:7 › Realtime Messaging › messages page loads for both users 
+    [chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread 
+    [chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot library page - desktop 
+    [chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state 
+    [chromium] › tests\thorough-all-features.spec.ts:3:5 › THOROUGH TEST - All Fixed Features ──────
+    [chromium] › tests\tutor-actions.spec.ts:20:7 › Tutor Actions - Profile and Sessions › tutor can access edit availability button 
+    [chromium] › tests\tutor-actions.spec.ts:24:7 › Tutor Actions - Profile and Sessions › tutor dashboard shows session history 
+    [chromium] › tests\tutor-authenticated.spec.ts:14:7 › Tutor Authenticated Tests › tutor can access dashboard 
+    [chromium] › tests\tutor-profile.spec.ts:4:7 › Tutor Profile and Availability › tutor dashboard page loads 
+    [chromium] › tests\tutor-session.spec.ts:4:7 › Tutor Session Booking › tutoring page loads ─────
+    [chromium] › tests\verify-all-roles.spec.ts:3:5 › VERIFY ADMIN - Login and access admin dashboard 
+    [chromium] › tests\verify-online-class.spec.ts:3:5 › VERIFY ONLINE CLASS - Check Jitsi video call implementation 
+  15 skipped
+  12 did not run
+  163 passed (39.1m)
+EXIT=0

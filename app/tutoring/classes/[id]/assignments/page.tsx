@@ -77,11 +77,11 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
   );
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -94,7 +94,7 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">📝 Assignments</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">📝 Assignments</span>
               </div>
               <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
                 {group.name} - Assignments
@@ -111,7 +111,7 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
       <div className="mb-6">
         <Link
           href={`/tutoring/classes/${id}/assignments/create`}
-          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+          className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
           Create Assignment
@@ -120,15 +120,15 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
 
       {/* Assignments List */}
       {assignmentsWithCounts.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-12 text-center shadow-xl border-4 border-white/50">
-          <span className="material-symbols-outlined text-gray-400 text-[64px]">assignment</span>
+        <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface border-4 border-surface/50">
+          <span className="material-symbols-outlined text-text-primary text-[64px]">assignment</span>
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mt-4 mb-2">No Assignments Yet</h2>
           <p className="font-body-md text-text-muted mb-6">
             Create your first assignment to get started
           </p>
           <Link
             href={`/tutoring/classes/${id}/assignments/create`}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
             Create Assignment
@@ -139,7 +139,7 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
           {assignmentsWithCounts.map((assignment) => (
             <div
               key={assignment.id}
-              className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
+              className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
@@ -173,7 +173,7 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container">
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-border">
                     <span className="material-symbols-outlined text-[18px] text-primary">description</span>
                     <span className="font-label-sm font-semibold text-text-primary">
                       {assignment.submissionCount} submissions
@@ -192,7 +192,7 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
                       <input type="hidden" name="groupId" value={id} />
                       <button
                         type="submit"
-                        className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-all"
+                        className="p-2 rounded-full bg-error/10 text-error hover:bg-error/10 transition-all"
                         title="Delete assignment"
                         onClick={(e) => {
                           if (!confirm("Are you sure you want to delete this assignment? This action cannot be undone.")) {

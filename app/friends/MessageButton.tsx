@@ -9,7 +9,7 @@ export default function MessageButton() {
     <button
       type="submit"
       disabled={pending}
-      className="font-label-sm font-bold border-2 border-pink-300 bg-gradient-to-br from-pink-50 to-rose-50 text-pink-600 px-3 py-2 rounded-full shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+      className="font-label-sm font-bold border-2 border-tertiary bg-gradient-to-br from-tertiary/10 to-error/10 text-tertiary px-3 py-2 rounded-full shadow-clay-surface hover:from-tertiary/10 hover:to-error/10 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
     >
       {pending ? (
         <>

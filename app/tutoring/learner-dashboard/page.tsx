@@ -135,7 +135,7 @@ export default async function LearnerDashboardPage() {
   const pendingEnrollments = enrollments.filter((e) => e.status === "pending");
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-headline-2xl text-headline-2xl text-text-primary tracking-tight mb-3">
@@ -148,25 +148,25 @@ export default async function LearnerDashboardPage() {
 
       {/* Stats Overview */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-blue-100 text-center">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30 text-center">
           <div className="text-4xl font-headline-xl text-text-primary font-extrabold mb-2">
             {acceptedEnrollments.length}
           </div>
           <div className="font-label-md text-text-muted">Active Tutors</div>
         </div>
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-green-100 text-center">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-primary/30 text-center">
           <div className="text-4xl font-headline-xl text-text-primary font-extrabold mb-2">
             {groups.length}
           </div>
           <div className="font-label-md text-text-muted">Classrooms</div>
         </div>
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-purple-100 text-center">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30 text-center">
           <div className="text-4xl font-headline-xl text-text-primary font-extrabold mb-2">
             {tasksList.filter((t) => t.status !== "graded").length}
           </div>
           <div className="font-label-md text-text-muted">Pending Tasks</div>
         </div>
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-orange-100 text-center">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-secondary/30 text-center">
           <div className="text-4xl font-headline-xl text-text-primary font-extrabold mb-2">
             {learnerBadges.length}
           </div>
@@ -176,7 +176,7 @@ export default async function LearnerDashboardPage() {
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* My Tutors */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+        <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
             My Tutors ({acceptedEnrollments.length})
           </h2>
@@ -190,7 +190,7 @@ export default async function LearnerDashboardPage() {
                 <Link
                   key={enrollment.id}
                   href={`/tutoring/${enrollment.tutor.id}`}
-                  className="block p-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 hover:border-blue-300 transition-all"
+                  className="block p-5 rounded-xl bg-surface border-2 border-surface-border hover:border-tertiary transition-all"
                 >
                   <div className="flex items-center gap-3">
                     <UserAvatar
@@ -208,14 +208,14 @@ export default async function LearnerDashboardPage() {
                         </p>
                       )}
                     </div>
-                    <span className="material-symbols-outlined text-gray-400">arrow_forward</span>
+                    <span className="material-symbols-outlined text-text-primary">arrow_forward</span>
                   </div>
                 </Link>
               ))}
             </div>
           )}
           {pendingEnrollments.length > 0 && (
-            <div className="mt-8 pt-8 border-t-2 border-gray-200">
+            <div className="mt-8 pt-8 border-t-2 border-surface-border">
               <h3 className="font-label-lg text-text-primary font-semibold mb-6">
                 Pending Requests ({pendingEnrollments.length})
               </h3>
@@ -223,7 +223,7 @@ export default async function LearnerDashboardPage() {
                 {pendingEnrollments.map((enrollment) => (
                   <div
                     key={enrollment.id}
-                    className="p-6 rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200"
+                    className="p-6 rounded-xl bg-secondary/10 border-2 border-secondary/30"
                   >
                     <div className="flex items-center gap-4">
                       <UserAvatar
@@ -245,7 +245,7 @@ export default async function LearnerDashboardPage() {
           )}
           <Link
             href="/tutoring"
-            className="mt-8 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-label-lg font-semibold text-lg"
+            className="mt-8 inline-flex items-center gap-2 text-tertiary hover:text-tertiary font-label-lg font-semibold text-lg"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
             Find More Tutors
@@ -253,7 +253,7 @@ export default async function LearnerDashboardPage() {
         </div>
 
         {/* My Classrooms */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+        <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
             My Classrooms ({groups.length})
           </h2>
@@ -266,7 +266,7 @@ export default async function LearnerDashboardPage() {
               {groups.map((group) => (
                 <div
                   key={group.id}
-                  className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-100"
+                  className="p-6 rounded-xl bg-tertiary/10 border-2 border-tertiary/30"
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
@@ -280,12 +280,12 @@ export default async function LearnerDashboardPage() {
                       )}
                       <div className="flex flex-wrap gap-2 text-sm">
                         {group.subject && (
-                          <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-label-sm font-semibold">
+                          <span className="px-3 py-1 rounded-full bg-tertiary/10 text-tertiary font-label-sm font-semibold">
                             {group.subject}
                           </span>
                         )}
                         {group.level && (
-                          <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 font-label-sm font-semibold">
+                          <span className="px-3 py-1 rounded-full bg-primary/10 text-success font-label-sm font-semibold">
                             {group.level}
                           </span>
                         )}
@@ -299,7 +299,7 @@ export default async function LearnerDashboardPage() {
         </div>
 
         {/* My Tasks */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100 lg:col-span-2">
+        <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border lg:col-span-2">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
             My Tasks ({tasksList.length})
           </h2>
@@ -314,10 +314,10 @@ export default async function LearnerDashboardPage() {
                   key={task.id}
                   className={`p-6 rounded-xl border-2 ${
                     task.status === "graded"
-                      ? "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
+                      ? "bg-primary/10 border-primary/30"
                       : task.status === "submitted"
-                      ? "bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200"
-                      : "bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200"
+                      ? "bg-secondary/10 border-secondary/30"
+                      : "bg-surface border-surface-border"
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-3">
@@ -328,10 +328,10 @@ export default async function LearnerDashboardPage() {
                     />
                     <span className={`text-xs px-2 py-1 rounded-full font-label-sm font-semibold ${
                       task.status === "graded"
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-primary/10 text-success"
                         : task.status === "submitted"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-blue-100 text-blue-700"
+                        ? "bg-secondary/10 text-secondary"
+                        : "bg-tertiary/10 text-tertiary"
                     }`}>
                       {task.status}
                     </span>
@@ -357,7 +357,7 @@ export default async function LearnerDashboardPage() {
 
         {/* My Badges */}
         {learnerBadges.length > 0 && (
-          <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100 lg:col-span-2">
+          <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border lg:col-span-2">
             <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
               My Badges ({learnerBadges.length})
             </h2>
@@ -365,7 +365,7 @@ export default async function LearnerDashboardPage() {
               {learnerBadges.map((userBadge) => (
                 <div
                   key={userBadge.id}
-                  className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-100 text-center"
+                  className="p-6 rounded-xl bg-tertiary/10 border-2 border-tertiary/30 text-center"
                 >
                   <div className="text-5xl mb-3">
                     {userBadge.badge.iconUrl ? (

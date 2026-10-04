@@ -1,0 +1,134 @@
+
+> lego-app@0.1.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 94ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
+
+  To migrate automatically, run:
+  npx @next/codemod@canary middleware-to-proxy .
+
+  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+(node:22004) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Abu%20Bakar/Documents/fyp-project-2/tailwind.config.ts?id=1791111502948 is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\Abu Bakar\Documents\fyp-project-2\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ Compiled successfully in 16.3s
+  Running TypeScript ...
+  Finished TypeScript in 27.4s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/55) ...
+  Generating static pages using 11 workers (13/55) 
+  Generating static pages using 11 workers (27/55) 
+  Generating static pages using 11 workers (41/55) 
+[HOME] Error fetching user: Error: Dynamic server usage: Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at dv (utils\supabase\server.ts:5:29)
+    at f (app\page.tsx:14:28)
+  3 |
+  4 | export async function createClient() {
+> 5 |   const cookieStore = await cookies();
+    |                             ^
+  6 |
+  7 |   return createServerClient(
+  8 |     process.env.NEXT_PUBLIC_SUPABASE_URL!, {
+  description: "Route / couldn't be rendered statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+[PERF] Home page server render time: 941ms
+✓ Generating static pages using 11 workers (55/55) in 1689ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /admin
+├ ƒ /admin/badges
+├ ƒ /admin/courses
+├ ƒ /admin/courses/[courseId]
+├ ƒ /admin/courses/new
+├ ƒ /admin/lessons/[lessonId]
+├ ƒ /admin/tutoring
+├ ƒ /admin/units/[unitId]
+├ ƒ /admin/users
+├ ƒ /api/book-session
+├ ƒ /api/enrollments
+├ ƒ /api/enrollments/[id]/accept
+├ ƒ /api/enrollments/[id]/cancel
+├ ƒ /api/enrollments/[id]/decline
+├ ƒ /api/groups
+├ ƒ /api/groups/[id]
+├ ƒ /api/groups/[id]/sessions
+├ ƒ /api/mascot-chat
+├ ƒ /api/messaging/messages
+├ ƒ /api/messaging/send
+├ ƒ /api/profile/[userId]
+├ ƒ /api/set-availability
+├ ƒ /api/setup-tutoring-tables
+├ ƒ /api/tutor-availability
+├ ƒ /api/tutor-profile
+├ ƒ /api/update-tutor-profile
+├ ○ /apple-icon.png
+├ ƒ /auth/sign-in
+├ ƒ /auth/sign-up
+├ ƒ /classes
+├ ƒ /classes/[id]
+├ ƒ /classes/[id]/assignments
+├ ƒ /classes/[id]/assignments/[assignmentId]
+├ ƒ /classes/[id]/assignments/[assignmentId]/quiz/[quizId]
+├ ƒ /classes/browse
+├ ƒ /classes/join
+├ ƒ /dashboard
+├ ƒ /friends
+├ ƒ /friends/add
+├ ○ /icon.png
+├ ƒ /leaderboard
+├ ƒ /lesson/[lessonId]
+├ ƒ /lesson/[lessonId]/practice
+├ ƒ /library
+├ ƒ /loading
+├ ƒ /messages
+├ ƒ /messages/[id]
+├ ƒ /notifications
+├ ƒ /onboarding
+├ ƒ /path
+├ ƒ /profile
+├ ƒ /profile/[userId]
+├ ƒ /settings
+├ ƒ /sign-in
+├ ƒ /sign-up
+├ ƒ /tutoring
+├ ƒ /tutoring/[tutorId]
+├ ƒ /tutoring/book/[tutorId]
+├ ƒ /tutoring/classes
+├ ƒ /tutoring/classes/[id]
+├ ƒ /tutoring/classes/[id]/assignments
+├ ƒ /tutoring/classes/[id]/assignments/[assignmentId]
+├ ƒ /tutoring/classes/[id]/assignments/[assignmentId]/edit
+├ ƒ /tutoring/classes/[id]/assignments/[assignmentId]/quiz/create
+├ ƒ /tutoring/classes/[id]/assignments/create
+├ ƒ /tutoring/classes/create
+├ ƒ /tutoring/dashboard
+├ ƒ /tutoring/dashboard/availability
+├ ƒ /tutoring/dashboard/profile
+├ ƒ /tutoring/groups
+├ ƒ /tutoring/groups/[groupId]
+├ ƒ /tutoring/groups/create
+├ ƒ /tutoring/history
+├ ƒ /tutoring/learner-dashboard
+├ ƒ /tutoring/learners
+├ ƒ /tutoring/my-enrollments
+├ ƒ /tutoring/session/[sessionId]
+└ ƒ /tutoring/test-setup
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,13 @@
+[chromium] › tests\admin-functionality.spec.ts:34:7 › Admin Pages Functionality › Admin badges page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:47:7 › Admin Pages Functionality › Admin users page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:60:7 › Admin Pages Functionality › Admin users page - Search functionality
+[chromium] › tests\admin-functionality.spec.ts:86:7 › Admin Pages Functionality › Admin tutoring page - Page loads
+[chromium] › tests\admin-functionality.spec.ts:99:7 › Admin Pages Functionality › Admin courses page - Page loads
+[chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load
+[chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created
+[chromium] › tests\live-tutor-profile.spec.ts:13:7 › Live Tutor Profile Creation - Database Verification › tutor creates profile and tutor_profiles row is created
+[chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time
+[chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread
+[chromium] › tests\realtime-messaging.spec.ts:9:7 › Realtime Messaging › messages page loads for both users
+[chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state
+[chromium] › tests\test-button-feedback.spec.ts:60:5 › Button instant feedback - Book Session shows loading state

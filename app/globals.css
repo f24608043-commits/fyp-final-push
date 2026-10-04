@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+@plugin "tailwindcss-animate";
 
 /* Base styles to ensure CSS is loading */
 * {

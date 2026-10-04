@@ -6,10 +6,10 @@ interface EnrollmentStatusBadgeProps {
 
 export default function EnrollmentStatusBadge({ status }: EnrollmentStatusBadgeProps) {
   const styles = {
-    pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    accepted: "bg-green-100 text-green-800 border-green-200",
-    rejected: "bg-red-100 text-red-800 border-red-200",
-    removed: "bg-gray-100 text-gray-800 border-gray-200",
+    pending: "bg-secondary/10 text-secondary border-secondary/30",
+    accepted: "bg-primary/10 text-success border-primary/30",
+    rejected: "bg-error/10 text-error border-error/30",
+    removed: "surface text-text-muted border-surface-border",
   };
 
   const labels = {

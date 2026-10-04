@@ -84,7 +84,7 @@ export default function EnrollButton({ tutorId, initialStatus }: EnrollButtonPro
         <button
           onClick={handleEnroll}
           disabled={isLoading}
-          className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          className="rounded-xl border-2 border-tertiary bg-tertiary/10 text-tertiary px-3 py-2 font-label-sm font-bold shadow-clay-surface hover:from-tertiary/10 hover:to-tertiary/10 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isLoading ? "Requesting..." : "Request Again"}
         </button>
@@ -100,7 +100,7 @@ export default function EnrollButton({ tutorId, initialStatus }: EnrollButtonPro
         <button
           onClick={handleCancel}
           disabled={isLoading}
-          className="rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 px-3 py-2 font-label-sm font-semibold shadow-lg hover:from-gray-100 hover:to-gray-200 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          className="rounded-xl border-2 border-surface-border bg-surface text-text-muted px-3 py-2 font-label-sm font-semibold shadow-clay-surface hover:from-surface hover:to-surface transition-all disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isLoading ? "Cancelling..." : "Cancel Request"}
         </button>
@@ -114,7 +114,7 @@ export default function EnrollButton({ tutorId, initialStatus }: EnrollButtonPro
       <button
         onClick={handleEnroll}
         disabled={isLoading}
-        className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-2 font-label-sm font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+        className="rounded-xl bg-tertiary text-text-primary px-3 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
       >
         {isLoading ? (
           <>

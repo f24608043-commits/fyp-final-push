@@ -64,20 +64,20 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-purple-50 to-pink-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-gradient-to-br from-tertiary via-tertiary to-error rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/tutoring/dashboard" className="text-gray-500 hover:text-gray-700">
+            <Link href="/tutoring/dashboard" className="text-text-muted hover:text-text-muted">
               <span className="material-symbols-outlined text-[24px]">arrow_back</span>
             </Link>
-            <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">
+            <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold">
               Edit Tutor Profile
             </h1>
           </div>
-          <p className="font-body-md text-on-surface-variant">
+          <p className="font-body-md text-text-muted">
             Update your tutor profile information to help learners find you.
           </p>
         </div>
@@ -86,23 +86,23 @@ export default function EditProfilePage() {
       {/* Profile Form */}
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-purple-100">
+          <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
             <div className="space-y-4">
               <div>
-                <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                   Bio
                 </label>
                 <textarea 
                   name="bio" 
                   required
                   defaultValue={profile?.bio || ""}
-                  className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-purple-400 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                   placeholder="Describe your teaching experience..."
                   rows={4}
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                   Subjects (comma-separated)
                 </label>
                 <input 
@@ -110,24 +110,24 @@ export default function EditProfilePage() {
                   name="subjects"
                   required
                   defaultValue={profile?.subjects?.join(", ") || ""}
-                  className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-purple-400 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                   placeholder="Math, Science, Python"
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                   Hourly Rate (leave blank for free)
                 </label>
                 <input 
                   type="number" 
                   name="hourlyRate"
                   defaultValue={profile?.hourlyRate || ""}
-                  className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-purple-400 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                   placeholder="25"
                 />
               </div>
               <div>
-                <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                   Timezone
                 </label>
                 <input 
@@ -135,7 +135,7 @@ export default function EditProfilePage() {
                   name="timezone"
                   required
                   defaultValue={profile?.timezone || "UTC"}
-                  className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-purple-400 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                   placeholder="UTC"
                 />
               </div>
@@ -145,14 +145,14 @@ export default function EditProfilePage() {
           <div className="flex gap-3 pt-4">
             <Link
               href="/tutoring/dashboard"
-              className="flex-1 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-600 px-4 py-3 font-label-md font-semibold hover:bg-gray-100 transition-all text-center"
+              className="flex-1 rounded-xl border-2 border-surface-border surface text-text-muted px-4 py-3 font-label-md font-semibold hover:bg-surface transition-all text-center"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-tertiary text-text-primary px-4 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
              {saving ? "Saving..." : "Save Changes"}
             </button>

@@ -73,11 +73,11 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
     .orderBy(desc(submissions.submittedAt));
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -90,7 +90,7 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">📝 Assignment</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">📝 Assignment</span>
               </div>
               <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
                 {assignment.title}
@@ -117,7 +117,7 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
 
       {/* Assignment Description */}
       {assignment.description && (
-        <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-4">Description</h2>
           <p className="font-body-md text-text-muted">{assignment.description}</p>
         </div>
@@ -131,8 +131,8 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
           </h2>
         </div>
         {assignmentSubmissions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-12 text-center shadow-xl border-4 border-white/50">
-            <span className="material-symbols-outlined text-gray-400 text-[64px]">assignment</span>
+          <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface border-4 border-surface/50">
+            <span className="material-symbols-outlined text-text-primary text-[64px]">assignment</span>
             <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mt-4 mb-2">No Submissions Yet</h2>
             <p className="font-body-md text-text-muted">
               Students haven't submitted this assignment yet
@@ -143,7 +143,7 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
             {assignmentSubmissions.map((submission) => (
               <div
                 key={submission.id}
-                className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border"
+                className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
@@ -166,7 +166,7 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
                   </div>
                 </div>
                 {submission.feedback && (
-                  <div className="mt-4 p-4 rounded-xl bg-surface-container">
+                  <div className="mt-4 p-4 rounded-xl bg-surface-border">
                     <p className="font-body-sm text-text-muted">{submission.feedback}</p>
                   </div>
                 )}

@@ -44,10 +44,10 @@ export default async function OnboardingPage({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl rounded-2xl bg-surface p-8 shadow-clay-surface border border-surface-border">
+      <div className="w-full max-w-2xl rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border">
         {/* Header with Mascot */}
         <div className="mb-8 text-center">
-          <div className="relative w-24 h-24 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4">
+          <div className="relative w-24 h-24 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4">
             <Mascot pose="celebrate" size={80} />
           </div>
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 font-label-sm font-semibold text-primary">
@@ -76,7 +76,7 @@ export default async function OnboardingPage({
               {publishedCourses.map((c, index) => (
                 <label
                   key={c.id}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-surface-border bg-surface-container p-4 hover:border-primary hover:bg-surface-container-high has-checked:border-primary has-checked:bg-surface-container-high transition-all"
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-surface-border bg-surface-border p-4 hover:border-primary hover:bg-surface-border has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <input
                     type="checkbox"
@@ -106,7 +106,7 @@ export default async function OnboardingPage({
               ].map((level) => (
                 <label
                   key={level.id}
-                  className="flex cursor-pointer flex-col rounded-xl border border-surface-border bg-surface-container p-4 hover:border-primary has-checked:border-primary has-checked:bg-surface-container-high transition-all"
+                  className="flex cursor-pointer flex-col rounded-xl border border-surface-border bg-surface-border p-4 hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-label-md text-text-primary font-semibold">{level.title}</span>
@@ -137,7 +137,7 @@ export default async function OnboardingPage({
               ].map((goal) => (
                 <label
                   key={goal.mins}
-                  className="flex cursor-pointer flex-col items-center rounded-xl border border-surface-border bg-surface-container p-3 text-center hover:border-primary has-checked:border-primary has-checked:bg-surface-container-high transition-all"
+                  className="flex cursor-pointer flex-col items-center rounded-xl border border-surface-border bg-surface-border p-3 text-center hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <input
                     type="radio"
@@ -157,7 +157,7 @@ export default async function OnboardingPage({
 
           <button
             type="submit"
-            className="w-full rounded-full bg-primary text-on-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all active:translate-y-[2px]"
+            className="w-full rounded-full bg-primary text-text-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all active:translate-y-[2px]"
           >
             Start My Learning Journey →
           </button>

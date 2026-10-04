@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Test configuration
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3001';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:4005';
 
 // Test credentials - these should be replaced with actual test user credentials
 const TUTOR_EMAIL = process.env.TUTOR_EMAIL || 'tutor@example.com';

@@ -30,19 +30,19 @@ export default async function SessionHistoryPage() {
   );
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-indigo-50 to-purple-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header with Mascot - Stitch Frame Style */}
-      <div className="relative w-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
           <div className="flex flex-col gap-2 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutor Portal</span>
+              <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">👨‍🏫 Tutor Portal</span>
               <span className="text-text-muted text-label-sm">•</span>
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-label-sm text-label-sm font-bold shadow-lg border-2 border-white/30">Session History</span>
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-tertiary to-error text-text-primary font-label-sm text-label-sm font-bold shadow-clay-surface border-2 border-surface/30">Session History</span>
             </div>
             <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
               Session History 📜
@@ -54,10 +54,10 @@ export default async function SessionHistoryPage() {
 
           {/* Right: Mascot */}
           <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center lg:items-end justify-center gap-4 shrink-0 self-center lg:self-auto">
-            <div className="relative max-w-xs bg-gradient-to-br from-indigo-100 to-purple-100 p-4 rounded-2xl shadow-xl border-4 border-white/50 order-2 sm:order-1">
+            <div className="relative max-w-xs bg-tertiary/10 p-4 rounded-[24px] shadow-clay-surface border-4 border-surface/50 order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-indigo-600 text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>history</span>
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-indigo-700 font-bold">Track Progress</span>
+                <span className="material-symbols-outlined text-tertiary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>history</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-bold">Track Progress</span>
               </div>
               <p className="font-headline-md text-label-md text-text-primary font-bold leading-snug">
                 "Review your teaching history and track learner progress!"
@@ -75,13 +75,13 @@ export default async function SessionHistoryPage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="material-symbols-outlined text-primary text-[24px]">event</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">
+          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
             Upcoming Sessions ({upcomingSessions.length})
           </h2>
         </div>
         {upcomingSessions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+          <div className="rounded-[24px] bg-surface p-8 text-center shadow-clay-surface border-4 border-surface/50">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No upcoming sessions scheduled.</p>
@@ -89,18 +89,18 @@ export default async function SessionHistoryPage() {
         ) : (
           <div className="space-y-3">
             {upcomingSessions.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-indigo-50 p-5 shadow-xl border-4 border-indigo-100">
+              <div key={session.id} className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-5 shadow-clay-surface border-4 border-tertiary/30">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-text-primary font-semibold">
                       {new Date(session.scheduledAt).toLocaleString()}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant mt-1">
+                    <p className="font-body-sm text-text-muted mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
                     <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      session.status === "confirmed" ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30" :
+                      "bg-surface-border text-text-muted border-surface-border"
                     }`}>
                       {session.status}
                     </span>
@@ -110,7 +110,7 @@ export default async function SessionHistoryPage() {
                       href={`https://meet.jit.si/${session.jitsiRoomId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                      className="shrink-0 inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
                     >
                       <span className="material-symbols-outlined text-[20px]">videocam</span>
                       Join Session
@@ -127,13 +127,13 @@ export default async function SessionHistoryPage() {
       <div>
         <div className="flex items-center gap-2 mb-4">
           <span className="material-symbols-outlined text-primary text-[24px]">history</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface font-extrabold">
+          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
             Past Sessions ({pastSessions.length})
           </h2>
         </div>
         {sessionsWithNotes.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+          <div className="rounded-[24px] bg-surface p-8 text-center shadow-clay-surface border-4 border-surface/50">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No past sessions yet.</p>
@@ -141,20 +141,20 @@ export default async function SessionHistoryPage() {
         ) : (
           <div className="space-y-4">
             {sessionsWithNotes.map((session: any) => (
-              <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-indigo-50 p-5 shadow-xl border-4 border-indigo-100">
+              <div key={session.id} className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-5 shadow-clay-surface border-4 border-tertiary/30">
                 <div className="flex items-start justify-between mb-4">
                   <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-text-primary font-semibold">
                       {new Date(session.scheduledAt).toLocaleString()}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant mt-1">
+                    <p className="font-body-sm text-text-muted mt-1">
                       Duration: {session.durationMins} minutes
                     </p>
                     <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                      session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
-                      session.status === "no_show" ? "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      session.status === "completed" ? "bg-tertiary text-text-primary border-surface/30" :
+                      session.status === "cancelled" ? "bg-error text-text-primary border-surface/30" :
+                      session.status === "no_show" ? "bg-surface-border text-text-muted border-surface-border" :
+                      "bg-surface-border text-text-muted border-surface-border"
                     }`}>
                       {session.status}
                     </span>
@@ -163,16 +163,16 @@ export default async function SessionHistoryPage() {
 
                 {/* Session Notes */}
                 {session.notes && session.notes.length > 0 && (
-                  <div className="mt-4 pt-4 border-t-4 border-indigo-100">
+                  <div className="mt-4 pt-4 border-t-4 border-tertiary/30">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="material-symbols-outlined text-primary text-[18px]">note</span>
-                      <h3 className="font-label-md text-on-surface font-semibold">Session Notes</h3>
+                      <h3 className="font-label-md text-text-primary font-semibold">Session Notes</h3>
                     </div>
                     <div className="space-y-3">
                       {session.notes.map((note: any) => (
-                        <div key={note.id} className="rounded-xl border-4 border-indigo-100 bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
-                          <p className="font-body-sm text-on-surface">{note.noteText}</p>
-                          <p className="font-body-sm text-on-surface-variant opacity-75 mt-2">
+                        <div key={note.id} className="rounded-xl border-4 border-tertiary/30 bg-tertiary/10 p-4">
+                          <p className="font-body-sm text-text-primary">{note.noteText}</p>
+                          <p className="font-body-sm text-text-muted opacity-75 mt-2">
                             {new Date(note.createdAt).toLocaleDateString()}
                             {note.visibility === "private_tutor" && <span className="ml-2">• Private</span>}
                           </p>

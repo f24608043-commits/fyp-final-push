@@ -77,11 +77,11 @@ export default async function GroupDetailPage({ params }: PageProps) {
     .limit(5);
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header with Cover Image */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -106,7 +106,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
                   <p className="font-body-md text-text-muted">{group.description}</p>
                 )}
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="px-3 py-1 rounded-full bg-surface-container font-label-sm font-semibold text-text-muted">
+                  <span className="px-3 py-1 rounded-full bg-surface-border font-label-sm font-semibold text-text-muted">
                     {group.privacy === "public" ? "Public" : "Private"}
                   </span>
                   {group.groupCode && (
@@ -122,7 +122,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/tutoring/classes/${id}/assignments`}
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[20px]">assignment</span>
                   Assignments
@@ -135,7 +135,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
 
       {/* Tabs Navigation */}
       <div className="flex gap-2 mb-6 border-b-2 border-surface-border pb-4">
-        <button className="px-4 py-2 rounded-full bg-primary text-white font-label-md font-semibold shadow-clay-primary">
+        <button className="px-4 py-2 rounded-full bg-primary text-text-primary font-label-md font-semibold shadow-clay-primary">
           Stream
         </button>
         <button className="px-4 py-2 rounded-full bg-surface text-text-muted font-label-md font-semibold hover:bg-surface-hover transition-all">
@@ -157,7 +157,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
             {groupAnnouncementsData.map((announcement) => (
               <div
                 key={announcement.id}
-                className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border"
+                className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border"
               >
                 <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-2">
                   {announcement.title}
@@ -174,7 +174,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
         )}
 
         {/* Create Announcement */}
-        <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
           <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-4">
             Create Announcement
           </h3>
@@ -191,7 +191,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">send</span>
               Post
@@ -210,7 +210,7 @@ export default async function GroupDetailPage({ params }: PageProps) {
                 <Link
                   key={assignment.id}
                   href={`/tutoring/classes/${id}/assignments/${assignment.id}`}
-                  className="block rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
+                  className="block rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -227,9 +227,9 @@ export default async function GroupDetailPage({ params }: PageProps) {
                       </p>
                     </div>
                     <span className={`px-3 py-1 rounded-full font-label-sm font-semibold ${
-                      assignment.status === "published" ? "bg-green-100 text-green-700" :
-                      assignment.status === "draft" ? "bg-gray-100 text-gray-700" :
-                      "bg-blue-100 text-blue-700"
+                      assignment.status === "published" ? "bg-primary/10 text-success" :
+                      assignment.status === "draft" ? "surface text-text-muted" :
+                      "bg-tertiary/10 text-tertiary"
                     }`}>
                       {assignment.status}
                     </span>

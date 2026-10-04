@@ -25,16 +25,16 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-text-primary/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-surface rounded-[24px] shadow-clay-surface max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">
+            <h2 className="font-headline-xl text-headline-xl text-text-primary font-extrabold">
               Book Session with {tutorName}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-text-muted hover:text-text-muted transition-colors"
             >
               <span className="material-symbols-outlined text-[24px]">close</span>
             </button>
@@ -44,7 +44,7 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
             <input type="hidden" name="tutorId" value={tutorId} />
             
             <div>
-              <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+              <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                 Select Date
               </label>
               <input
@@ -54,13 +54,13 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
                 min={new Date().toISOString().split('T')[0]}
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
               />
             </div>
 
             {selectedDate && (
               <div>
-                <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+                <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                   Available Time Slots
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -73,8 +73,8 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
                         onClick={() => setSelectedSlot(slot.startTime)}
                         className={`p-3 rounded-xl border-2 transition-all ${
                           selectedSlot === slot.startTime
-                            ? "border-blue-500 bg-blue-50 text-blue-600"
-                            : "border-gray-200 hover:border-gray-300"
+                            ? "border-tertiary bg-tertiary/10 text-tertiary"
+                            : "border-surface-border hover:border-surface-border"
                         }`}
                       >
                         <p className="font-label-sm font-semibold">
@@ -90,7 +90,7 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
             )}
 
             <div>
-              <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+              <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                 What do you need help with?
               </label>
               <textarea
@@ -100,7 +100,7 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Describe what topics you'd like to cover in this session..."
-                className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none resize-none"
               />
             </div>
 
@@ -108,14 +108,14 @@ export default function BookSessionModal({ tutorId, tutorName, availability, onC
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-600 px-4 py-3 font-label-md font-semibold hover:bg-gray-100 transition-all"
+                className="flex-1 rounded-xl border-2 border-surface-border surface text-text-muted px-4 py-3 font-label-md font-semibold hover:bg-surface transition-all"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={pending || !selectedDate || !selectedSlot || !message}
-                className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 flex items-center justify-center gap-2"
+                className="flex-1 rounded-xl bg-tertiary text-text-primary px-4 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 flex items-center justify-center gap-2"
               >
                 {pending ? (
                   <>

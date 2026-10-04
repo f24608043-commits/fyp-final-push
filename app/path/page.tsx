@@ -71,7 +71,7 @@ export default async function PathPage() {
             </p>
             <Link
               href="/library"
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-label-lg font-bold shadow-2xl border-2 border-white/40 transform hover:scale-105 hover:shadow-3xl transition-all duration-300 active:scale-95 group"
+              className="inline-flex items-center gap-3 px-10 py-5 rounded-[24px] bg-tertiary text-text-primary font-label-lg font-bold shadow-clay-surface border-2 border-surface/40 transform hover:scale-105 hover:shadow-clay-surface transition-all duration-300 active:scale-95 group"
             >
               <span className="material-symbols-outlined text-[28px] group-hover:rotate-12 transition-transform">school</span>
               <span>Browse Courses</span>
@@ -223,17 +223,17 @@ export default async function PathPage() {
 
       {/* Stats Bar */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="flex flex-col items-center clay-button-primary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
+        <div className="flex flex-col items-center clay-button-primary text-text-primary px-5 py-3 rounded-[24px] text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>local_fire_department</span>
           <span className="font-label-lg text-label-lg leading-tight font-extrabold">{(profile as any).streakCount || 0}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Streak</span>
         </div>
-        <div className="flex flex-col items-center clay-button-secondary text-white px-5 py-3 rounded-2xl text-center min-w-[88px]">
+        <div className="flex flex-col items-center clay-button-secondary text-text-primary px-5 py-3 rounded-[24px] text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>bolt</span>
           <span className="font-label-lg text-label-lg leading-tight font-extrabold">{((profile as any).xp || 0).toLocaleString()}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">XP</span>
         </div>
-        <div className="flex flex-col items-center clay-card px-5 py-3 rounded-2xl text-center min-w-[88px]">
+        <div className="flex flex-col items-center clay-card px-5 py-3 rounded-[24px] text-center min-w-[88px]">
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>emoji_events</span>
           <span className="font-label-lg text-label-lg leading-tight font-extrabold">{Math.floor(Math.sqrt(((profile as any).xp || 0) / 100)) + 1}</span>
           <span className="font-label-sm text-label-sm uppercase opacity-90 font-bold">Level</span>
@@ -242,12 +242,12 @@ export default async function PathPage() {
 
       {/* Current Lesson Hero Card - Stitch Frame Style */}
       {currentLesson && (
-        <div className="relative bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="relative bg-gradient-to-br from-tertiary via-tertiary to-error rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+          <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex flex-col gap-1 max-w-xl z-10">
               <div className="flex items-center gap-2 mb-1">
-                <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-sm text-label-sm px-3 py-1 rounded-full uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-lg border-2 border-white/30">
+                <span className="bg-tertiary text-text-primary font-label-sm text-label-sm px-3 py-1 rounded-full uppercase tracking-wider font-extrabold flex items-center gap-1 shadow-clay-surface border-2 border-surface/30">
                   <span className="material-symbols-outlined text-[14px]">play_circle</span>
                   Next Challenge
                 </span>
@@ -265,10 +265,10 @@ export default async function PathPage() {
               <div className="w-full mt-2 flex flex-col gap-1.5">
                 <div className="flex justify-between items-center text-text-primary">
                   <span className="font-label-sm text-label-sm text-text-muted font-bold">Progress</span>
-                  <span className="font-label-md text-label-md font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{completedCount} / {totalCount} activities</span>
+                  <span className="font-label-md text-label-md font-extrabold bg-tertiary bg-clip-text text-transparent">{completedCount} / {totalCount} activities</span>
                 </div>
-                <div className="w-full h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
+                <div className="w-full h-4 bg-surface-border rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-tertiary rounded-full shadow-clay-surface" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
                 </div>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default async function PathPage() {
             <div className="z-10 flex flex-col items-center w-full md:w-auto">
               <Link
                 href={`/lesson/${currentLesson.lesson.id}`}
-                className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-label-lg text-label-lg uppercase tracking-wider shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-tertiary text-text-primary font-label-lg text-label-lg uppercase tracking-wider shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 <span>Continue Learning</span>
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
@@ -286,39 +286,39 @@ export default async function PathPage() {
                 <span>+{currentLesson.lesson.xpReward} XP Reward on Finish</span>
               </div>
             </div>
-            <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-purple-500/20 blur-xl pointer-events-none"></div>
+            <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-tertiary/20 blur-xl pointer-events-none"></div>
           </div>
         </div>
       )}
 
       {/* Upcoming Tutoring Sessions - Stitch Frame Style */}
       {mySessions.length > 0 ? (
-        <div className="relative bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6">
+        <div className="relative bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+          <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>videocam</span>
-                <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Upcoming Sessions</h2>
+                <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>videocam</span>
+                <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Upcoming Sessions</h2>
               </div>
               <Link href="/tutoring" className="font-label-sm text-primary font-bold hover:underline">View All</Link>
             </div>
             <div className="space-y-3">
               {mySessions.slice(0, 2).map((session: any) => (
-                <div key={session.id} className="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-4 border-2 border-blue-100">
+                <div key={session.id} className="rounded-xl bg-tertiary/10 p-4 border-2 border-tertiary/30">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-label-md text-on-surface font-semibold">
+                      <p className="font-label-md text-text-primary font-semibold">
                         {new Date(session.scheduledAt).toLocaleString()}
                       </p>
-                      <p className="font-body-sm text-on-surface-variant">
+                      <p className="font-body-sm text-text-muted">
                         Duration: {session.durationMins} minutes
                       </p>
                     </div>
                     <span className={`inline-block rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      session.status === "confirmed" ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30" :
+                      session.status === "completed" ? "bg-tertiary text-text-primary border-surface/30" :
+                      "bg-surface-border text-text-muted border-surface-border"
                     }`}>
                       {session.status}
                     </span>
@@ -328,7 +328,7 @@ export default async function PathPage() {
                       href={`https://meet.jit.si/${session.jitsiRoomId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                      className="mt-2 inline-flex items-center gap-2 rounded-xl bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
                     >
                       <span className="material-symbols-outlined text-[20px]">videocam</span>
                       Join Session
@@ -340,19 +340,19 @@ export default async function PathPage() {
           </div>
         </div>
       ) : (
-        <div className="relative bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6">
+        <div className="relative bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+          <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+          <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>event_available</span>
-                <h2 className="font-headline-md text-headline-md text-on-secondary-container font-extrabold">Schedule a Session</h2>
+                <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>event_available</span>
+                <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">Schedule a Session</h2>
               </div>
             </div>
-            <p className="font-body-md text-on-surface-variant mb-4">Book a 1-on-1 tutoring session with expert tutors to accelerate your learning.</p>
+            <p className="font-body-md text-text-muted mb-4">Book a 1-on-1 tutoring session with expert tutors to accelerate your learning.</p>
             <Link
               href="/tutoring"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">calendar_month</span>
               Find a Tutor
@@ -362,13 +362,13 @@ export default async function PathPage() {
       )}
 
       {/* Gamified Path Section - Stitch Frame Style */}
-      <div className="bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl flex flex-col items-center relative overflow-hidden">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 w-full flex flex-col items-center">
+      <div className="bg-tertiary rounded-3xl p-1 shadow-clay-surface flex flex-col items-center relative overflow-hidden">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 w-full flex flex-col items-center">
         {/* Unit Header */}
         <div className="w-full flex items-center justify-between pb-4 mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-headline-md shadow-xl border-4 border-white/30">
+            <div className="w-14 h-14 rounded-[24px] bg-tertiary flex items-center justify-center text-text-primary font-headline-md shadow-clay-surface border-4 border-surface/30">
               <span className="material-symbols-outlined text-[28px]">data_object</span>
             </div>
             <div>
@@ -376,7 +376,7 @@ export default async function PathPage() {
               <h3 className="font-headline-md text-headline-md text-text-primary">{courseUnits[0]?.title || "Course"}</h3>
             </div>
           </div>
-          <span className="font-label-sm text-label-sm bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-1.5 rounded-full font-bold shadow-lg border-2 border-white/30">
+          <span className="font-label-sm text-label-sm bg-tertiary text-text-primary px-4 py-1.5 rounded-full font-bold shadow-clay-surface border-2 border-surface/30">
             {completedCount} of {totalCount} Completed
           </span>
         </div>
@@ -416,7 +416,7 @@ export default async function PathPage() {
                 {/* Mascot for current node */}
                 {isCurrent && (
                   <div className="absolute -top-12 -left-36 hidden sm:flex items-center gap-2 animate-bounce">
-                    <div className="bg-surface px-3 py-2 rounded-2xl shadow-clay-surface border border-surface-border bg-primary/10">
+                    <div className="bg-surface px-3 py-2 rounded-[24px] shadow-clay-surface border border-surface-border bg-primary/10">
                       <p className="font-label-sm text-text-primary">Let's go! 🚀</p>
                     </div>
                     <Mascot pose="encouraging" size={32} />
@@ -427,10 +427,10 @@ export default async function PathPage() {
                 <div
                   className={`w-20 h-20 rounded-full flex items-center justify-center hover:scale-110 active:translate-y-[2px] transition-transform border-4 ${
                     isCompleted
-                      ? "bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-xl border-white/30"
+                      ? "bg-gradient-to-br from-success to-primary text-text-primary shadow-clay-surface border-surface/30"
                       : isCurrent
-                      ? "bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-xl border-white/30 animate-pulse"
-                      : "bg-gradient-to-br from-gray-300 to-gray-400 text-gray-500 shadow-lg border-white/20"
+                      ? "bg-tertiary text-text-primary shadow-clay-surface border-surface/30 animate-pulse"
+                      : "bg-surface-border text-text-muted shadow-clay-surface border-surface/20"
                   }`}
                 >
                   <span className="material-symbols-outlined text-[36px]" style={isCompleted ? { fontVariationSettings: 'FILL 1' } : {}}>
@@ -440,7 +440,7 @@ export default async function PathPage() {
 
                 {/* Star ratings for completed - Colorful */}
                 {isCompleted && (
-                  <div className="flex items-center gap-0.5 mt-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full shadow-xl border-2 border-white/30">
+                  <div className="flex items-center gap-0.5 mt-2 bg-secondary text-text-primary px-3 py-1 rounded-full shadow-clay-surface border-2 border-surface/30">
                     <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
                     <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
                     <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>

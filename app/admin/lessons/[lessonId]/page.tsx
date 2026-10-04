@@ -75,12 +75,12 @@ export default async function LessonDetailPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/admin" className="hover:text-blue-600">Courses</Link>
+      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
+        <Link href="/admin" className="hover:text-tertiary">Courses</Link>
         <span>/</span>
         {course && (
           <>
-            <Link href={`/admin/courses/${course.id}`} className="hover:text-blue-600">
+            <Link href={`/admin/courses/${course.id}`} className="hover:text-tertiary">
               {course.title}
             </Link>
             <span>/</span>
@@ -88,24 +88,24 @@ export default async function LessonDetailPage({
         )}
         {unit && (
           <>
-            <Link href={`/admin/units/${unit.id}`} className="hover:text-blue-600">
+            <Link href={`/admin/units/${unit.id}`} className="hover:text-tertiary">
               {unit.title}
             </Link>
             <span>/</span>
           </>
         )}
-        <span className="font-semibold text-gray-800">{lesson.title}</span>
+        <span className="font-semibold text-text-muted">{lesson.title}</span>
       </nav>
 
       {/* ── Lesson Metadata Form ── */}
-      <section className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-extrabold text-gray-900">Lesson Details</h2>
+      <section className="mb-8 rounded-[24px] border border-surface-border bg-surface p-6 shadow-clay-surface">
+        <h2 className="mb-4 text-lg font-extrabold text-text-muted">Lesson Details</h2>
         <form action={updateLesson} className="space-y-4">
           <input type="hidden" name="lessonId" value={lesson.id} />
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="title">
-              Title <span className="text-red-500">*</span>
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="title">
+              Title <span className="text-error">*</span>
             </label>
             <input
               id="title"
@@ -113,13 +113,13 @@ export default async function LessonDetailPage({
               type="text"
               required
               defaultValue={lesson.title}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="youtubeUrl">
-              YouTube URL <span className="text-red-500">*</span>
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="youtubeUrl">
+              YouTube URL <span className="text-error">*</span>
             </label>
             <input
               id="youtubeUrl"
@@ -128,15 +128,15 @@ export default async function LessonDetailPage({
               required
               defaultValue={youtubeUrl}
               placeholder="youtube.com/watch?v=... or youtu.be/..."
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-text-primary">
               Accepted: youtube.com/watch?v=ID, youtu.be/ID, or raw 11-char video ID
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="description">
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="description">
               Description
             </label>
             <textarea
@@ -144,13 +144,13 @@ export default async function LessonDetailPage({
               name="description"
               rows={2}
               defaultValue={lesson.description ?? ""}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="xpReward">
+              <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="xpReward">
                 XP Reward
               </label>
               <input
@@ -159,7 +159,7 @@ export default async function LessonDetailPage({
                 type="number"
                 min="1"
                 defaultValue={lesson.xpReward}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
               />
             </div>
 
@@ -170,17 +170,17 @@ export default async function LessonDetailPage({
                   name="isPublished"
                   type="checkbox"
                   defaultChecked={lesson.isPublished}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-surface-border text-tertiary focus:ring-tertiary"
                 />
-                <span className="text-sm font-medium text-gray-700">Published</span>
+                <span className="text-sm font-medium text-text-muted">Published</span>
               </label>
             </div>
           </div>
 
-          <div className="flex justify-end border-t border-gray-100 pt-4">
+          <div className="flex justify-end border-t border-surface-border pt-4">
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-bold text-white shadow hover:bg-blue-700"
+              className="rounded-lg bg-tertiary px-5 py-2 text-sm font-bold text-text-primary shadow hover:bg-tertiary"
             >
               Save Lesson Details
             </button>

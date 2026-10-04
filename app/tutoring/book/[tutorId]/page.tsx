@@ -24,20 +24,20 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
   }
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-purple-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/tutoring" className="text-gray-500 hover:text-gray-700">
+            <Link href="/tutoring" className="text-text-muted hover:text-text-muted">
               <span className="material-symbols-outlined text-[24px]">arrow_back</span>
             </Link>
-            <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">
+            <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold">
               Book Session with {tutorProfile.displayName || "Tutor"}
             </h1>
           </div>
-          <p className="font-body-md text-on-surface-variant">
+          <p className="font-body-md text-text-muted">
             Select a date and time slot to request a tutoring session
           </p>
         </div>
@@ -45,12 +45,12 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
 
       {/* Booking Form */}
       <div className="max-w-2xl mx-auto">
-        <div className="rounded-2xl bg-white p-6 shadow-xl border-4 border-blue-100">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
           <form action="/api/book-session" method="POST" className="space-y-6">
             <input type="hidden" name="tutorId" value={resolvedParams.tutorId} />
             
             <div>
-              <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+              <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                 Select Date
               </label>
               <input
@@ -58,12 +58,12 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
                 name="date"
                 required
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+              <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                 Available Time Slots
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -77,11 +77,11 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
                         required
                         className="sr-only peer"
                       />
-                      <div className="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all">
-                        <p className="font-label-sm font-semibold text-on-surface">
+                      <div className="p-4 rounded-xl border-2 border-surface-border peer-checked:border-tertiary peer-checked:bg-tertiary/10 transition-all">
+                        <p className="font-label-sm font-semibold text-text-primary">
                           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][slot.dayOfWeek]}
                         </p>
-                        <p className="font-body-md text-on-surface-variant">
+                        <p className="font-body-md text-text-muted">
                           {slot.startTime} - {slot.endTime}
                         </p>
                       </div>
@@ -96,7 +96,7 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
             </div>
 
             <div>
-              <label className="block font-label-sm font-semibold mb-2 text-on-surface">
+              <label className="block font-label-sm font-semibold mb-2 text-text-primary">
                 What do you need help with?
               </label>
               <textarea
@@ -104,20 +104,20 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
                 required
                 rows={4}
                 placeholder="Describe what topics you'd like to cover in this session..."
-                className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none resize-none"
               />
             </div>
 
             <div className="flex gap-3 pt-4">
               <Link
                 href="/tutoring"
-                className="flex-1 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-600 px-4 py-3 font-label-md font-semibold hover:bg-gray-100 transition-all text-center"
+                className="flex-1 rounded-xl border-2 border-surface-border surface text-text-muted px-4 py-3 font-label-md font-semibold hover:bg-surface transition-all text-center"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
-                className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="flex-1 rounded-xl bg-tertiary text-text-primary px-4 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Send Request
               </button>

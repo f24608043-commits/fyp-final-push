@@ -70,18 +70,18 @@ export default async function AdminDashboard() {
   const badgeCount = totalBadges[0]?.count || 0;
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-red-50 to-orange-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-error/10 to-secondary/10 min-h-screen">
       {/* Header with Mascot - Stitch Frame Style */}
-      <div className="relative w-full bg-gradient-to-br from-red-500 via-orange-500 to-amber-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-gradient-to-br from-error via-secondary to-secondary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">🛡️ Admin Panel</span>
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-error to-secondary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">🛡️ Admin Panel</span>
               <span className="text-text-muted text-label-sm">•</span>
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-label-sm text-label-sm font-bold shadow-lg border-2 border-white/30">Full Control</span>
+              <span className="px-4 py-1 rounded-full bg-secondary text-text-primary font-label-sm text-label-sm font-bold shadow-clay-surface border-2 border-surface/30">Full Control</span>
             </div>
             <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
               Admin Dashboard 📊
@@ -102,40 +102,40 @@ export default async function AdminDashboard() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Link href="/admin/users" className="rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-500 p-5 shadow-xl border-4 border-white/30 hover:shadow-2xl hover:scale-105 transition-all text-white">
+        <Link href="/admin/users" className="rounded-[24px] bg-tertiary p-5 shadow-clay-surface border-4 border-surface/30 hover:shadow-clay-surface hover:scale-105 transition-all text-text-primary">
           <div className="flex items-center justify-between mb-2">
-            <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>people</span>
-            <span className="font-headline-xl text-headline-xl text-white font-extrabold">{userCount}</span>
+            <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>people</span>
+            <span className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{userCount}</span>
           </div>
-          <p className="font-label-md text-white font-semibold">Total Users</p>
-          <p className="font-body-sm text-white/80">Manage all users</p>
+          <p className="font-label-md text-text-primary font-semibold">Total Users</p>
+          <p className="font-body-sm text-text-primary">Manage all users</p>
         </Link>
 
-        <Link href="/admin/courses" className="rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 p-5 shadow-xl border-4 border-white/30 hover:shadow-2xl hover:scale-105 transition-all text-white">
+        <Link href="/admin/courses" className="rounded-[24px] bg-gradient-to-br from-success to-primary p-5 shadow-clay-surface border-4 border-surface/30 hover:shadow-clay-surface hover:scale-105 transition-all text-text-primary">
           <div className="flex items-center justify-between mb-2">
-            <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
-            <span className="font-headline-xl text-headline-xl text-white font-extrabold">{allCourses.length}</span>
+            <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+            <span className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{allCourses.length}</span>
           </div>
-          <p className="font-label-md text-white font-semibold">Total Courses</p>
-          <p className="font-body-sm text-white/80">Manage course content</p>
+          <p className="font-label-md text-text-primary font-semibold">Total Courses</p>
+          <p className="font-body-sm text-text-primary/80">Manage course content</p>
         </Link>
 
-        <Link href="/admin/tutoring" className="rounded-2xl bg-gradient-to-br from-purple-400 to-pink-500 p-5 shadow-xl border-4 border-white/30 hover:shadow-2xl hover:scale-105 transition-all text-white">
+        <Link href="/admin/tutoring" className="rounded-[24px] bg-tertiary p-5 shadow-clay-surface border-4 border-surface/30 hover:shadow-clay-surface hover:scale-105 transition-all text-text-primary">
           <div className="flex items-center justify-between mb-2">
-            <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>groups</span>
-            <span className="font-headline-xl text-headline-xl text-white font-extrabold">{sessionCount}</span>
+            <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>groups</span>
+            <span className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{sessionCount}</span>
           </div>
-          <p className="font-label-md text-white font-semibold">Total Sessions</p>
-          <p className="font-body-sm text-white/80">Tutoring oversight</p>
+          <p className="font-label-md text-text-primary font-semibold">Total Sessions</p>
+          <p className="font-body-sm text-text-primary">Tutoring oversight</p>
         </Link>
 
-        <Link href="/admin/badges" className="rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 p-5 shadow-xl border-4 border-white/30 hover:shadow-2xl hover:scale-105 transition-all text-white">
+        <Link href="/admin/badges" className="rounded-[24px] bg-gradient-to-br from-secondary to-error p-5 shadow-clay-surface border-4 border-surface/30 hover:shadow-clay-surface hover:scale-105 transition-all text-text-primary">
           <div className="flex items-center justify-between mb-2">
-            <span className="material-symbols-outlined text-white text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>military_tech</span>
-            <span className="font-headline-xl text-headline-xl text-white font-extrabold">{badgeCount}</span>
+            <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>military_tech</span>
+            <span className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{badgeCount}</span>
           </div>
-          <p className="font-label-md text-white font-semibold">Total Badges</p>
-          <p className="font-body-sm text-white/80">Achievement system</p>
+          <p className="font-label-md text-text-primary font-semibold">Total Badges</p>
+          <p className="font-body-sm text-text-primary/80">Achievement system</p>
         </Link>
       </div>
 
@@ -143,8 +143,8 @@ export default async function AdminDashboard() {
       <div className="mb-8">
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link href="/admin/users" className="rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-4 border-4 border-blue-200 hover:from-blue-200 hover:to-indigo-200 transition-all flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white flex items-center justify-center shadow-xl border-2 border-white/30">
+          <Link href="/admin/users" className="rounded-[24px] bg-tertiary/10 p-4 border-4 border-tertiary/30 hover:from-tertiary/10 hover:to-tertiary/10 transition-all flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-tertiary text-text-primary flex items-center justify-center shadow-clay-surface border-2 border-surface/30">
               <span className="material-symbols-outlined text-[20px]">person_add</span>
             </div>
             <div>
@@ -153,8 +153,8 @@ export default async function AdminDashboard() {
             </div>
           </Link>
 
-          <Link href="/admin/courses/new" className="rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 p-4 border-4 border-green-200 hover:from-green-200 hover:to-emerald-200 transition-all flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-xl border-2 border-white/30">
+          <Link href="/admin/courses/new" className="rounded-[24px] bg-primary/10 p-4 border-4 border-primary/30 hover:from-primary/10 hover:to-primary/10 transition-all flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary text-text-primary flex items-center justify-center shadow-clay-surface border-2 border-surface/30">
               <span className="material-symbols-outlined text-[20px]">add</span>
             </div>
             <div>
@@ -163,8 +163,8 @@ export default async function AdminDashboard() {
             </div>
           </Link>
 
-          <Link href="/admin/badges" className="rounded-2xl bg-gradient-to-br from-orange-100 to-red-100 p-4 border-4 border-orange-200 hover:from-orange-200 hover:to-red-200 transition-all flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center shadow-xl border-2 border-white/30">
+          <Link href="/admin/badges" className="rounded-[24px] bg-gradient-to-br from-secondary/10 to-error/10 p-4 border-4 border-secondary/30 hover:from-secondary/10 hover:to-error/10 transition-all flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-error text-text-primary flex items-center justify-center shadow-clay-surface border-2 border-surface/30">
               <span className="material-symbols-outlined text-[20px]">emoji_events</span>
             </div>
             <div>
@@ -173,8 +173,8 @@ export default async function AdminDashboard() {
             </div>
           </Link>
 
-          <Link href="/admin/tutoring" className="rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 p-4 border-4 border-purple-200 hover:from-purple-200 hover:to-pink-200 transition-all flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center shadow-xl border-2 border-white/30">
+          <Link href="/admin/tutoring" className="rounded-[24px] bg-tertiary/10 p-4 border-4 border-tertiary/30 hover:from-tertiary/10 hover:to-tertiary/10 transition-all flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-tertiary text-text-primary flex items-center justify-center shadow-clay-surface border-2 border-surface/30">
               <span className="material-symbols-outlined text-[20px]">support_agent</span>
             </div>
             <div>
@@ -196,15 +196,15 @@ export default async function AdminDashboard() {
           </div>
           <Link
             href="/admin/courses"
-            className="rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white px-5 py-2.5 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            className="rounded-full bg-primary text-text-primary px-5 py-2.5 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
           >
             View All Courses
           </Link>
         </div>
 
       {allCourses.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-12 text-center shadow-xl border-4 border-white/50">
-          <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+        <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface border-4 border-surface/50">
+          <div className="relative w-20 h-20 rounded-[24px] bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
             <Mascot pose="empty" size={64} />
           </div>
           <p className="font-body-md text-text-muted font-bold">No courses yet. Create your first course above.</p>
@@ -215,7 +215,7 @@ export default async function AdminDashboard() {
             <Link
               key={course.id}
               href={`/admin/courses/${course.id}`}
-              className="group rounded-2xl bg-gradient-to-br from-white to-green-50 p-5 shadow-xl border-4 border-green-100 hover:shadow-2xl hover:border-green-200 transition-all"
+              className="group rounded-[24px] bg-gradient-to-br from-surface to-primary/10 p-5 shadow-clay-surface border-4 border-primary/30 hover:shadow-clay-surface hover:border-primary/30 transition-all"
             >
               <div className="flex items-start justify-between">
                 <h2 className="font-label-lg text-text-primary font-semibold group-hover:text-primary">
@@ -224,8 +224,8 @@ export default async function AdminDashboard() {
                 <span
                   className={`ml-2 rounded-full px-2 py-0.5 font-label-sm font-bold border-2 ${
                     course.isPublished
-                      ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30"
-                      : "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30"
+                      : "bg-surface-border text-text-muted border-surface-border"
                   }`}
                 >
                   {course.isPublished ? "Published" : "Draft"}

@@ -46,15 +46,15 @@ export default async function TutorClassesPage() {
     .groupBy(groups.id);
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">📚 My Classes</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">📚 My Classes</span>
               </div>
               <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
                 My Classes & Groups
@@ -66,7 +66,7 @@ export default async function TutorClassesPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/tutoring/classes/create"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-[20px]">add</span>
                 Create Class
@@ -78,15 +78,15 @@ export default async function TutorClassesPage() {
 
       {/* Classes Grid */}
       {tutorGroups.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-12 text-center shadow-xl border-4 border-white/50">
-          <div className="relative w-24 h-24 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-6 border-4 border-white/30">
+        <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface border-4 border-surface/50">
+          <div className="relative w-24 h-24 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-6 border-4 border-surface/30">
             <Mascot pose="empty" size={96} />
           </div>
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-2">No Classes Yet</h2>
           <p className="font-body-md text-text-muted mb-6">Create your first class to start teaching students</p>
           <Link
             href="/tutoring/classes/create"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
             Create Your First Class
@@ -98,19 +98,23 @@ export default async function TutorClassesPage() {
             <Link
               key={group.id}
               href={`/tutoring/classes/${group.id}`}
-              className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all cursor-pointer"
+              className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border hover:shadow-clay-primary transition-all cursor-pointer"
             >
               {group.coverImageUrl ? (
-                <div className="w-full h-32 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-4 overflow-hidden border-2 border-surface-border">
+                <div className="w-full h-32 rounded-xl bg-tertiary/10 mb-4 overflow-hidden border-2 border-surface-border">
                   <img
                     src={group.coverImageUrl}
                     alt={group.name}
+                    loading="lazy"
+                    decoding="async"
+                    width={640}
+                    height={256}
                     className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
-                <div className="w-full h-32 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-4 flex items-center justify-center border-2 border-surface-border">
-                  <span className="material-symbols-outlined text-blue-400 text-[48px]">school</span>
+                <div className="w-full h-32 rounded-xl bg-tertiary/10 mb-4 flex items-center justify-center border-2 border-surface-border">
+                  <span className="material-symbols-outlined text-tertiary text-[48px]">school</span>
                 </div>
               )}
               <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-2">

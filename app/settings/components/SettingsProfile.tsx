@@ -7,7 +7,7 @@ interface SettingsProfileProps {
 
 export default function SettingsProfile({ profile, user }: SettingsProfileProps) {
   return (
-    <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+    <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
       <div className="flex items-center gap-2 mb-6">
         <span className="material-symbols-outlined text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>person</span>
         <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold">Profile Information</h2>
@@ -15,13 +15,13 @@ export default function SettingsProfile({ profile, user }: SettingsProfileProps)
       <div className="space-y-4">
         <div>
           <label className="block font-label-sm font-semibold mb-2 text-text-muted uppercase tracking-wider">Display Name</label>
-          <div className="px-4 py-3 bg-surface-container rounded-xl text-text-primary font-label-md">
+          <div className="px-4 py-3 bg-surface-border rounded-xl text-text-primary font-label-md">
             {profile.displayName || "Not set"}
           </div>
         </div>
         <div>
           <label className="block font-label-sm font-semibold mb-2 text-text-muted uppercase tracking-wider">Email</label>
-          <div className="px-4 py-3 bg-surface-container rounded-xl text-text-primary font-label-md">
+          <div className="px-4 py-3 bg-surface-border rounded-xl text-text-primary font-label-md">
             {user.email}
           </div>
         </div>
@@ -33,7 +33,7 @@ export default function SettingsProfile({ profile, user }: SettingsProfileProps)
         </div>
         <div>
           <label className="block font-label-sm font-semibold mb-2 text-text-muted uppercase tracking-wider">Avatar URL</label>
-          <div className="px-4 py-3 bg-surface-container rounded-xl text-text-primary font-label-md break-all">
+          <div className="px-4 py-3 bg-surface-border rounded-xl text-text-primary font-label-md break-all">
             {profile.avatarUrl || "Not set"}
           </div>
         </div>

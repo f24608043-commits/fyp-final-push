@@ -23,7 +23,7 @@ export default function VideoPlayer({ videoUrl, lessonId }: VideoPlayerProps) {
   };
 
   return (
-    <div className="aspect-video bg-black rounded-xl overflow-hidden">
+    <div className="aspect-video bg-text-primary rounded-xl overflow-hidden">
       <iframe
         className="w-full h-full"
         src={`https://www.youtube.com/embed/${videoUrl}`}

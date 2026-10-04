@@ -42,23 +42,23 @@ export default async function CourseDetailPage({
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/admin" className="hover:text-blue-600">
+      <nav className="mb-6 flex items-center gap-2 text-sm text-text-muted">
+        <Link href="/admin" className="hover:text-tertiary">
           Courses
         </Link>
         <span>/</span>
-        <span className="font-semibold text-gray-800">{course.title}</span>
+        <span className="font-semibold text-text-muted">{course.title}</span>
       </nav>
 
       {/* Edit Course */}
-      <section className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-extrabold text-gray-900">Course Details</h2>
+      <section className="mb-8 rounded-[24px] border border-surface-border bg-surface p-6 shadow-clay-surface">
+        <h2 className="mb-4 text-lg font-extrabold text-text-muted">Course Details</h2>
         <form action={updateCourse} className="space-y-4">
           <input type="hidden" name="courseId" value={course.id} />
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="title">
-              Title <span className="text-red-500">*</span>
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="title">
+              Title <span className="text-error">*</span>
             </label>
             <input
               id="title"
@@ -66,12 +66,12 @@ export default async function CourseDetailPage({
               type="text"
               required
               defaultValue={course.title}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="description">
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="description">
               Description
             </label>
             <textarea
@@ -79,12 +79,12 @@ export default async function CourseDetailPage({
               name="description"
               rows={2}
               defaultValue={course.description ?? ""}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="coverUrl">
+            <label className="block text-sm font-semibold text-text-muted mb-1" htmlFor="coverUrl">
               Cover Image URL
             </label>
             <input
@@ -92,7 +92,7 @@ export default async function CourseDetailPage({
               name="coverUrl"
               type="url"
               defaultValue={course.coverUrl ?? ""}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
             />
           </div>
 
@@ -102,17 +102,17 @@ export default async function CourseDetailPage({
               name="isPublished"
               type="checkbox"
               defaultChecked={course.isPublished}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-surface-border text-tertiary focus:ring-tertiary"
             />
-            <label htmlFor="isPublished" className="text-sm font-medium text-gray-700">
+            <label htmlFor="isPublished" className="text-sm font-medium text-text-muted">
               Published (visible to learners)
             </label>
           </div>
 
-          <div className="flex justify-end border-t border-gray-100 pt-4">
+          <div className="flex justify-end border-t border-surface-border pt-4">
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-bold text-white shadow hover:bg-blue-700"
+              className="rounded-lg bg-tertiary px-5 py-2 text-sm font-bold text-text-primary shadow hover:bg-tertiary"
             >
               Save Changes
             </button>
@@ -123,13 +123,13 @@ export default async function CourseDetailPage({
       {/* Units List */}
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-extrabold text-gray-900">
+          <h2 className="text-lg font-extrabold text-text-muted">
             Units ({courseUnits.length})
           </h2>
         </div>
 
         {courseUnits.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center text-gray-400">
+          <div className="rounded-[24px] border border-dashed border-surface-border p-8 text-center text-text-primary">
             No units yet. Add your first unit below.
           </div>
         ) : (
@@ -138,20 +138,20 @@ export default async function CourseDetailPage({
               <Link
                 key={unit.id}
                 href={`/admin/units/${unit.id}`}
-                className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+                className="flex items-center justify-between rounded-xl border border-surface-border bg-surface p-4 shadow-clay-surface transition hover:border-tertiary hover:shadow-clay-surface"
               >
                 <div className="flex items-center gap-3">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-tertiary/10 text-xs font-bold text-tertiary">
                     {idx + 1}
                   </span>
                   <div>
-                    <p className="font-semibold text-gray-900">{unit.title}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-semibold text-text-muted">{unit.title}</p>
+                    <p className="text-xs text-text-muted">
                       {lessonCountMap.get(unit.id) || 0} lessons
                     </p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-blue-600 hover:underline">
+                <span className="text-xs font-semibold text-tertiary hover:underline">
                   Edit →
                 </span>
               </Link>
@@ -160,8 +160,8 @@ export default async function CourseDetailPage({
         )}
 
         {/* Add Unit Form */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="mb-3 text-sm font-extrabold text-gray-700">+ Add New Unit</h3>
+        <div className="rounded-[24px] border border-surface-border bg-surface p-5 shadow-clay-surface">
+          <h3 className="mb-3 text-sm font-extrabold text-text-muted">+ Add New Unit</h3>
           <form action={createUnit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <input type="hidden" name="courseId" value={course.id} />
             <div className="flex-1">
@@ -170,7 +170,7 @@ export default async function CourseDetailPage({
                 type="text"
                 required
                 placeholder="Unit title (e.g. Python Fundamentals)"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
               />
             </div>
             <div className="flex-1">
@@ -178,12 +178,12 @@ export default async function CourseDetailPage({
                 name="description"
                 type="text"
                 placeholder="Short description (optional)"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-surface-border px-3 py-2 text-sm focus:border-tertiary focus:outline-none focus:ring-1 focus:ring-tertiary"
               />
             </div>
             <button
               type="submit"
-              className="whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow hover:bg-blue-700"
+              className="whitespace-nowrap rounded-lg bg-tertiary px-4 py-2 text-sm font-bold text-text-primary shadow hover:bg-tertiary"
             >
               Create Unit →
             </button>

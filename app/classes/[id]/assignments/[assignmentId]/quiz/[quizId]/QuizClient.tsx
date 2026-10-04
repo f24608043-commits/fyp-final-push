@@ -86,7 +86,7 @@ export default function QuizClient({
   return (
     <div className="space-y-6">
       {/* Quiz Progress */}
-      <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+      <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <span className="font-label-md font-semibold text-text-primary">
@@ -103,7 +103,7 @@ export default function QuizClient({
             {Math.round(progress)}% Complete
           </span>
         </div>
-        <div className="w-full bg-surface-container rounded-full h-2">
+        <div className="w-full bg-surface-border rounded-full h-2">
           <div
             className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -112,7 +112,7 @@ export default function QuizClient({
       </div>
 
       {/* Question Card */}
-      <div className="rounded-2xl bg-surface p-8 shadow-clay-surface border border-surface-border">
+      <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border">
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
             <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-2">
@@ -122,7 +122,7 @@ export default function QuizClient({
               {question.points} point{question.points !== 1 ? "s" : ""}
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full bg-surface-container font-label-sm font-semibold text-text-muted capitalize">
+          <span className="px-3 py-1 rounded-full bg-surface-border font-label-sm font-semibold text-text-muted capitalize">
             {question.questionType.replace(/_/g, " ")}
           </span>
         </div>
@@ -147,7 +147,7 @@ export default function QuizClient({
                       : "border-surface-border"
                   }`}>
                     {answers[question.id] === option.id && (
-                      <span className="material-symbols-outlined text-white text-[16px]">check</span>
+                      <span className="material-symbols-outlined text-text-primary text-[16px]">check</span>
                     )}
                   </div>
                   <span className="font-body-md text-text-primary">{option.optionText}</span>
@@ -184,7 +184,7 @@ export default function QuizClient({
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
@@ -201,7 +201,7 @@ export default function QuizClient({
         ) : (
           <button
             onClick={() => setCurrentQuestion((prev) => Math.min(questions.length - 1, prev + 1))}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
           >
             Next
             <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
@@ -210,7 +210,7 @@ export default function QuizClient({
       </div>
 
       {/* Question Navigation */}
-      <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+      <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
         <h3 className="font-label-md font-semibold text-text-primary mb-4">Question Navigator</h3>
         <div className="flex flex-wrap gap-2">
           {questions.map((q, idx) => (
@@ -219,10 +219,10 @@ export default function QuizClient({
               onClick={() => setCurrentQuestion(idx)}
               className={`w-10 h-10 rounded-full font-label-md font-semibold transition-all ${
                 currentQuestion === idx
-                  ? "bg-primary text-white shadow-clay-primary"
+                  ? "bg-primary text-text-primary shadow-clay-primary"
                   : answers[q.id] || textAnswers[q.id]
-                  ? "bg-green-100 text-green-700 border-2 border-green-200"
-                  : "bg-surface-container text-text-muted border-2 border-surface-border hover:border-primary/50"
+                  ? "bg-primary/10 text-success border-2 border-primary/30"
+                  : "bg-surface-border text-text-muted border-2 border-surface-border hover:border-primary/50"
               }`}
             >
               {idx + 1}

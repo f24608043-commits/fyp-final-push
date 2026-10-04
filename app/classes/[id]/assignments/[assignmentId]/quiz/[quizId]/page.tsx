@@ -135,11 +135,11 @@ export default async function QuizPage({ params }: PageProps) {
   const attemptsRemaining = quiz.maxAttempts - attempts.length;
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -152,7 +152,7 @@ export default async function QuizPage({ params }: PageProps) {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">🧠 Quiz</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">🧠 Quiz</span>
               </div>
               <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
                 Quiz
@@ -177,7 +177,7 @@ export default async function QuizPage({ params }: PageProps) {
 
       {/* Previous Attempts */}
       {attempts.length > 0 && (
-        <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-4">
             Previous Attempts
           </h2>
@@ -185,7 +185,7 @@ export default async function QuizPage({ params }: PageProps) {
             {attempts.map((attempt) => (
               <div
                 key={attempt.id}
-                className="flex items-center justify-between p-4 bg-surface-container rounded-xl"
+                className="flex items-center justify-between p-4 bg-surface-border rounded-xl"
               >
                 <div>
                   <p className="font-label-md font-semibold text-text-primary">
@@ -221,12 +221,12 @@ export default async function QuizPage({ params }: PageProps) {
           attemptsRemaining={attemptsRemaining}
         />
       ) : (
-        <div className="rounded-2xl bg-gradient-to-br from-red-50 to-rose-50 p-12 text-center shadow-xl border-4 border-red-200">
-          <span className="material-symbols-outlined text-red-500 text-[64px]">block</span>
-          <h2 className="font-headline-lg text-headline-lg text-red-700 font-bold mt-4 mb-2">
+        <div className="rounded-[24px] bg-error/10 p-12 text-center shadow-clay-surface border-4 border-error/30">
+          <span className="material-symbols-outlined text-error text-[64px]">block</span>
+          <h2 className="font-headline-lg text-headline-lg text-error font-bold mt-4 mb-2">
             No Attempts Remaining
           </h2>
-          <p className="font-body-md text-red-600">
+          <p className="font-body-md text-error">
             You have used all {quiz.maxAttempts} attempts for this quiz.
           </p>
         </div>

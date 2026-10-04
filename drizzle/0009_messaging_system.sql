@@ -6,7 +6,8 @@ DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS conversation_participants CASCADE;
 DROP TABLE IF EXISTS conversations CASCADE;
 
--- Create conversation_type enum
+-- Drop and recreate conversation_type enum if it exists
+DROP TYPE IF EXISTS conversation_type CASCADE;
 CREATE TYPE conversation_type AS ENUM ('direct', 'group');
 
 -- Create conversations table
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS conversations (
   type conversation_type NOT NULL DEFAULT 'direct',
   title TEXT,
   created_by UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-  direct_key UUID UNIQUE, -- For direct conversations, ensures one thread per pair
+  direct_key TEXT UNIQUE, -- For direct conversations, ensures one thread per pair (concatenated UUIDs)
   last_message_at TIMESTAMP WITH TIME ZONE,
   jitsi_room_id TEXT, -- For group live class rooms
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -69,6 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
 CREATE INDEX IF NOT EXISTS idx_message_reports_message_id ON message_reports(message_id);
 
 -- SECURITY DEFINER helper function to check if user is conversation member
+DROP FUNCTION IF EXISTS is_conversation_member(UUID, UUID) CASCADE;
 CREATE OR REPLACE FUNCTION is_conversation_member(user_id UUID, conversation_id UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
@@ -89,6 +91,7 @@ CREATE TABLE IF NOT EXISTS message_rate_limits (
 );
 
 -- Function to check and increment rate limit
+DROP FUNCTION IF EXISTS check_message_rate_limit(UUID) CASCADE;
 CREATE OR REPLACE FUNCTION check_message_rate_limit(user_id UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
@@ -119,6 +122,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger function to enforce rate limit before insert
+DROP FUNCTION IF EXISTS enforce_message_rate_limit() CASCADE;
 CREATE OR REPLACE FUNCTION enforce_message_rate_limit()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -137,6 +141,7 @@ CREATE TRIGGER message_rate_limit_trigger
   EXECUTE FUNCTION enforce_message_rate_limit();
 
 -- Function to update last_message_at on conversation
+DROP FUNCTION IF EXISTS update_conversation_last_message() CASCADE;
 CREATE OR REPLACE FUNCTION update_conversation_last_message()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -163,6 +168,12 @@ ALTER TABLE blocks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE message_reports ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for conversations
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their conversations" ON conversations;
+DROP POLICY IF EXISTS "No direct insert into conversations" ON conversations;
+DROP POLICY IF EXISTS "No direct update conversations" ON conversations;
+DROP POLICY IF EXISTS "No direct delete conversations" ON conversations;
+
 -- Users can see conversations they are members of
 CREATE POLICY "Users can view their conversations"
   ON conversations FOR SELECT
@@ -182,6 +193,12 @@ CREATE POLICY "No direct delete conversations"
   USING (false);
 
 -- RLS Policies for conversation_members
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view conversation members" ON conversation_members;
+DROP POLICY IF EXISTS "No direct insert into conversation_members" ON conversation_members;
+DROP POLICY IF EXISTS "Users can update their own read status" ON conversation_members;
+DROP POLICY IF EXISTS "Users can delete themselves from conversations" ON conversation_members;
+
 -- Users can view members of conversations they are in
 CREATE POLICY "Users can view conversation members"
   ON conversation_members FOR SELECT
@@ -204,6 +221,12 @@ CREATE POLICY "Users can delete themselves from conversations"
   USING (user_id = auth.uid());
 
 -- RLS Policies for messages
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view messages in their conversations" ON messages;
+DROP POLICY IF EXISTS "Users can send messages in their conversations" ON messages;
+DROP POLICY IF EXISTS "No direct update messages" ON messages;
+DROP POLICY IF EXISTS "No direct delete messages" ON messages;
+
 -- Users can view messages in conversations they are members of
 CREATE POLICY "Users can view messages in their conversations"
   ON messages FOR SELECT
@@ -233,6 +256,11 @@ CREATE POLICY "No direct delete messages"
   USING (false);
 
 -- RLS Policies for blocks
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their blocks" ON blocks;
+DROP POLICY IF EXISTS "Users can create blocks" ON blocks;
+DROP POLICY IF EXISTS "Users can delete their blocks" ON blocks;
+
 -- Users can view their own blocks
 CREATE POLICY "Users can view their blocks"
   ON blocks FOR SELECT
@@ -249,6 +277,10 @@ CREATE POLICY "Users can delete their blocks"
   USING (blocker_id = auth.uid());
 
 -- RLS Policies for message_reports
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their reports" ON message_reports;
+DROP POLICY IF EXISTS "Users can create reports" ON message_reports;
+
 -- Users can view their own reports
 CREATE POLICY "Users can view their reports"
   ON message_reports FOR SELECT

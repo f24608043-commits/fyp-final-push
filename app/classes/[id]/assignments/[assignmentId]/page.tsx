@@ -72,11 +72,11 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
     .limit(1);
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -89,10 +89,10 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">📝 Assignment</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">📝 Assignment</span>
                 <span className={`px-4 py-1 rounded-full font-label-sm font-semibold ${
-                  assignment.status === "published" ? "bg-green-100 text-green-700" :
-                  "bg-gray-100 text-gray-700"
+                  assignment.status === "published" ? "bg-primary/10 text-success" :
+                  "surface text-text-muted"
                 }`}>
                   {assignment.status}
                 </span>
@@ -117,7 +117,7 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
 
       {/* Assignment Description */}
       {assignment.description && (
-        <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-4">Instructions</h2>
           <p className="font-body-md text-text-muted whitespace-pre-wrap">
             {assignment.description}
@@ -127,22 +127,22 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
 
       {/* Submission Status */}
       {existingSubmission ? (
-        <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-6 shadow-xl border-4 border-green-200 mb-6">
+        <div className="rounded-[24px] bg-primary/10 p-6 shadow-clay-surface border-4 border-primary/30 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-green-600 text-[32px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
+            <span className="material-symbols-outlined text-success text-[32px]" style={{ fontVariationSettings: 'FILL 1' }}>check_circle</span>
             <div>
-              <h3 className="font-headline-lg text-headline-lg text-green-700 font-bold">Assignment Submitted</h3>
-              <p className="font-body-sm text-green-600">
+              <h3 className="font-headline-lg text-headline-lg text-success font-bold">Assignment Submitted</h3>
+              <p className="font-body-sm text-success">
                 Submitted on {new Date(existingSubmission.submittedAt).toLocaleString()}
               </p>
             </div>
           </div>
           {existingSubmission.status === "graded" && (
-            <div className="bg-white rounded-xl p-4 border-2 border-green-200">
+            <div className="bg-surface rounded-xl p-4 border-2 border-primary/30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-label-md font-semibold text-text-primary">Grade</p>
-                  <p className="font-headline-xl text-headline-xl text-green-700 font-bold">
+                  <p className="font-headline-xl text-headline-xl text-success font-bold">
                     {existingSubmission.pointsEarned}/{assignment.points}
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
         </div>
       ) : (
         /* Submission Form */
-        <div className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mb-4">Submit Assignment</h2>
           <form action={submitAssignment} className="space-y-6">
             <input type="hidden" name="assignmentId" value={params.assignmentId} />
@@ -198,7 +198,7 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
             <div className="flex items-center gap-4 pt-4 border-t border-surface-border">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-[20px]">send</span>
                 Submit Assignment

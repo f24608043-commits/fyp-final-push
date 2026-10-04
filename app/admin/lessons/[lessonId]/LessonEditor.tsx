@@ -129,11 +129,11 @@ export default function LessonEditor({
   };
 
   return (
-    <div className="space-y-8 bg-gradient-to-br from-background via-teal-50 to-cyan-50 p-6 rounded-3xl">
+    <div className="space-y-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 p-6 rounded-3xl">
       {/* ── YouTube Thumbnail Preview ── */}
       {youtubeVideoId && (
-        <div className="rounded-2xl border-4 border-teal-200 bg-gradient-to-br from-white to-teal-50 p-5 shadow-xl">
-          <h3 className="mb-3 text-sm font-extrabold text-teal-700">📹 Video Preview</h3>
+        <div className="rounded-[24px] border-4 border-tertiary/30 bg-gradient-to-br from-surface to-tertiary/10 p-5 shadow-clay-surface">
+          <h3 className="mb-3 text-sm font-extrabold text-tertiary">📹 Video Preview</h3>
           <div className="flex items-start gap-4">
             {/* Thumbnail */}
             <Image
@@ -141,15 +141,15 @@ export default function LessonEditor({
               alt="Video thumbnail"
               width={160}
               height={90}
-              className="w-40 rounded-lg border-4 border-teal-200 object-cover shadow-xl"
+              className="w-40 rounded-lg border-4 border-tertiary/30 object-cover shadow-clay-surface"
             />
-            <div className="text-sm text-gray-600">
-              <p className="font-semibold text-gray-800">YouTube ID: {youtubeVideoId}</p>
+            <div className="text-sm text-text-muted">
+              <p className="font-semibold text-text-muted">YouTube ID: {youtubeVideoId}</p>
               <a
                 href={`https://www.youtube.com/watch?v=${youtubeVideoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 inline-block text-teal-600 hover:underline font-semibold"
+                className="mt-1 inline-block text-tertiary hover:underline font-semibold"
               >
                 Watch on YouTube →
               </a>
@@ -159,15 +159,15 @@ export default function LessonEditor({
       )}
 
       {/* ── Existing Questions ── */}
-      <div className="rounded-2xl border-4 border-teal-200 bg-gradient-to-br from-white to-teal-50 p-6 shadow-xl">
+      <div className="rounded-[24px] border-4 border-tertiary/30 bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-extrabold text-teal-900">
+          <h3 className="text-base font-extrabold text-tertiary">
             📝 Quiz Questions ({challenges.length})
           </h3>
         </div>
 
         {challenges.length === 0 ? (
-          <p className="text-sm text-teal-400 font-semibold">
+          <p className="text-sm text-tertiary font-semibold">
             No questions yet. Add them manually or generate with AI below.
           </p>
         ) : (
@@ -175,14 +175,14 @@ export default function LessonEditor({
             {challenges.map((c, idx) => (
               <div
                 key={c.id}
-                className="rounded-xl border-4 border-teal-100 bg-gradient-to-br from-white to-teal-50 p-4 shadow-lg"
+                className="rounded-xl border-4 border-tertiary/30 bg-gradient-to-br from-surface to-tertiary/10 p-4 shadow-clay-surface"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-xs font-bold uppercase tracking-wider text-teal-500">
+                    <p className="text-xs font-bold uppercase tracking-wider text-tertiary">
                       Q{idx + 1} · {c.points} {c.points === 1 ? "pt" : "pts"}
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-teal-900">
+                    <p className="mt-1 text-sm font-semibold text-tertiary">
                       {c.questionText}
                     </p>
                     <ul className="mt-2 space-y-1">
@@ -190,7 +190,7 @@ export default function LessonEditor({
                         <li
                           key={o.id}
                           className={`flex items-center gap-2 text-xs ${
-                            o.isCorrect ? "font-bold text-green-600" : "text-teal-500"
+                            o.isCorrect ? "font-bold text-success" : "text-tertiary"
                           }`}
                         >
                           <span>{o.isCorrect ? "✓" : "○"}</span>
@@ -204,7 +204,7 @@ export default function LessonEditor({
                       type="button"
                       disabled={deletePending}
                       onClick={() => handleDeleteQuestion(c.id)}
-                      className="ml-4 rounded-lg border-4 border-red-200 bg-gradient-to-br from-red-100 to-rose-100 px-3 py-1 text-xs font-semibold text-red-600 hover:from-red-200 hover:to-rose-200 disabled:opacity-50 shadow-lg transform hover:scale-105 transition-all active:scale-95"
+                      className="ml-4 rounded-lg border-4 border-error/30 bg-error/10 px-3 py-1 text-xs font-semibold text-error hover:from-error/10 hover:to-error/10 disabled:opacity-50 shadow-clay-surface transform hover:scale-105 transition-all active:scale-95"
                     >
                       Delete
                     </button>
@@ -217,13 +217,13 @@ export default function LessonEditor({
       </div>
 
       {/* ── Manual Question Form ── */}
-      <div className="rounded-2xl border-4 border-teal-200 bg-gradient-to-br from-white to-teal-50 p-6 shadow-xl">
+      <div className="rounded-[24px] border-4 border-tertiary/30 bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base font-extrabold text-teal-900">✏️ Add Question Manually</h3>
+          <h3 className="text-base font-extrabold text-tertiary">✏️ Add Question Manually</h3>
           <button
             type="button"
             onClick={() => setShowManualForm((v) => !v)}
-            className="text-xs font-semibold text-teal-600 hover:underline"
+            className="text-xs font-semibold text-tertiary hover:underline"
           >
             {showManualForm ? "Hide ▲" : "Show ▼"}
           </button>
@@ -234,20 +234,20 @@ export default function LessonEditor({
             <input type="hidden" name="lessonId" value={lessonId} />
 
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Question Text <span className="text-red-500">*</span>
+              <label className="block text-xs font-semibold text-text-muted mb-1">
+                Question Text <span className="text-error">*</span>
               </label>
               <textarea
                 name="questionText"
                 rows={2}
                 required
                 placeholder="e.g. What does a Python list allow you to do?"
-                className="w-full rounded-lg border-4 border-teal-200 px-3 py-2 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none shadow-lg bg-white"
+                className="w-full rounded-lg border-4 border-tertiary/30 px-3 py-2 text-sm focus:border-tertiary focus:ring-2 focus:ring-tertiary focus:outline-none shadow-clay-surface bg-surface"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
+              <label className="block text-xs font-semibold text-text-muted mb-1">
                 Points
               </label>
               <input
@@ -255,12 +255,12 @@ export default function LessonEditor({
                 type="number"
                 min="1"
                 defaultValue="1"
-                className="w-24 rounded-lg border-4 border-teal-200 px-3 py-2 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none shadow-lg bg-white"
+                className="w-24 rounded-lg border-4 border-tertiary/30 px-3 py-2 text-sm focus:border-tertiary focus:ring-2 focus:ring-tertiary focus:outline-none shadow-clay-surface bg-surface"
               />
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-gray-600 mb-2">
+              <p className="text-xs font-semibold text-text-muted mb-2">
                 Options (mark the correct one)
               </p>
               {[0, 1, 2, 3].map((i) => (
@@ -271,7 +271,7 @@ export default function LessonEditor({
                     value={i}
                     checked={correctIndex === i}
                     onChange={() => setCorrectIndex(i)}
-                    className="h-4 w-4 text-blue-600"
+                    className="h-4 w-4 text-tertiary"
                   />
                   <input
                     name={`optionText_${i}`}
@@ -284,7 +284,7 @@ export default function LessonEditor({
                       v[i] = e.target.value;
                       setManualOptions(v);
                     }}
-                    className="flex-1 rounded-lg border-4 border-teal-200 px-3 py-2 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none shadow-lg bg-white"
+                    className="flex-1 rounded-lg border-4 border-tertiary/30 px-3 py-2 text-sm focus:border-tertiary focus:ring-2 focus:ring-tertiary focus:outline-none shadow-clay-surface bg-surface"
                   />
                 </div>
               ))}
@@ -294,7 +294,7 @@ export default function LessonEditor({
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="rounded-lg bg-gradient-to-r from-teal-500 to-cyan-500 px-4 py-2 text-sm font-bold text-white shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                className="rounded-lg bg-tertiary px-4 py-2 text-sm font-bold text-text-primary shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
               >
                 Add Question
               </button>
@@ -304,21 +304,21 @@ export default function LessonEditor({
       </div>
 
       {/* ── AI Generation (FR9.1b) ── */}
-      <div className="rounded-2xl border-4 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6 shadow-xl">
-        <h3 className="mb-1 text-base font-extrabold text-purple-900">
+      <div className="rounded-[24px] border-4 border-tertiary/30 bg-tertiary/10 p-6 shadow-clay-surface">
+        <h3 className="mb-1 text-base font-extrabold text-tertiary">
           ✨ Generate Questions with AI
         </h3>
-        <p className="mb-4 text-xs text-purple-700">
+        <p className="mb-4 text-xs text-tertiary">
           AI will draft questions based on the lesson title and description. Review and edit them
           before saving — nothing is stored until you click "Save to Lesson".
         </p>
 
         <div className="mb-4 flex items-center gap-3">
-          <label className="text-xs font-semibold text-purple-800">Number of questions:</label>
+          <label className="text-xs font-semibold text-tertiary">Number of questions:</label>
           <select
             value={aiCount}
             onChange={(e) => setAiCount(Number(e.target.value))}
-            className="rounded-lg border-4 border-purple-200 bg-white px-3 py-1.5 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-lg"
+            className="rounded-lg border-4 border-tertiary/30 bg-surface px-3 py-1.5 text-sm focus:border-tertiary focus:ring-2 focus:ring-tertiary focus:outline-none shadow-clay-surface"
           >
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -328,20 +328,20 @@ export default function LessonEditor({
             type="button"
             disabled={aiPending}
             onClick={handleGenerateAI}
-            className="rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+            className="rounded-lg bg-tertiary px-4 py-2 text-sm font-bold text-text-primary shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
           >
             {aiPending ? "Generating…" : "Generate Questions"}
           </button>
         </div>
 
         {aiError && (
-          <div className="mb-4 rounded-lg border-4 border-red-200 bg-gradient-to-br from-red-100 to-rose-100 p-3 text-sm text-red-700 shadow-lg">
+          <div className="mb-4 rounded-lg border-4 border-error/30 bg-error/10 p-3 text-sm text-error shadow-clay-surface">
             {aiError}
           </div>
         )}
 
         {saveSuccess && (
-          <div className="mb-4 rounded-lg border-4 border-green-200 bg-gradient-to-br from-green-100 to-emerald-100 p-3 text-sm text-green-700 shadow-lg">
+          <div className="mb-4 rounded-lg border-4 border-primary/30 bg-primary/10 p-3 text-sm text-success shadow-clay-surface">
             ✅ AI-generated questions saved to lesson!
           </div>
         )}
@@ -349,13 +349,13 @@ export default function LessonEditor({
         {aiQuestions && aiQuestions.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-bold text-purple-800 uppercase tracking-wider">
+              <p className="text-xs font-bold text-tertiary uppercase tracking-wider">
                 Review & Edit (Provider: {aiProvider})
               </p>
               <button
                 type="button"
                 onClick={() => setAiQuestions(null)}
-                className="text-xs text-gray-400 hover:text-gray-600"
+                className="text-xs text-text-primary hover:text-text-muted"
               >
                 Discard ✕
               </button>
@@ -364,16 +364,16 @@ export default function LessonEditor({
             {aiQuestions.map((q, qIdx) => (
               <div
                 key={qIdx}
-                className="rounded-xl border-4 border-purple-200 bg-gradient-to-br from-white to-purple-50 p-4 shadow-lg"
+                className="rounded-xl border-4 border-tertiary/30 bg-gradient-to-br from-surface to-tertiary/10 p-4 shadow-clay-surface"
               >
-                <label className="block text-xs font-bold text-purple-500 mb-1">
+                <label className="block text-xs font-bold text-tertiary mb-1">
                   Question {qIdx + 1}
                 </label>
                 <textarea
                   value={q.questionText}
                   onChange={(e) => updateAiQuestion(qIdx, "questionText", e.target.value)}
                   rows={2}
-                  className="mb-3 w-full rounded-lg border-4 border-purple-200 px-3 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-lg bg-white"
+                  className="mb-3 w-full rounded-lg border-4 border-tertiary/30 px-3 py-2 text-sm focus:border-tertiary focus:ring-2 focus:ring-tertiary focus:outline-none shadow-clay-surface bg-surface"
                 />
 
                 <div className="space-y-2">
@@ -384,23 +384,23 @@ export default function LessonEditor({
                         name={`ai-correct-${qIdx}`}
                         checked={opt.isCorrect}
                         onChange={() => updateAiOption(qIdx, oIdx, "isCorrect", true)}
-                        className="h-4 w-4 text-blue-600"
+                        className="h-4 w-4 text-tertiary"
                         title="Mark as correct"
                       />
                       <input
                         type="text"
                         value={opt.optionText}
                         onChange={(e) => updateAiOption(qIdx, oIdx, "optionText", e.target.value)}
-                        className={`flex-1 rounded-lg border-4 px-3 py-2 text-sm focus:outline-none shadow-lg ${
+                        className={`flex-1 rounded-lg border-4 px-3 py-2 text-sm focus:outline-none shadow-clay-surface ${
                           opt.isCorrect
-                            ? "border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 font-semibold"
-                            : "border-purple-200 bg-white"
+                            ? "border-success bg-primary/10 font-semibold"
+                            : "border-tertiary/30 bg-surface"
                         }`}
                       />
                     </div>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-purple-400">
+                <p className="mt-2 text-xs text-tertiary">
                   Select the radio button to change the correct answer.
                 </p>
               </div>
@@ -410,7 +410,7 @@ export default function LessonEditor({
               <button
                 type="button"
                 onClick={() => setAiQuestions(null)}
-                className="rounded-lg border-4 border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 shadow-lg transform hover:scale-105 transition-all active:scale-95"
+                className="rounded-lg border-4 border-surface-border px-4 py-2 text-sm font-semibold text-text-muted hover:bg-surface shadow-clay-surface transform hover:scale-105 transition-all active:scale-95"
               >
                 Discard
               </button>
@@ -418,7 +418,7 @@ export default function LessonEditor({
                 type="button"
                 disabled={savePending}
                 onClick={handleSaveAiQuestions}
-                className="rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-2 text-sm font-bold text-white shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+                className="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-text-primary shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
               >
                 {savePending ? "Saving…" : "✓ Save to Lesson"}
               </button>

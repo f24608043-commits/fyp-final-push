@@ -51,7 +51,7 @@ export default async function MyEnrollmentsPage() {
   const rejected = enrollments.filter((e) => e.status === "rejected");
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
       <div className="mb-6">
         <Link
@@ -72,13 +72,13 @@ export default async function MyEnrollmentsPage() {
       {/* Active Enrollments */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <span className="material-symbols-outlined text-green-600 text-[24px]">check_circle</span>
+          <span className="material-symbols-outlined text-success text-[24px]">check_circle</span>
           <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
             Active Enrollments ({enrolled.length})
           </h2>
         </div>
         {enrolled.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+          <div className="rounded-[24px] bg-surface p-8 text-center shadow-clay-surface border-4 border-surface/50">
             <p className="font-body-md text-text-muted font-bold">No active enrollments yet.</p>
           </div>
         ) : (
@@ -86,7 +86,7 @@ export default async function MyEnrollmentsPage() {
             {enrolled.map((enrollment) => (
               <div
                 key={enrollment.id}
-                className="rounded-2xl bg-gradient-to-br from-white to-green-50 p-5 shadow-xl border-4 border-green-100"
+                className="rounded-[24px] bg-gradient-to-br from-surface to-primary/10 p-5 shadow-clay-surface border-4 border-primary/30"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4">
@@ -106,7 +106,7 @@ export default async function MyEnrollmentsPage() {
                         {enrollment.tutorProfile?.subjects?.map((subject: string, idx: number) => (
                           <span
                             key={idx}
-                            className="rounded-full bg-gradient-to-r from-teal-400 to-green-500 text-white px-2 py-1 font-label-sm font-semibold shadow-lg border-2 border-white/30"
+                            className="rounded-full bg-gradient-to-r from-tertiary to-primary text-text-primary px-2 py-1 font-label-sm font-semibold shadow-clay-surface border-2 border-surface/30"
                           >
                             {subject}
                           </span>
@@ -121,7 +121,7 @@ export default async function MyEnrollmentsPage() {
                     <EnrollmentStatusBadge status={enrollment.status as any} />
                     <Link
                       href={`/messages?userId=${enrollment.tutorId}`}
-                      className="rounded-xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 px-3 py-2 font-label-sm font-bold shadow-lg hover:from-blue-100 hover:to-cyan-100 transition-all flex items-center gap-2"
+                      className="rounded-xl border-2 border-tertiary bg-tertiary/10 text-tertiary px-3 py-2 font-label-sm font-bold shadow-clay-surface hover:from-tertiary/10 hover:to-tertiary/10 transition-all flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-[18px]">chat</span>
                       Message
@@ -137,13 +137,13 @@ export default async function MyEnrollmentsPage() {
       {/* Pending Requests */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <span className="material-symbols-outlined text-yellow-600 text-[24px]">pending</span>
+          <span className="material-symbols-outlined text-secondary text-[24px]">pending</span>
           <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
             Pending Requests ({pending.length})
           </h2>
         </div>
         {pending.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-8 text-center shadow-xl border-4 border-white/50">
+          <div className="rounded-[24px] bg-surface p-8 text-center shadow-clay-surface border-4 border-surface/50">
             <p className="font-body-md text-text-muted font-bold">No pending requests.</p>
           </div>
         ) : (
@@ -151,7 +151,7 @@ export default async function MyEnrollmentsPage() {
             {pending.map((enrollment) => (
               <div
                 key={enrollment.id}
-                className="rounded-2xl bg-gradient-to-br from-white to-yellow-50 p-5 shadow-xl border-4 border-yellow-100"
+                className="rounded-[24px] bg-gradient-to-br from-surface to-secondary/10 p-5 shadow-clay-surface border-4 border-secondary/30"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4">
@@ -193,7 +193,7 @@ export default async function MyEnrollmentsPage() {
                     >
                       <button
                         type="submit"
-                        className="rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 px-3 py-2 font-label-sm font-semibold shadow-lg hover:from-gray-100 hover:to-gray-200 transition-all"
+                        className="rounded-xl border-2 border-surface-border bg-surface text-text-muted px-3 py-2 font-label-sm font-semibold shadow-clay-surface hover:from-surface hover:to-surface transition-all"
                       >
                         Cancel Request
                       </button>
@@ -210,7 +210,7 @@ export default async function MyEnrollmentsPage() {
       {rejected.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-red-600 text-[24px]">cancel</span>
+            <span className="material-symbols-outlined text-error text-[24px]">cancel</span>
             <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">
               Rejected Requests ({rejected.length})
             </h2>
@@ -219,7 +219,7 @@ export default async function MyEnrollmentsPage() {
             {rejected.map((enrollment) => (
               <div
                 key={enrollment.id}
-                className="rounded-2xl bg-gradient-to-br from-white to-red-50 p-5 shadow-xl border-4 border-red-100 opacity-75"
+                className="rounded-[24px] bg-gradient-to-br from-surface to-error/10 p-5 shadow-clay-surface border-4 border-error/30 opacity-75"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4">

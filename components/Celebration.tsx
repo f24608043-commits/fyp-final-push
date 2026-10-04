@@ -40,8 +40,8 @@ export default function Celebration({
       "bg-secondary",
       "bg-tertiary",
       "bg-error",
-      "bg-primary-container",
-      "bg-secondary-container",
+      "bg-success",
+      "bg-secondary",
     ];
 
     requestAnimationFrame(() => {
@@ -96,7 +96,7 @@ export default function Celebration({
           {/* Mascot */}
           <div className="relative mb-6 group cursor-pointer">
             <div className="absolute -inset-4 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-full blur-2xl opacity-60 animate-pulse" />
-            <div className="relative w-44 h-44 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-105">
+            <div className="relative w-44 h-44 rounded-full bg-surface flex items-center justify-center shadow-clay-surface transition-transform duration-300 hover:scale-105">
               <div className="relative w-36 h-36 rounded-full bg-background flex items-center justify-center overflow-hidden">
                 {/* LEGO Mascot SVG */}
                 <svg
@@ -176,7 +176,7 @@ export default function Celebration({
                   />
                 </svg>
               </div>
-              <div className="absolute -top-1 -right-1 bg-secondary text-on-secondary px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+              <div className="absolute -top-1 -right-1 bg-secondary text-text-primary px-2 py-0.5 rounded-full shadow-clay-surface flex items-center gap-0.5">
                 <span className="text-lg">⭐</span>
                 <span className="text-sm font-semibold">LVL UP!</span>
               </div>
@@ -184,19 +184,19 @@ export default function Celebration({
           </div>
 
           {/* Lesson Tag */}
-          <div className="inline-flex items-center gap-2 bg-surface-container-lowest px-4 py-1 rounded-full mb-4 shadow-sm">
+          <div className="inline-flex items-center gap-2 bg-surface px-4 py-1 rounded-full mb-4 shadow-clay-surface">
             <span className="text-primary text-lg">✓</span>
-            <span className="text-sm uppercase tracking-wider text-on-surface-variant">
+            <span className="text-sm uppercase tracking-wider text-text-muted">
               {lessonTitle}
             </span>
           </div>
 
           {/* Heading */}
-          <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold tracking-tight leading-tight mb-2">
+          <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold tracking-tight leading-tight mb-2">
             Lesson Complete! 🎉
           </h1>
 
-          <p className="font-body-lg text-on-surface-variant max-w-lg mb-8">
+          <p className="font-body-lg text-text-muted max-w-lg mb-8">
             You mastered this lesson with a{" "}
             <span className="font-semibold text-primary">
               {accuracy}% accuracy
@@ -207,12 +207,12 @@ export default function Celebration({
           {/* Stats Grid */}
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-left">
             {/* XP Card */}
-            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface rounded-xl p-4 shadow-clay-surface flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
+                <span className="text-xs uppercase tracking-wider text-text-muted">
                   Experience
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-primary shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-success flex items-center justify-center text-primary shadow-clay-surface">
                   <span className="text-xl">⚡</span>
                 </div>
               </div>
@@ -220,9 +220,9 @@ export default function Celebration({
                 <div className="font-headline-xl text-headline-xl text-primary font-extrabold leading-none mb-1">
                   +{xpEarned} XP
                 </div>
-                <div className="text-sm text-on-surface-variant">
+                <div className="text-sm text-text-muted">
                   Total:{" "}
-                  <span className="font-semibold text-on-surface">
+                  <span className="font-semibold text-text-primary">
                     {totalXP} XP
                   </span>
                 </div>
@@ -230,12 +230,12 @@ export default function Celebration({
             </div>
 
             {/* Lessons Card */}
-            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface rounded-xl p-4 shadow-clay-surface flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
+                <span className="text-xs uppercase tracking-wider text-text-muted">
                   Curriculum
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-text-primary shadow-clay-surface">
                   <span className="text-xl">📚</span>
                 </div>
               </div>
@@ -243,9 +243,9 @@ export default function Celebration({
                 <div className="font-headline-xl text-headline-xl text-primary font-extrabold leading-none mb-1">
                   +1 Lesson
                 </div>
-                <div className="text-sm text-on-surface-variant">
+                <div className="text-sm text-text-muted">
                   Mastered (
-                  <span className="font-semibold text-on-surface">
+                  <span className="font-semibold text-text-primary">
                     {lessonsCompleted} Total
                   </span>
                   )
@@ -254,12 +254,12 @@ export default function Celebration({
             </div>
 
             {/* Accuracy Card */}
-            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface rounded-xl p-4 shadow-clay-surface flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
+                <span className="text-xs uppercase tracking-wider text-text-muted">
                   Accuracy
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-text-primary shadow-clay-surface">
                   <span className="text-xl">🎯</span>
                 </div>
               </div>
@@ -267,19 +267,19 @@ export default function Celebration({
                 <div className="font-headline-xl text-headline-xl text-secondary font-extrabold leading-none mb-1">
                   {accuracy}%
                 </div>
-                <div className="text-sm text-on-surface-variant">
+                <div className="text-sm text-text-muted">
                   Perfect Score!
                 </div>
               </div>
             </div>
 
             {/* Streak Card */}
-            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-md flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
+            <div className="bg-surface rounded-xl p-4 shadow-clay-surface flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-wider text-on-surface-variant">
+                <span className="text-xs uppercase tracking-wider text-text-muted">
                   Daily Streak
                 </span>
-                <div className="w-9 h-9 rounded-lg bg-error flex items-center justify-center text-on-error shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-error flex items-center justify-center text-text-primary shadow-clay-surface">
                   <span className="text-xl">🔥</span>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function Celebration({
                 <div className="font-headline-xl text-headline-xl text-error font-extrabold leading-none mb-1">
                   {streakDays} Days
                 </div>
-                <div className="text-sm text-on-surface-variant">
+                <div className="text-sm text-text-muted">
                   Streak Maintained!
                 </div>
               </div>
@@ -296,29 +296,29 @@ export default function Celebration({
 
           {/* Badge Card */}
           {badge && (
-            <div className="w-full bg-gradient-to-r from-secondary to-secondary-container rounded-xl p-6 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-left">
+            <div className="w-full bg-secondary rounded-xl p-6 shadow-clay-surface flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-left">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-surface-container-lowest flex items-center justify-center text-secondary shadow-md shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-clay-surface shrink-0">
                   <span className="text-4xl">🏆</span>
                 </div>
                 <div className="flex flex-col">
                   <div className="inline-flex items-center gap-2 mb-1">
-                    <span className="text-lg font-semibold text-on-secondary">
+                    <span className="text-lg font-semibold text-text-primary">
                       {badge.name}
                     </span>
                     <span className="text-xl">🏅</span>
-                    <span className="bg-surface-container-lowest text-secondary text-xs px-2 py-0.5 rounded-full uppercase font-semibold">
+                    <span className="bg-surface text-secondary text-xs px-2 py-0.5 rounded-full uppercase font-semibold">
                       Unlocked
                     </span>
                   </div>
-                  <p className="text-sm text-on-secondary">
+                  <p className="text-sm text-text-primary">
                     {badge.description}
                   </p>
                 </div>
               </div>
               <div className="shrink-0">
                 <button
-                  className="px-4 py-2 rounded-lg bg-surface-container-lowest text-secondary font-semibold shadow-sm hover:bg-surface-container transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-surface text-secondary font-semibold shadow-clay-surface hover:bg-surface-border transition-all cursor-pointer"
                   type="button"
                 >
                   View Trophy
@@ -331,7 +331,7 @@ export default function Celebration({
           <div className="w-full max-w-md flex flex-col items-center gap-3">
             <button
               onClick={onNextLesson}
-              className="w-full py-4 px-6 rounded-full bg-primary text-on-primary font-label-lg font-bold uppercase tracking-wider shadow-lg hover:bg-primary-container transition-all flex items-center justify-center gap-2 cursor-pointer group active:translate-y-[2px]"
+              className="w-full py-4 px-6 rounded-full bg-primary text-text-primary font-label-lg font-bold uppercase tracking-wider shadow-clay-surface hover:bg-success transition-all flex items-center justify-center gap-2 cursor-pointer group active:translate-y-[2px]"
               type="button"
             >
               <span>Continue to Next Lesson</span>
@@ -341,15 +341,15 @@ export default function Celebration({
             </button>
             <button
               onClick={onReview}
-              className="w-full py-3 px-4 rounded-full bg-surface-container-lowest text-on-surface font-label-md font-semibold shadow-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-4 rounded-full bg-surface text-text-primary font-label-md font-semibold shadow-clay-surface hover:bg-surface-border transition-all flex items-center justify-center gap-2 cursor-pointer"
               type="button"
             >
-              <span className="text-lg text-on-surface-variant">📝</span>
+              <span className="text-lg text-text-muted">📝</span>
               <span>Review Lesson Notes</span>
             </button>
             <button
               onClick={onReturnToPath}
-              className="mt-2 inline-flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+              className="mt-2 inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors cursor-pointer"
             >
               <span className="text-lg">←</span>
               <span>Return to Learning Path</span>

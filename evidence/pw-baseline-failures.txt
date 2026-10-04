@@ -1,0 +1,18 @@
+[chromium] › tests\comprehensive-learner.spec.ts:6:5 › COMPREHENSIVE LEARNER E2E - Full workflow 
+[chromium] › tests\comprehensive-verification.spec.ts:5:5 › COMPREHENSIVE - Verify all admin pages exist and load 
+[chromium] › tests\live-session-booking.spec.ts:13:7 › Live Session Booking - Database Verification › learner books real session and session_requests row is created 
+[chromium] › tests\mascot-evidence.spec.ts:30:7 › Mascot Evidence Screenshots › screenshot chat widget open 
+[chromium] › tests\mascot-evidence.spec.ts:41:7 › Mascot Evidence Screenshots › screenshot chat widget with message 
+[chromium] › tests\mascot-evidence.spec.ts:70:7 › Mascot Evidence Screenshots › screenshot new poses 
+[chromium] › tests\measure-login-time.spec.ts:4:7 › Login Time Measurement › measure login time 
+[chromium] › tests\realtime-messaging.spec.ts:65:7 › Realtime Messaging › realtime subscription is active on message thread 
+[chromium] › tests\screenshot-pages.spec.ts:14:9 › Page Screenshots › screenshot library page - desktop 
+[chromium] › tests\test-button-feedback.spec.ts:3:5 › Button instant feedback - Add Friend shows loading state 
+[chromium] › tests\thorough-all-features.spec.ts:3:5 › THOROUGH TEST - All Fixed Features ────
+[chromium] › tests\tutor-actions.spec.ts:20:7 › Tutor Actions - Profile and Sessions › tutor can access edit availability button 
+[chromium] › tests\tutor-actions.spec.ts:24:7 › Tutor Actions - Profile and Sessions › tutor dashboard shows session history 
+[chromium] › tests\tutor-authenticated.spec.ts:14:7 › Tutor Authenticated Tests › tutor can access dashboard 
+[chromium] › tests\tutor-profile.spec.ts:4:7 › Tutor Profile and Availability › tutor dashboard page loads 
+[chromium] › tests\tutor-session.spec.ts:4:7 › Tutor Session Booking › tutoring page loads ───
+[chromium] › tests\verify-all-roles.spec.ts:3:5 › VERIFY ADMIN - Login and access admin dashboard 
+[chromium] › tests\verify-online-class.spec.ts:3:5 › VERIFY ONLINE CLASS - Check Jitsi video call implementation 

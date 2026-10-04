@@ -85,51 +85,51 @@ export default async function AdminTutoringPage() {
   const cancelledSessions = allSessions.filter((s: any) => s.status === "cancelled").length;
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-purple-50 to-pink-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-6">Admin Tutoring Dashboard 🎓</h1>
 
       {/* Session Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 p-4 shadow-xl border-4 border-white/30 text-white">
-          <h3 className="font-label-md text-white/80 font-semibold">Total Sessions</h3>
-          <p className="font-headline-xl text-headline-xl text-white font-extrabold">{totalSessions}</p>
+        <div className="rounded-[24px] bg-tertiary p-4 shadow-clay-surface border-4 border-surface/30 text-text-primary">
+          <h3 className="font-label-md text-text-primary font-semibold">Total Sessions</h3>
+          <p className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{totalSessions}</p>
         </div>
-        <div className="rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 p-4 shadow-xl border-4 border-white/30 text-white">
-          <h3 className="font-label-md text-white/80 font-semibold">Confirmed</h3>
-          <p className="font-headline-xl text-headline-xl text-white font-extrabold">{confirmedSessions}</p>
+        <div className="rounded-[24px] bg-primary p-4 shadow-clay-surface border-4 border-surface/30 text-text-primary">
+          <h3 className="font-label-md text-text-primary font-semibold">Confirmed</h3>
+          <p className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{confirmedSessions}</p>
         </div>
-        <div className="rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 p-4 shadow-xl border-4 border-white/30 text-white">
-          <h3 className="font-label-md text-white/80 font-semibold">Completed</h3>
-          <p className="font-headline-xl text-headline-xl text-white font-extrabold">{completedSessions}</p>
+        <div className="rounded-[24px] bg-tertiary p-4 shadow-clay-surface border-4 border-surface/30 text-text-primary">
+          <h3 className="font-label-md text-text-primary font-semibold">Completed</h3>
+          <p className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{completedSessions}</p>
         </div>
-        <div className="rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 p-4 shadow-xl border-4 border-white/30 text-white">
-          <h3 className="font-label-md text-white/80 font-semibold">Cancelled</h3>
-          <p className="font-headline-xl text-headline-xl text-white font-extrabold">{cancelledSessions}</p>
+        <div className="rounded-[24px] bg-error p-4 shadow-clay-surface border-4 border-surface/30 text-text-primary">
+          <h3 className="font-label-md text-text-primary font-semibold">Cancelled</h3>
+          <p className="font-headline-xl text-headline-xl text-text-primary font-extrabold">{cancelledSessions}</p>
         </div>
       </div>
 
       {/* Tutor Management */}
       <div className="mb-8">
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Tutor Management ({allTutors.length})</h2>
-        <div className="rounded-2xl bg-gradient-to-br from-white to-purple-50 shadow-xl border-4 border-purple-100 overflow-hidden">
+        <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 shadow-clay-surface border-4 border-tertiary/30 overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-purple-500 to-pink-500 border-b-4 border-purple-200">
+            <thead className="bg-tertiary border-b-4 border-tertiary/30">
               <tr>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Tutor</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Subjects</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Rate</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Rating</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Sessions</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Status</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Actions</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Tutor</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Subjects</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Rate</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Rating</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Sessions</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Status</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y-4 divide-purple-100">
+            <tbody className="divide-y-4 divide-tertiary/30">
               {allTutors.map((tutor: any) => (
-                <tr key={tutor.id} className="hover:bg-purple-50 transition-colors">
+                <tr key={tutor.id} className="hover:bg-tertiary/10 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-label-md font-semibold shadow-lg border-2 border-white/30">
+                      <div className="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-label-md font-semibold shadow-clay-surface border-2 border-surface/30">
                         {tutor.displayName?.[0] || "?"}
                       </div>
                       <span className="font-label-md font-semibold text-text-primary">{tutor.displayName || "Unknown"}</span>
@@ -138,7 +138,7 @@ export default async function AdminTutoringPage() {
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {tutor.subjects?.slice(0, 2).map((subject: string, idx: number) => (
-                        <span key={idx} className="px-2 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded font-body-sm font-semibold shadow-lg border-2 border-white/30">
+                        <span key={idx} className="px-2 py-1 bg-tertiary text-text-primary rounded font-body-sm font-semibold shadow-clay-surface border-2 border-surface/30">
                           {subject}
                         </span>
                       ))}
@@ -158,7 +158,7 @@ export default async function AdminTutoringPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded font-body-sm font-semibold border-2 ${
-                      tutor.isActive ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" : "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30"
+                      tutor.isActive ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30" : "bg-error text-text-primary border-surface/30"
                     }`}>
                       {tutor.isActive ? "Active" : "Inactive"}
                     </span>
@@ -176,7 +176,7 @@ export default async function AdminTutoringPage() {
                         throw error;
                       }
                     }} suppressHydrationWarning={true}>
-                      <button className="px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg font-body-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                      <button className="px-3 py-1 bg-tertiary text-text-primary rounded-lg font-body-sm font-semibold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
                         {tutor.isActive ? "Deactivate" : "Activate"}
                       </button>
                     </form>
@@ -191,21 +191,21 @@ export default async function AdminTutoringPage() {
       {/* Session Oversight */}
       <div>
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Recent Sessions (Last 50)</h2>
-        <div className="rounded-2xl bg-gradient-to-br from-white to-purple-50 shadow-xl border-4 border-purple-100 overflow-hidden">
+        <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 shadow-clay-surface border-4 border-tertiary/30 overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-indigo-500 to-purple-500 border-b-4 border-indigo-200">
+            <thead className="bg-tertiary border-b-4 border-tertiary/30">
               <tr>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Session ID</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Tutor</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Scheduled</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Duration</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Status</th>
-                <th className="px-4 py-3 text-left font-label-md font-semibold text-white">Actions</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Session ID</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Tutor</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Scheduled</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Duration</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Status</th>
+                <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y-4 divide-indigo-100">
+            <tbody className="divide-y-4 divide-tertiary/30">
               {allSessions.map((session: any) => (
-                <tr key={session.id} className="hover:bg-indigo-50 transition-colors">
+                <tr key={session.id} className="hover:bg-tertiary/10 transition-colors">
                   <td className="px-4 py-3 font-body-sm font-mono text-text-primary">
                     {session.id.slice(0, 8)}...
                   </td>
@@ -220,10 +220,10 @@ export default async function AdminTutoringPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded font-body-sm font-semibold border-2 ${
-                      session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                      session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                      session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
-                      "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                      session.status === "confirmed" ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30" :
+                      session.status === "completed" ? "bg-tertiary text-text-primary border-surface/30" :
+                      session.status === "cancelled" ? "bg-error text-text-primary border-surface/30" :
+                      "bg-surface-border text-text-muted border-surface-border"
                     }`}>
                       {session.status}
                     </span>
@@ -239,7 +239,7 @@ export default async function AdminTutoringPage() {
                           throw error;
                         }
                       }} suppressHydrationWarning={true}>
-                        <button className="px-3 py-1 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-lg font-body-sm font-semibold shadow-lg border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                        <button className="px-3 py-1 bg-error text-text-primary rounded-lg font-body-sm font-semibold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
                           Cancel
                         </button>
                       </form>

@@ -280,19 +280,19 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading messages...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-tertiary mx-auto mb-4"></div>
+          <p className="text-text-muted">Loading messages...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-br from-background via-blue-50 to-purple-50">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shrink-0">
+      <div className="bg-surface border-b border-surface-border px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <Link href="/messages" className="text-gray-500 hover:text-gray-700">
+          <Link href="/messages" className="text-text-muted hover:text-text-muted">
             <span className="material-symbols-outlined text-[24px]">arrow_back</span>
           </Link>
           {otherParticipant ? (
@@ -303,15 +303,15 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
                   alt={otherParticipant.displayName || "User"}
                   width={40}
                   height={40}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-surface-border"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-lg border-2 border-white/30">
+                <div className="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-lg border-2 border-surface/30">
                   {otherParticipant.displayName?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
               <div>
-                <h1 className="font-headline-md text-headline-md text-on-surface font-extrabold">
+                <h1 className="font-headline-md text-headline-md text-text-primary font-extrabold">
                   {otherParticipant.displayName || "Unknown User"}
                 </h1>
                 <p className="font-label-sm text-text-muted">
@@ -321,7 +321,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
             </div>
           ) : (
             <div>
-              <h1 className="font-headline-md text-headline-md text-on-surface font-extrabold">
+              <h1 className="font-headline-md text-headline-md text-text-primary font-extrabold">
                 {conversationType === "group" ? "Group Chat" : "Direct Message"}
               </h1>
             </div>
@@ -333,7 +333,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
               href={`https://meet.jit.si/${jitsiRoomId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 font-label-sm font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               <span className="material-symbols-outlined text-[18px]">videocam</span>
               Join Class
@@ -342,7 +342,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
           {conversationType === "group" && (
             <button
               onClick={handleLeaveGroup}
-              className="text-red-500 hover:text-red-700 font-label-sm font-semibold"
+              className="text-error hover:text-error font-label-sm font-semibold"
             >
               Leave
             </button>
@@ -353,7 +353,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400">
+          <div className="flex flex-col items-center justify-center h-full text-text-primary">
             <p className="font-body-md">No messages yet. Start the conversation!</p>
           </div>
         ) : (
@@ -363,10 +363,10 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
                 key={msg.message.id}
                 className={`flex ${msg.sender.id === currentUser?.id ? "justify-end" : "justify-start"}`}
               >
-                <div className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                <div className={`max-w-[70%] rounded-[24px] px-4 py-3 ${
                   msg.sender.id === currentUser?.id
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white"
-                    : "bg-white border-2 border-gray-200 shadow-sm"
+                    ? "bg-tertiary text-text-primary"
+                    : "bg-surface border-2 border-surface-border shadow-clay-surface"
                 }`}>
                   {msg.sender.id !== currentUser?.id && (
                     <p className="font-label-sm font-semibold mb-1">
@@ -386,7 +386,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-200 px-6 py-4 shrink-0">
+      <div className="bg-surface border-t border-surface-border px-6 py-4 shrink-0">
         <div className="max-w-3xl mx-auto flex gap-3">
           <input
             type="text"
@@ -394,14 +394,14 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-3 rounded-full border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+            className="flex-1 px-4 py-3 rounded-full border-2 border-surface-border focus:border-tertiary focus:outline-none"
             disabled={isSending}
             maxLength={2000}
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}
-            className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-6 py-3 rounded-full bg-tertiary text-text-primary font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <span className="material-symbols-outlined text-[20px]">send</span>
           </button>

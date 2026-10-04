@@ -75,20 +75,20 @@ export default function EditAvailabilityPage() {
   }
 
   return (
-    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-blue-50 to-purple-50 min-h-screen">
+    <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-6">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-8">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-6">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <Link href="/tutoring/dashboard" className="text-gray-500 hover:text-gray-700">
+            <Link href="/tutoring/dashboard" className="text-text-muted hover:text-text-muted">
               <span className="material-symbols-outlined text-[24px]">arrow_back</span>
             </Link>
-            <h1 className="font-headline-xl text-headline-xl text-on-surface font-extrabold">
+            <h1 className="font-headline-xl text-headline-xl text-text-primary font-extrabold">
               Edit Availability
             </h1>
           </div>
-          <p className="font-body-md text-on-surface-variant">
+          <p className="font-body-md text-text-muted">
             Set your weekly availability for tutoring sessions. Learners can book sessions during these time slots.
           </p>
         </div>
@@ -98,26 +98,26 @@ export default function EditAvailabilityPage() {
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-6">
           {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, idx) => (
-            <div key={day} className="rounded-2xl bg-white p-6 shadow-xl border-4 border-blue-100">
+            <div key={day} className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-headline-md text-headline-md text-on-surface font-extrabold">
+                <h3 className="font-headline-md text-headline-md text-text-primary font-extrabold">
                   {day}
                 </h3>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     name={`day_${idx}_enabled`}
-                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="w-5 h-5 rounded border-surface-border text-tertiary focus:ring-tertiary"
                     defaultChecked={availabilityByDay[idx]?.length > 0}
                     onChange={(e) => {
-                      const container = e.target.closest('.rounded-2xl');
+                      const container = e.target.closest('.rounded-[24px]');
                       const slotsContainer = container?.querySelector('.slots-container');
                       if (slotsContainer) {
                         (slotsContainer as HTMLElement).style.display = e.target.checked ? 'block' : 'none';
                       }
                     }}
                   />
-                  <span className="font-label-sm font-semibold text-on-surface">Available</span>
+                  <span className="font-label-sm font-semibold text-text-primary">Available</span>
                 </label>
               </div>
 
@@ -125,25 +125,25 @@ export default function EditAvailabilityPage() {
                 {availabilityByDay[idx]?.map((slot: any, slotIdx: number) => (
                   <div key={slot.id} className="flex gap-3 mb-3">
                     <div className="flex-1">
-                      <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                      <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                         Start Time
                       </label>
                       <input
                         type="time"
                         name={`day_${idx}_slot_${slotIdx}_start`}
                         defaultValue={slot.startTime}
-                        className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                        className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                      <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                         End Time
                       </label>
                       <input
                         type="time"
                         name={`day_${idx}_slot_${slotIdx}_end`}
                         defaultValue={slot.endTime}
-                        className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                        className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                       />
                     </div>
                   </div>
@@ -152,25 +152,25 @@ export default function EditAvailabilityPage() {
                 {availabilityByDay[idx]?.length === 0 && (
                   <div className="flex gap-3 mb-3">
                     <div className="flex-1">
-                      <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                      <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                         Start Time
                       </label>
                       <input
                         type="time"
                         name={`day_${idx}_slot_0_start`}
                         defaultValue="09:00"
-                        className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                        className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block font-label-sm font-semibold mb-1 text-on-surface">
+                      <label className="block font-label-sm font-semibold mb-1 text-text-primary">
                         End Time
                       </label>
                       <input
                         type="time"
                         name={`day_${idx}_slot_0_end`}
                         defaultValue="17:00"
-                        className="w-full rounded-xl border-2 border-gray-200 p-3 focus:border-blue-400 focus:outline-none"
+                        className="w-full rounded-xl border-2 border-surface-border p-3 focus:border-tertiary focus:outline-none"
                       />
                     </div>
                   </div>
@@ -182,14 +182,14 @@ export default function EditAvailabilityPage() {
           <div className="flex gap-3 pt-4">
             <Link
               href="/tutoring/dashboard"
-              className="flex-1 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-600 px-4 py-3 font-label-md font-semibold hover:bg-gray-100 transition-all text-center"
+              className="flex-1 rounded-xl border-2 border-surface-border surface text-text-muted px-4 py-3 font-label-md font-semibold hover:bg-surface transition-all text-center"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-tertiary text-text-primary px-4 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? "Saving..." : "Save Availability"}
             </button>

@@ -45,11 +45,11 @@ export default async function BrowseClassesPage() {
   const enrolledIds = new Set(enrolledGroupIds.map(g => g.groupId));
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Link
@@ -62,7 +62,7 @@ export default async function BrowseClassesPage() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">🔍 Browse Classes</span>
+                <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">🔍 Browse Classes</span>
               </div>
               <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
                 Discover Classes
@@ -77,15 +77,15 @@ export default async function BrowseClassesPage() {
 
       {/* Classes Grid */}
       {availableGroups.length === 0 ? (
-        <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-12 text-center shadow-xl border-4 border-white/50">
-          <span className="material-symbols-outlined text-gray-400 text-[64px]">school</span>
+        <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface border-4 border-surface/50">
+          <span className="material-symbols-outlined text-text-primary text-[64px]">school</span>
           <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold mt-4 mb-2">No Public Classes Available</h2>
           <p className="font-body-md text-text-muted mb-6">
             Check back later or ask your tutor to make their class public
           </p>
           <Link
             href="/classes/join"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">login</span>
             Join with Code
@@ -98,19 +98,23 @@ export default async function BrowseClassesPage() {
             return (
               <div
                 key={group.id}
-                className="rounded-2xl bg-surface p-6 shadow-clay-surface border border-surface-border"
+                className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border"
               >
                 {group.coverImageUrl ? (
-                  <div className="w-full h-32 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-4 overflow-hidden border-2 border-surface-border">
+                  <div className="w-full h-32 rounded-xl bg-tertiary/10 mb-4 overflow-hidden border-2 border-surface-border">
                     <img
                       src={group.coverImageUrl}
                       alt={group.name}
+                      loading="lazy"
+                      decoding="async"
+                      width={640}
+                      height={256}
                       className="w-full h-full object-cover"
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-32 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-4 flex items-center justify-center border-2 border-surface-border">
-                    <span className="material-symbols-outlined text-blue-400 text-[48px]">school</span>
+                  <div className="w-full h-32 rounded-xl bg-tertiary/10 mb-4 flex items-center justify-center border-2 border-surface-border">
+                    <span className="material-symbols-outlined text-tertiary text-[48px]">school</span>
                   </div>
                 )}
                 <h3 className="font-headline-md text-headline-md text-text-primary font-bold mb-2">
@@ -120,7 +124,7 @@ export default async function BrowseClassesPage() {
                   <p className="font-body-sm text-text-muted mb-2">{group.subject}</p>
                 )}
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30">
+                  <div className="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-sm border-2 border-surface/30">
                     {group.tutorName?.[0] || "?"}
                   </div>
                   <p className="font-body-sm text-text-muted">
@@ -135,7 +139,7 @@ export default async function BrowseClassesPage() {
                 {isEnrolled ? (
                   <Link
                     href={`/classes/${group.id}`}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-surface-container border-2 border-surface-border text-text-primary px-4 py-2 font-label-md font-semibold"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-surface-border border-2 border-surface-border text-text-primary px-4 py-2 font-label-md font-semibold"
                   >
                     <span className="material-symbols-outlined text-[18px]">check</span>
                     Enrolled
@@ -145,7 +149,7 @@ export default async function BrowseClassesPage() {
                     <input type="hidden" name="groupId" value={group.id} />
                     <button
                       type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
                     >
                       <span className="material-symbols-outlined text-[18px]">add</span>
                       Join Class

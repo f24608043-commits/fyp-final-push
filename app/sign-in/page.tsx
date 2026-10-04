@@ -8,10 +8,10 @@ export default function SignInPage({
 }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md rounded-2xl bg-surface p-8 shadow-clay-surface border border-surface-border">
+      <div className="w-full max-w-md rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border">
         {/* Logo & Mascot */}
         <div className="mb-6 flex flex-col items-center">
-          <div className="relative w-20 h-20 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden shadow-clay-surface mb-4">
+          <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mb-4">
             <Mascot pose="idle" size={64} />
           </div>
           <div className="flex flex-col items-center">
@@ -35,7 +35,7 @@ export default function SignInPage({
               name="email"
               required
               placeholder="you@example.com"
-              className="mt-1 block w-full rounded-xl border border-surface-border bg-surface-container px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+              className="mt-1 block w-full rounded-xl border border-surface-border bg-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
 
@@ -46,13 +46,13 @@ export default function SignInPage({
               name="password"
               required
               placeholder="••••••••"
-              className="mt-1 block w-full rounded-xl border border-surface-border bg-surface-container px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+              className="mt-1 block w-full rounded-xl border border-surface-border bg-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-full bg-primary text-on-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 transition-all active:translate-y-[2px]"
+            className="w-full rounded-full bg-primary text-text-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 transition-all active:translate-y-[2px]"
           >
             Sign In
           </button>

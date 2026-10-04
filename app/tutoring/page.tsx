@@ -72,19 +72,19 @@ export default async function TutoringPage() {
   );
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header with Mascot - Stitch Frame Style */}
-      <div className="relative w-full bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 rounded-3xl p-1 shadow-2xl overflow-hidden mb-8">
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className="relative w-full bg-tertiary rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8">
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left: Header info */}
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30">👨‍🏫 Tutoring</span>
+              <span className="px-4 py-1 rounded-full bg-tertiary text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30">👨‍🏫 Tutoring</span>
               <span className="text-text-muted text-label-sm">•</span>
-              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-teal-500 to-green-500 text-white font-label-sm text-label-sm font-bold shadow-lg border-2 border-white/30">Expert Help</span>
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-tertiary to-primary text-text-primary font-label-sm text-label-sm font-bold shadow-clay-surface border-2 border-surface/30">Expert Help</span>
             </div>
             <h1 className="font-headline-xl text-headline-xl text-text-primary tracking-tight leading-none">
               Tutoring Hub 🎓
@@ -96,10 +96,10 @@ export default async function TutoringPage() {
 
           {/* Right: Mascot */}
           <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-4 shrink-0">
-            <div className="relative max-w-xs bg-gradient-to-br from-blue-100 to-cyan-100 p-4 rounded-2xl shadow-xl border-4 border-white/50 order-2 sm:order-1">
+            <div className="relative max-w-xs bg-tertiary/10 p-4 rounded-[24px] shadow-clay-surface border-4 border-surface/50 order-2 sm:order-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-cyan-600 text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-cyan-700 font-bold">Learn Together</span>
+                <span className="material-symbols-outlined text-tertiary text-[18px]" style={{ fontVariationSettings: 'FILL 1' }}>school</span>
+                <span className="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-bold">Learn Together</span>
               </div>
               <p className="font-headline-md text-label-md text-text-primary font-bold leading-snug">
                 "Get personalized help from expert tutors to accelerate your learning!"
@@ -115,31 +115,31 @@ export default async function TutoringPage() {
 
       {/* Pending Requests (for tutors) */}
       {pendingRequests.length > 0 && (
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-yellow-100 to-orange-100 p-8 shadow-xl border-4 border-yellow-200">
+        <div className="mb-8 rounded-[24px] bg-secondary/10 p-8 shadow-clay-surface border-4 border-secondary/30">
           <div className="flex items-center gap-2 mb-6">
-            <span className="material-symbols-outlined text-on-secondary-container text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
-            <h2 className="font-headline-lg text-headline-lg text-on-secondary-container font-extrabold">
+            <span className="material-symbols-outlined text-text-primary text-[24px]" style={{ fontVariationSettings: 'FILL 1' }}>notifications</span>
+            <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold">
               Pending Session Requests ({pendingRequests.length})
             </h2>
           </div>
           <div className="space-y-4">
             {pendingRequests.map((request: any) => (
-              <div key={request.id} className="rounded-2xl bg-white p-6 shadow-lg border-4 border-yellow-100">
+              <div key={request.id} className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-secondary/30">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white font-bold text-lg shadow-xl border-4 border-white/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-text-primary font-bold text-lg shadow-clay-surface border-4 border-surface/30">
                     {request.learner.displayName?.[0] || "?"}
                   </div>
                   <div>
-                    <p className="font-label-md text-on-surface font-semibold">
+                    <p className="font-label-md text-text-primary font-semibold">
                       {request.learner.displayName || "Unknown"}
                     </p>
-                    <p className="font-body-sm text-on-surface-variant">
+                    <p className="font-body-sm text-text-muted">
                       Requested {new Date(request.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 {request.message && (
-                  <p className="font-body-sm text-on-surface-variant mb-3 italic">
+                  <p className="font-body-sm text-text-muted mb-3 italic">
                     "{request.message}"
                   </p>
                 )}
@@ -149,7 +149,7 @@ export default async function TutoringPage() {
                     const { acceptSessionRequest } = await import("./actions");
                     await acceptSessionRequest(request.id, 0);
                   }}>
-                    <button className="rounded-full bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95">
+                    <button className="rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
                       Accept
                     </button>
                   </form>
@@ -158,7 +158,7 @@ export default async function TutoringPage() {
                     const { declineSessionRequest } = await import("./actions");
                     await declineSessionRequest(request.id);
                   }}>
-                    <button className="rounded-xl border-4 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 px-4 py-2 font-label-md font-semibold hover:from-gray-200 hover:to-gray-300 transition-all shadow-lg">
+                    <button className="rounded-xl border-4 border-surface-border bg-surface text-text-muted px-4 py-2 font-label-md font-semibold hover:from-surface hover:to-surface-border transition-all shadow-clay-surface">
                       Decline
                     </button>
                   </form>
@@ -174,7 +174,7 @@ export default async function TutoringPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[24px]">event</span>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">My Sessions</h2>
+            <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold">My Sessions</h2>
           </div>
           <Link
             href="/tutoring/my-enrollments"
@@ -185,8 +185,8 @@ export default async function TutoringPage() {
           </Link>
         </div>
         {mySessions.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+          <div className="rounded-[24px] bg-surface p-10 text-center shadow-clay-surface border-4 border-surface/50">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No sessions yet. Find a tutor to get started!</p>
@@ -198,20 +198,20 @@ export default async function TutoringPage() {
               const otherUserName = session.tutorId === user.id ? "Learner" : "Tutor";
               
               return (
-                <div key={session.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100">
+                <div key={session.id} className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface border-4 border-tertiary/30">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="font-label-md text-on-surface font-semibold">
+                      <p className="font-label-md text-text-primary font-semibold">
                         {new Date(session.scheduledAt).toLocaleString()}
                       </p>
-                      <p className="font-body-sm text-on-surface-variant mt-1">
+                      <p className="font-body-sm text-text-muted mt-1">
                         Duration: {session.durationMins} minutes
                       </p>
                       <span className={`inline-block mt-2 rounded-full px-3 py-1 font-label-sm font-semibold border-2 ${
-                        session.status === "confirmed" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white border-white/30" :
-                        session.status === "completed" ? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white border-white/30" :
-                        session.status === "cancelled" ? "bg-gradient-to-r from-red-400 to-rose-500 text-white border-white/30" :
-                        "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 border-gray-300"
+                        session.status === "confirmed" ? "bg-gradient-to-r from-success to-primary text-text-primary border-surface/30" :
+                        session.status === "completed" ? "bg-tertiary text-text-primary border-surface/30" :
+                        session.status === "cancelled" ? "bg-error text-text-primary border-surface/30" :
+                        "bg-surface-border text-text-muted border-surface-border"
                       }`}>
                         {session.status}
                       </span>
@@ -222,7 +222,7 @@ export default async function TutoringPage() {
                           href={`https://meet.jit.si/${session.jitsiRoomId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 font-label-md font-bold shadow-xl border-4 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+                          className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-tertiary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
                         >
                           <span className="material-symbols-outlined text-[20px]">videocam</span>
                           Join Session
@@ -246,11 +246,11 @@ export default async function TutoringPage() {
       <div>
         <div className="flex items-center gap-2 mb-6">
           <span className="material-symbols-outlined text-primary text-[24px]">people</span>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface font-extrabold">Find a Tutor</h2>
+          <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold">Find a Tutor</h2>
         </div>
         {tutors.length === 0 ? (
-          <div className="rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-10 text-center shadow-xl border-4 border-white/50">
-            <div className="relative w-20 h-20 rounded-xl bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center overflow-hidden shadow-xl mx-auto mb-4 border-4 border-white/30">
+          <div className="rounded-[24px] bg-surface p-10 text-center shadow-clay-surface border-4 border-surface/50">
+            <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
               <Mascot pose="empty" size={64} />
             </div>
             <p className="font-body-md text-text-muted font-bold">No tutors available yet.</p>
@@ -258,28 +258,28 @@ export default async function TutoringPage() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {tutors.map((tutor: any) => (
-              <div key={tutor.id} className="rounded-2xl bg-gradient-to-br from-white to-blue-50 p-6 shadow-xl border-4 border-blue-100 hover:shadow-2xl hover:border-blue-200 transition-all">
+              <div key={tutor.id} className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 p-6 shadow-clay-surface border-4 border-tertiary/30 hover:shadow-clay-surface hover:border-tertiary/30 transition-all">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-bold text-xl shadow-xl border-4 border-white/30">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-tertiary text-text-primary font-bold text-xl shadow-clay-surface border-4 border-surface/30">
                     {tutor.displayName?.[0] || "?"}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-label-md text-on-surface font-semibold truncate">
+                    <p className="font-label-md text-text-primary font-semibold truncate">
                       {tutor.displayName || "Unknown"}
                     </p>
                     <div className="flex items-center gap-1 font-body-sm text-text-muted">
-                      <span className="material-symbols-outlined text-yellow-500 text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
-                      <span className="font-bold text-yellow-600">{tutor.rating}/5</span>
-                      <span className="font-bold text-gray-500">({tutor.totalSessions} sessions)</span>
+                      <span className="material-symbols-outlined text-secondary text-[16px]" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
+                      <span className="font-bold text-secondary">{tutor.rating}/5</span>
+                      <span className="font-bold text-text-muted">({tutor.totalSessions} sessions)</span>
                     </div>
                   </div>
                 </div>
-                <p className="font-body-md text-on-surface-variant mb-4 line-clamp-2">
+                <p className="font-body-md text-text-muted mb-4 line-clamp-2">
                   {tutor.bio || "No bio available"}
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {tutor.subjects?.map((subject: string, idx: number) => (
-                    <span key={idx} className="rounded-full bg-gradient-to-r from-teal-400 to-green-500 text-white px-2 py-1 font-label-sm font-semibold shadow-lg border-2 border-white/30">
+                    <span key={idx} className="rounded-full bg-gradient-to-r from-tertiary to-primary text-text-primary px-2 py-1 font-label-sm font-semibold shadow-clay-surface border-2 border-surface/30">
                       {subject}
                     </span>
                   ))}

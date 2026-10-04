@@ -3,8 +3,7 @@ import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import AppShell from "./AppShell";
-import UnifiedShell from "./UnifiedShell";
+import ShellChrome from "@/components/shell/ShellChrome";
 
 export default async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -12,11 +11,10 @@ export default async function Shell({ children }: { children: React.ReactNode })
     data: { user },
   } = await supabase.auth.getUser();
 
-  let userData = undefined;
-  let userRole: "learner" | "tutor" | "admin" | null = null;
-  let profile = null;
-  
   if (user) {
+    let profile = null;
+    let userRole: "learner" | "tutor" | "admin" | null = null;
+
     try {
       const [profileResult] = await db
         .select({
@@ -32,41 +30,33 @@ export default async function Shell({ children }: { children: React.ReactNode })
       profile = profileResult;
     } catch (error) {
       console.error("Error fetching profile in Shell:", error);
-      // Continue without profile data if query fails
     }
-    
-    if (profile) {
-      userData = {
-        id: profile.id,
-        displayName: profile.displayName,
-        email: user.email || "",
-        role: profile.role as "learner" | "tutor" | "admin",
-      };
-      userRole = profile.role as "learner" | "tutor" | "admin";
-    }
-  }
 
-  // Use UnifiedShell for authenticated users with valid profile
-  // If user exists but profile is missing/invalid, redirect to onboarding
-  if (user) {
     if (!profile) {
-      // User exists but no profile - redirect to onboarding
       redirect("/onboarding");
     }
+
+    if (profile) {
+      userRole = profile.role as "learner" | "tutor" | "admin";
+    }
+
     if (userRole) {
       return (
-        <UnifiedShell 
+        <ShellChrome
           role={userRole}
-          initialXp={0}
-          initialStreak={0}
-          initialDisplayName={userData?.displayName || ""}
+          userId={user.id}
+          displayName={profile?.displayName || ""}
+          avatarUrl={profile?.avatarUrl || ""}
         >
           {children}
-        </UnifiedShell>
+        </ShellChrome>
       );
     }
   }
 
-  // AppShell for non-authenticated users (sign-in, sign-up pages)
-  return <AppShell user={userData}>{children}</AppShell>;
+  return (
+    <div className="min-h-screen w-full overflow-x-hidden bg-background">
+      <main className="flex-1 w-full">{children}</main>
+    </div>
+  );
 }

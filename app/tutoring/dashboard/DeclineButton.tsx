@@ -9,7 +9,7 @@ export default function DeclineButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-xl border-4 border-gray-200 bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 px-4 py-2 font-label-md font-semibold hover:from-gray-200 hover:to-gray-300 transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+      className="rounded-xl border-4 border-surface-border bg-surface text-text-muted px-4 py-2 font-label-md font-semibold hover:from-surface hover:to-surface-border transition-all shadow-clay-surface disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
     >
       {pending ? (
         <>

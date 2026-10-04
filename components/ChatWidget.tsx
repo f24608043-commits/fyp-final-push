@@ -113,7 +113,7 @@ export default function ChatWidget() {
             setCurrentPose("waving");
             setTimeout(() => setCurrentPose("idle"), 2000);
           }}
-          className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full shadow-clay-lg hover:shadow-clay-xl transition-all duration-300 hover:scale-105"
+          className="bg-gradient-to-br from-primary to-success text-text-primary rounded-full shadow-clay-surface hover:shadow-clay-surface transition-all duration-300 hover:scale-105"
           style={{
             boxShadow: "0 8px 32px rgba(34, 197, 94, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2)",
           }}
@@ -136,14 +136,14 @@ export default function ChatWidget() {
       {/* Expanded state */}
       {isOpen && (
         <div
-          className="w-96 h-[500px] md:w-96 md:h-[500px] bg-white rounded-2xl shadow-clay-xl overflow-hidden flex flex-col transition-all duration-300"
+          className="w-96 h-[500px] md:w-96 md:h-[500px] bg-surface rounded-[24px] shadow-clay-surface overflow-hidden flex flex-col transition-all duration-300"
           style={{
             boxShadow: "0 12px 48px rgba(0, 0, 0, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5)",
           }}
         >
           {/* Header */}
           <div
-            className="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 flex items-center gap-3 cursor-pointer"
+            className="bg-gradient-to-br from-primary to-success text-text-primary p-4 flex items-center gap-3 cursor-pointer"
             onClick={() => setIsOpen(false)}
             style={{
               boxShadow: "inset 0 2px 0 rgba(255, 255, 255, 0.2)",
@@ -161,7 +161,7 @@ export default function ChatWidget() {
                 e.stopPropagation();
                 triggerAssembly();
               }}
-              className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+              className="text-text-primary hover:bg-surface/30 p-2 rounded-lg transition-colors"
               title="Replay assembly animation"
             >
               ✨
@@ -171,14 +171,14 @@ export default function ChatWidget() {
                 e.stopPropagation();
                 setIsOpen(false);
               }}
-              className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+              className="text-text-primary hover:bg-surface/30 p-2 rounded-lg transition-colors"
             >
               ✕
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-gray-50 to-white space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 bg-surface space-y-4">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -186,16 +186,16 @@ export default function ChatWidget() {
               >
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    msg.role === "user" ? "bg-purple-500" : "bg-green-500"
+                    msg.role === "user" ? "bg-tertiary" : "bg-primary"
                   }`}
                 >
                   {msg.role === "user" ? "👤" : "🤖"}
                 </div>
                 <div
-                  className={`max-w-[75%] p-3 rounded-2xl ${
+                  className={`max-w-[75%] p-3 rounded-[24px] ${
                     msg.role === "user"
-                      ? "bg-gradient-to-br from-purple-500 to-purple-600 text-white"
-                      : "bg-white border-2 border-gray-200 shadow-sm"
+                      ? "bg-tertiary text-text-primary"
+                      : "bg-surface border-2 border-surface-border shadow-clay-surface"
                   }`}
                   style={{
                     boxShadow: msg.role === "assistant" ? "0 2px 8px rgba(0, 0, 0, 0.05)" : undefined,
@@ -207,14 +207,14 @@ export default function ChatWidget() {
             ))}
             {isLoading && (
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                   🤖
                 </div>
-                <div className="bg-white border-2 border-gray-200 shadow-sm p-3 rounded-2xl">
+                <div className="bg-surface border-2 border-surface-border shadow-clay-surface p-3 rounded-[24px]">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" />
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }} />
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }} />
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.1s" }} />
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.2s" }} />
                   </div>
                 </div>
               </div>
@@ -223,13 +223,13 @@ export default function ChatWidget() {
           </div>
 
           {/* Quick actions */}
-          <div className="p-3 bg-gray-50 border-t border-gray-200 flex gap-2 flex-wrap">
+          <div className="p-3 surface border-t border-surface-border flex gap-2 flex-wrap">
             <button
               onClick={() => {
                 setMessage("Give me a hint!");
                 handleSend();
               }}
-              className="px-3 py-1.5 bg-white border-2 border-green-500 text-green-600 rounded-full text-xs font-medium hover:bg-green-50 transition-colors"
+              className="px-3 py-1.5 bg-surface border-2 border-primary text-success rounded-full text-xs font-medium hover:bg-primary/10 transition-colors"
             >
               💡 Hint
             </button>
@@ -238,7 +238,7 @@ export default function ChatWidget() {
                 setMessage("Explain this concept");
                 handleSend();
               }}
-              className="px-3 py-1.5 bg-white border-2 border-green-500 text-green-600 rounded-full text-xs font-medium hover:bg-green-50 transition-colors"
+              className="px-3 py-1.5 bg-surface border-2 border-primary text-success rounded-full text-xs font-medium hover:bg-primary/10 transition-colors"
             >
               📖 Explain
             </button>
@@ -247,7 +247,7 @@ export default function ChatWidget() {
                 setMessage("Quiz me!");
                 handleSend();
               }}
-              className="px-3 py-1.5 bg-white border-2 border-green-500 text-green-600 rounded-full text-xs font-medium hover:bg-green-50 transition-colors"
+              className="px-3 py-1.5 bg-surface border-2 border-primary text-success rounded-full text-xs font-medium hover:bg-primary/10 transition-colors"
             >
               🎯 Quiz me
             </button>
@@ -256,14 +256,14 @@ export default function ChatWidget() {
                 setMessage("Tell me a joke");
                 handleSend();
               }}
-              className="px-3 py-1.5 bg-white border-2 border-green-500 text-green-600 rounded-full text-xs font-medium hover:bg-green-50 transition-colors"
+              className="px-3 py-1.5 bg-surface border-2 border-primary text-success rounded-full text-xs font-medium hover:bg-primary/10 transition-colors"
             >
               😄 Joke
             </button>
           </div>
 
           {/* Input */}
-          <div className="p-4 bg-white border-t border-gray-200">
+          <div className="p-4 bg-surface border-t border-surface-border">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -271,13 +271,13 @@ export default function ChatWidget() {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type a message..."
-                className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-green-500 transition-colors text-sm"
+                className="flex-1 px-4 py-2 border-2 border-surface-border rounded-full focus:outline-none focus:border-primary transition-colors text-sm"
                 disabled={isLoading}
               />
               <button
                 onClick={handleSend}
                 disabled={!message.trim() || isLoading}
-                className="px-4 py-2 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-full font-medium hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="px-4 py-2 bg-gradient-to-br from-primary to-success text-text-primary rounded-full font-medium hover:from-success hover:to-success disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-clay-surface"
                 style={{
                   boxShadow: "0 2px 8px rgba(34, 197, 94, 0.3)",
                 }}

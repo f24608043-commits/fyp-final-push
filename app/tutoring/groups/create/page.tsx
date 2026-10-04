@@ -69,7 +69,7 @@ export default async function CreateGroupPage() {
   }
 
   return (
-    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-blue-50 to-cyan-50 min-h-screen">
+    <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <Link
@@ -90,7 +90,7 @@ export default async function CreateGroupPage() {
       {/* Create Group Form */}
       <div className="max-w-2xl">
         <form action={createGroup} className="space-y-8">
-          <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+          <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border">
             <div className="mb-6">
               <label htmlFor="name" className="block font-label-md text-text-primary font-semibold mb-3">
                 Group Name *
@@ -101,7 +101,7 @@ export default async function CreateGroupPage() {
                 name="name"
                 required
                 placeholder="e.g., Grade 10 Physics - Batch A"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-lg"
+                className="w-full px-4 py-3 rounded-xl border-2 border-surface-border focus:border-primary focus:outline-none transition-colors font-body-lg"
               />
             </div>
 
@@ -114,13 +114,13 @@ export default async function CreateGroupPage() {
                 name="description"
                 rows={4}
                 placeholder="Describe the group's focus or schedule"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors font-body-lg resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-surface-border focus:border-primary focus:outline-none transition-colors font-body-lg resize-none"
               />
             </div>
           </div>
 
           {/* Select Learners */}
-          <div className="rounded-2xl bg-white p-8 shadow-xl border-4 border-gray-100">
+          <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border-4 border-surface-border">
             <h2 className="font-headline-lg text-headline-lg text-text-primary font-extrabold mb-6">
               Select Learners ({enrolledLearners.length} available)
             </h2>
@@ -133,13 +133,13 @@ export default async function CreateGroupPage() {
                 {enrolledLearners.map((enrollment) => (
                   <label
                     key={enrollment.id}
-                    className="flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 hover:border-primary cursor-pointer transition-colors"
+                    className="flex items-center gap-4 p-4 rounded-xl border-2 border-surface-border hover:border-primary cursor-pointer transition-colors"
                   >
                     <input
                       type="checkbox"
                       name="learners"
                       value={enrollment.learnerId}
-                      className="w-5 h-5 rounded border-2 border-gray-300 text-primary focus:ring-primary"
+                      className="w-5 h-5 rounded border-2 border-surface-border text-primary focus:ring-primary"
                     />
                     <UserAvatar
                       avatarUrl={enrollment.learner.avatarUrl}
@@ -159,13 +159,13 @@ export default async function CreateGroupPage() {
           <div className="flex justify-end gap-4">
             <Link
               href="/tutoring/groups"
-              className="rounded-xl border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 px-6 py-3 font-label-lg font-semibold shadow-lg hover:from-gray-100 hover:to-gray-200 transition-all"
+              className="rounded-xl border-2 border-surface-border bg-surface text-text-muted px-6 py-3 font-label-lg font-semibold shadow-clay-surface hover:from-surface hover:to-surface transition-all"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3 font-label-lg font-bold shadow-xl border-2 border-white/30 transform hover:scale-105 transition-all active:scale-95"
+              className="rounded-full bg-tertiary text-text-primary px-8 py-3 font-label-lg font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               Create Group
             </button>

@@ -50,40 +50,40 @@ export default async function SettingsPage() {
   const isLearner = profile?.role === "learner";
 
   const themeGradient = isTutor 
-    ? "from-amber-500 via-orange-500 to-indigo-500"
+    ? "from-secondary via-secondary to-tertiary"
     : isLearner 
-    ? "from-emerald-500 via-violet-500 to-sky-500"
-    : "from-slate-500 via-gray-500 to-zinc-500";
+    ? "from-primary via-tertiary to-tertiary"
+    : "bg-surface-border";
 
   const bgGradient = isTutor
-    ? "from-slate-50 via-amber-50 to-indigo-50"
+    ? "from-surface via-secondary/10 to-tertiary/10"
     : isLearner
-    ? "from-emerald-50 via-violet-50 to-sky-50"
-    : "from-slate-50 via-gray-50 to-zinc-50";
+    ? "from-primary/10 via-tertiary/10 to-tertiary/10"
+    : "bg-surface";
 
   const activeTabBg = isTutor
-    ? "bg-gradient-to-r from-amber-500 to-orange-500"
+    ? "bg-secondary"
     : isLearner
-    ? "bg-gradient-to-r from-emerald-500 to-teal-500"
-    : "bg-gradient-to-r from-slate-500 to-gray-500";
+    ? "bg-gradient-to-r from-primary to-tertiary"
+    : "bg-surface-border";
 
-  const hoverColor = isTutor ? "hover:text-amber-600" : isLearner ? "hover:text-emerald-600" : "hover:text-slate-600";
+  const hoverColor = isTutor ? "hover:text-secondary" : isLearner ? "hover:text-success" : "hover:text-text-muted";
 
   return (
-    <div className={`w-full px-8 py-8 bg-gradient-to-br ${bgGradient} min-h-screen`}>
+    <div className={`w-full px-8 py-8 ${bgGradient} min-h-screen`}>
       {/* Header */}
-      <div className={`relative w-full bg-gradient-to-br ${themeGradient} rounded-3xl p-1 shadow-2xl overflow-hidden mb-8`}>
-        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-white/40 pointer-events-none"></div>
-        <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-10">
+      <div className={`relative w-full ${themeGradient} rounded-3xl p-1 shadow-clay-surface overflow-hidden mb-8`}>
+        <div className="absolute inset-0 rounded-3xl border-4 border-dashed border-surface/40 pointer-events-none"></div>
+        <div className="relative bg-surface/95 backdrop-blur-sm rounded-[24px] p-8 md:p-10">
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`px-4 py-1 rounded-full ${activeTabBg} text-white font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-lg border-2 border-white/30`}>⚙️ Settings</span>
+                <span className={`px-4 py-1 rounded-full ${activeTabBg} text-text-primary font-label-sm text-label-sm tracking-wider uppercase font-bold shadow-clay-surface border-2 border-surface/30`}>⚙️ Settings</span>
               </div>
-              <h1 className="font-headline-xl text-headline-xl text-slate-900 tracking-tight leading-none">
+              <h1 className="font-headline-xl text-headline-xl text-text-muted tracking-tight leading-none">
                 Account Settings
               </h1>
-              <p className="font-body-lg text-body-lg text-slate-600 leading-relaxed">
+              <p className="font-body-lg text-body-lg text-text-muted leading-relaxed">
                 Manage your account preferences and profile information
               </p>
             </div>
@@ -97,35 +97,35 @@ export default async function SettingsPage() {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex gap-2 mb-6 border-b-2 border-slate-200 pb-4 overflow-x-auto">
+      <div className="flex gap-2 mb-6 border-b-2 border-surface-border pb-4 overflow-x-auto">
         <Link
           href="/settings?tab=profile"
-          className={`px-4 py-2 rounded-full ${activeTabBg} text-white font-label-md font-semibold shadow-clay-primary border-2 border-white/30 whitespace-nowrap`}
+          className={`px-4 py-2 rounded-full ${activeTabBg} text-text-primary font-label-md font-semibold shadow-clay-primary border-2 border-surface/30 whitespace-nowrap`}
         >
           Profile
         </Link>
         <Link
           href="/settings?tab=account"
-          className="px-4 py-2 rounded-full bg-white text-slate-600 font-label-md font-semibold hover:bg-slate-100 transition-all whitespace-nowrap border-2 border-slate-200"
+          className="px-4 py-2 rounded-full bg-surface text-text-muted font-label-md font-semibold hover:bg-surface transition-all whitespace-nowrap border-2 border-surface-border"
         >
           Account
         </Link>
         <Link
           href="/settings?tab=notifications"
-          className="px-4 py-2 rounded-full bg-white text-slate-600 font-label-md font-semibold hover:bg-slate-100 transition-all whitespace-nowrap border-2 border-slate-200"
+          className="px-4 py-2 rounded-full bg-surface text-text-muted font-label-md font-semibold hover:bg-surface transition-all whitespace-nowrap border-2 border-surface-border"
         >
           Notifications
         </Link>
         <Link
           href="/settings?tab=privacy"
-          className="px-4 py-2 rounded-full bg-white text-slate-600 font-label-md font-semibold hover:bg-slate-100 transition-all whitespace-nowrap border-2 border-slate-200"
+          className="px-4 py-2 rounded-full bg-surface text-text-muted font-label-md font-semibold hover:bg-surface transition-all whitespace-nowrap border-2 border-surface-border"
         >
           Privacy
         </Link>
         {profile.role === "tutor" && (
           <Link
             href="/settings?tab=tutor"
-            className="px-4 py-2 rounded-full bg-white text-slate-600 font-label-md font-semibold hover:bg-slate-100 transition-all whitespace-nowrap border-2 border-slate-200"
+            className="px-4 py-2 rounded-full bg-surface text-text-muted font-label-md font-semibold hover:bg-surface transition-all whitespace-nowrap border-2 border-surface-border"
           >
             Tutor Settings
           </Link>

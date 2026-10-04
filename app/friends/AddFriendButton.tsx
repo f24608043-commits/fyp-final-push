@@ -9,7 +9,7 @@ export default function AddFriendButton({ suggestedId }: { suggestedId: string }
     <button
       type="submit"
       disabled={pending}
-      className="font-label-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/30 hover:scale-105 transition-transform disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+      className="font-label-sm font-bold bg-secondary text-text-primary px-4 py-2 rounded-full shadow-clay-surface border-2 border-surface/30 hover:scale-105 transition-transform disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
     >
       {pending ? (
         <>
