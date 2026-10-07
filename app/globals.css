@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@config "../tailwind.config.ts";
-@plugin "tailwindcss-animate";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Base styles to ensure CSS is loading */
 * {

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 
 test.describe("Admin Pages Functionality", () => {
   test.beforeEach(async ({ page }) => {
@@ -9,7 +9,7 @@ test.describe("Admin Pages Functionality", () => {
     const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'Qasim.11';
 
     // Login as admin before each test
-    await page.goto("http://localhost:3000/sign-in");
+    await page.goto("http://localhost:4005/sign-in");
     await page.waitForLoadState("networkidle", { timeout: 60000 });
     await page.fill('input[name="email"]', ADMIN_EMAIL);
     await page.fill('input[name="password"]', ADMIN_PASSWORD);
@@ -19,7 +19,7 @@ test.describe("Admin Pages Functionality", () => {
       await page.waitForURL(/\/(admin|path|tutoring)/, { timeout: 30000 });
     } catch (error) {
       // If login fails, skip the test
-      console.log('⚠️ Admin login failed, skipping test');
+      console.log('âš ï¸ Admin login failed, skipping test');
       test.skip(true, 'Admin credentials invalid or not configured');
     }
 
@@ -27,16 +27,16 @@ test.describe("Admin Pages Functionality", () => {
     try {
       await page.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing anyway');
+      console.log('âš ï¸ Networkidle timeout, continuing anyway');
     }
   });
 
   test("Admin badges page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:3000/admin/badges");
+    await page.goto("http://localhost:4005/admin/badges");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Check if page loads without error
@@ -45,11 +45,11 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin users page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:3000/admin/users");
+    await page.goto("http://localhost:4005/admin/users");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Check if page loads without error
@@ -58,11 +58,11 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin users page - Search functionality", async ({ page }) => {
-    await page.goto("http://localhost:3000/admin/users");
+    await page.goto("http://localhost:4005/admin/users");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Wait for search input to be visible
@@ -75,7 +75,7 @@ test.describe("Admin Pages Functionality", () => {
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Should not show server error
@@ -84,11 +84,11 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin tutoring page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:3000/admin/tutoring");
+    await page.goto("http://localhost:4005/admin/tutoring");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Check if page loads without error
@@ -97,11 +97,11 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin courses page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:3000/admin/courses");
+    await page.goto("http://localhost:4005/admin/courses");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Check if page loads without error

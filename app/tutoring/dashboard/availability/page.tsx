@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 export default function EditAvailabilityPage() {
@@ -71,7 +72,25 @@ export default function EditAvailabilityPage() {
   });
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="w-full px-6 py-6">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="mt-4 h-4 w-96 max-w-full" />
+        </div>
+        <div className="mx-auto mt-6 max-w-4xl space-y-6">
+          {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+            <div key={day} className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
+              <Skeleton className="h-6 w-32" />
+              <div className="mt-4 flex gap-3">
+                <Skeleton className="h-10 flex-1" />
+                <Skeleton className="h-10 flex-1" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

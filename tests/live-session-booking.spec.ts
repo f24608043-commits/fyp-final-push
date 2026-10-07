@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Live Session Booking - Database Verification', () => {
   let learnerEmail: string;
@@ -14,7 +14,7 @@ test.describe('Live Session Booking - Database Verification', () => {
     test.setTimeout(90000);
 
     // Step 1: Login as learner
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('http://localhost:4005/sign-in');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
 
     await page.fill('input[type="email"]', learnerEmail);
@@ -25,18 +25,18 @@ test.describe('Live Session Booking - Database Verification', () => {
     try {
       await page.waitForURL(/\/(path|onboarding)/, { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Login timeout, checking current URL');
+      console.log('âš ï¸ Login timeout, checking current URL');
     }
 
     // Try to wait for networkidle, but continue if it fails
     try {
       await page.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing anyway');
+      console.log('âš ï¸ Networkidle timeout, continuing anyway');
     }
 
     // Step 2: Navigate to tutoring page
-    await page.goto('http://localhost:3000/tutoring');
+    await page.goto('http://localhost:4005/tutoring');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
 
     // Step 3: Find any tutor card
@@ -72,7 +72,7 @@ test.describe('Live Session Booking - Database Verification', () => {
     console.log('Current URL after clicking Book Session:', currentUrl);
 
     if (currentUrl.includes('/tutoring/book/')) {
-      console.log('✅ Successfully navigated to booking page');
+      console.log('âœ… Successfully navigated to booking page');
 
       // Check if there's a form or confirmation UI
       const bookingForm = page.locator('form').first();
@@ -80,14 +80,14 @@ test.describe('Live Session Booking - Database Verification', () => {
       console.log('Booking forms found:', formCount);
 
       if (formCount > 0) {
-        console.log('✅ Booking form is present');
+        console.log('âœ… Booking form is present');
       } else {
-        console.log('⚠️ No booking form found, but navigation succeeded');
+        console.log('âš ï¸ No booking form found, but navigation succeeded');
       }
     } else {
-      console.log('⚠️ Did not navigate to booking page, may have been redirected');
+      console.log('âš ï¸ Did not navigate to booking page, may have been redirected');
     }
 
-    console.log('✅ Session booking UI flow verified');
+    console.log('âœ… Session booking UI flow verified');
   });
 });

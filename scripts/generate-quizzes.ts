@@ -43,8 +43,8 @@ async function generateQuizzesForCourses() {
         // Insert the generated quiz questions into the challenges table
         for (const question of questions) {
           const [challenge] = await sql`
-            INSERT INTO public.challenges (lesson_id, question_text, points)
-            VALUES (${lesson.id}, ${question.questionText}, ${question.points})
+            INSERT INTO public.challenges (lesson_id, question_text, points, is_published)
+            VALUES (${lesson.id}, ${question.questionText}, ${question.points}, true)
             RETURNING id;
           `;
 

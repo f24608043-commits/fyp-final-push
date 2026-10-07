@@ -112,7 +112,8 @@ export default async function AdminTutoringPage() {
       <div className="mb-8">
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Tutor Management ({allTutors.length})</h2>
         <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 shadow-clay-surface border-4 border-tertiary/30 overflow-hidden">
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
             <thead className="bg-tertiary border-b-4 border-tertiary/30">
               <tr>
                 <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Tutor</th>
@@ -185,6 +186,7 @@ export default async function AdminTutoringPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 
@@ -192,7 +194,8 @@ export default async function AdminTutoringPage() {
       <div>
         <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-4">Recent Sessions (Last 50)</h2>
         <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 shadow-clay-surface border-4 border-tertiary/30 overflow-hidden">
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px]">
             <thead className="bg-tertiary border-b-4 border-tertiary/30">
               <tr>
                 <th className="px-4 py-3 text-left font-label-md font-semibold text-text-primary">Session ID</th>
@@ -249,6 +252,7 @@ export default async function AdminTutoringPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

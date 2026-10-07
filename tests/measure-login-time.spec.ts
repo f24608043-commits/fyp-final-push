@@ -1,10 +1,10 @@
-import { test } from '@playwright/test';
+﻿import { test } from '@playwright/test';
 
 test.describe('Login Time Measurement', () => {
   test('measure login time', async ({ page }) => {
     // Navigate to sign-in page
     const startTime = Date.now();
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('http://localhost:4005/sign-in');
     await page.waitForLoadState('domcontentloaded', { timeout: 30000 });
     
     // Fill in credentials
@@ -21,7 +21,7 @@ test.describe('Login Time Measurement', () => {
     } catch (error) {
       // If waitForURL fails, check current URL and log it
       const currentUrl = page.url();
-      console.log(`⚠️ Navigation timeout. Current URL: ${currentUrl}`);
+      console.log(`âš ï¸ Navigation timeout. Current URL: ${currentUrl}`);
       throw error;
     }
     
@@ -30,14 +30,14 @@ test.describe('Login Time Measurement', () => {
     const loginTime = submitEndTime - submitStartTime;
     const totalTime = submitEndTime - startTime;
     
-    console.log(`📊 Login Time Measurement:`);
+    console.log(`ðŸ“Š Login Time Measurement:`);
     console.log(`   Submit to Path: ${loginTime}ms`);
     console.log(`   Total Time: ${totalTime}ms`);
     
     if (loginTime > 10000) {
-      console.log(`⚠️ Login time exceeds 10 seconds: ${loginTime}ms`);
+      console.log(`âš ï¸ Login time exceeds 10 seconds: ${loginTime}ms`);
     } else {
-      console.log(`✅ Login time is acceptable: ${loginTime}ms`);
+      console.log(`âœ… Login time is acceptable: ${loginTime}ms`);
     }
   });
 });

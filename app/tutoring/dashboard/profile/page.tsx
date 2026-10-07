@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 export default function EditProfilePage() {
@@ -60,7 +61,25 @@ export default function EditProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="w-full px-6 py-6">
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="mt-4 h-4 w-96 max-w-full" />
+        </div>
+        <div className="mx-auto mt-6 max-w-4xl space-y-6">
+          {["Profile Information", "Teaching Details", "Availability"].map((section) => (
+            <div key={section} className="rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-tertiary/30">
+              <Skeleton className="h-6 w-48" />
+              <div className="mt-4 space-y-3">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

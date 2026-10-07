@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       data: {
         display_name: displayName || email.split("@")[0],
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:4005"}/auth/callback`,
     },
   });
 

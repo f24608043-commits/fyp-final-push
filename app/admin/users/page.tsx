@@ -82,7 +82,8 @@ export default async function AdminUsersPage({
 
       {/* Users Table */}
       <div className="rounded-[24px] bg-gradient-to-br from-surface to-tertiary/10 shadow-clay-surface border-4 border-tertiary/30 overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead className="bg-tertiary border-b-4 border-tertiary/30">
             <tr>
               <th className="px-6 py-3 text-left font-label-md font-semibold text-text-primary">Name</th>
@@ -150,6 +151,7 @@ export default async function AdminUsersPage({
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="mt-4 font-body-sm text-text-primary">

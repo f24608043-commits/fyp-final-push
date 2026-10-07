@@ -43,31 +43,31 @@ export default async function OnboardingPage({
   const params = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 md:p-6">
+      <div className="w-full max-w-2xl rounded-[20px] md:rounded-[24px] bg-surface p-6 md:p-8 shadow-clay-surface border border-surface-border">
         {/* Header with Mascot */}
-        <div className="mb-8 text-center">
-          <div className="relative w-24 h-24 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4">
-            <Mascot pose="celebrate" size={80} />
+        <div className="mb-6 md:mb-8 text-center">
+          <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4">
+            <Mascot pose="celebrate" size={64} mdSize={80} />
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 font-label-sm font-semibold text-primary">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 md:px-4 md:py-1.5 font-label-xs md:font-label-sm font-semibold text-primary">
             <span>👋</span>
-            <span>Welcome, {userProfile?.displayName || user.email?.split("@")[0]}!</span>
+            <span className="text-sm md:text-base">Welcome, {userProfile?.displayName || user.email?.split("@")[0]}!</span>
           </div>
-          <h1 className="mt-4 font-headline-xl text-text-primary tracking-tight font-extrabold">Personalize Your Path</h1>
-          <p className="mt-2 font-body-md text-text-muted">
+          <h1 className="mt-4 font-headline-lg md:font-headline-xl text-text-primary tracking-tight font-extrabold">Personalize Your Path</h1>
+          <p className="mt-2 font-body-sm md:font-body-md text-text-muted">
             Set up your learning goals and select the subjects you want to master.
           </p>
         </div>
 
         {/* Error Message */}
         {params.error && (
-          <div className="mb-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">
+          <div className="mb-6 rounded-xl border border-error bg-error/10 p-3 md:p-4 text-xs md:text-sm text-error">
             {params.error}
           </div>
         )}
 
-        <form action={completeOnboarding} className="space-y-8">
+        <form action={completeOnboarding} className="space-y-6 md:space-y-8">
           {/* 1. Course Selection */}
           <div>
             <h2 className="font-headline-md text-text-primary font-extrabold">1. Select Your Courses</h2>
@@ -76,7 +76,7 @@ export default async function OnboardingPage({
               {publishedCourses.map((c, index) => (
                 <label
                   key={c.id}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-surface-border bg-surface-border p-4 hover:border-primary hover:bg-surface-border has-checked:border-primary has-checked:bg-surface-border transition-all"
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-surface-border bg-surface-border p-3 md:p-4 hover:border-primary hover:bg-surface-border has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <input
                     type="checkbox"
@@ -86,8 +86,8 @@ export default async function OnboardingPage({
                     className="mt-1 h-4 w-4 rounded border-surface-border text-primary focus:ring-primary"
                   />
                   <div>
-                    <div className="font-label-md text-text-primary font-semibold">{c.title}</div>
-                    <div className="mt-1 font-body-sm text-text-muted line-clamp-2">{c.description}</div>
+                    <div className="font-label-sm md:font-label-md text-text-primary font-semibold text-sm md:text-base">{c.title}</div>
+                    <div className="mt-1 font-body-xs md:font-body-sm text-text-muted line-clamp-2">{c.description}</div>
                   </div>
                 </label>
               ))}
@@ -106,10 +106,10 @@ export default async function OnboardingPage({
               ].map((level) => (
                 <label
                   key={level.id}
-                  className="flex cursor-pointer flex-col rounded-xl border border-surface-border bg-surface-border p-4 hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
+                  className="flex cursor-pointer flex-col rounded-xl border border-surface-border bg-surface-border p-3 md:p-4 hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-label-md text-text-primary font-semibold">{level.title}</span>
+                    <span className="font-label-sm md:font-label-md text-text-primary font-semibold text-sm md:text-base">{level.title}</span>
                     <input
                       type="radio"
                       name="placementAnswer"
@@ -118,7 +118,7 @@ export default async function OnboardingPage({
                       className="h-4 w-4 text-primary focus:ring-primary"
                     />
                   </div>
-                  <span className="mt-1 font-body-sm text-text-muted">{level.desc}</span>
+                  <span className="mt-1 font-body-xs md:font-body-sm text-text-muted">{level.desc}</span>
                 </label>
               ))}
             </div>
@@ -137,7 +137,7 @@ export default async function OnboardingPage({
               ].map((goal) => (
                 <label
                   key={goal.mins}
-                  className="flex cursor-pointer flex-col items-center rounded-xl border border-surface-border bg-surface-border p-3 text-center hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
+                  className="flex cursor-pointer flex-col items-center rounded-xl border border-surface-border bg-surface-border p-2 md:p-3 text-center hover:border-primary has-checked:border-primary has-checked:bg-surface-border transition-all"
                 >
                   <input
                     type="radio"
@@ -146,10 +146,10 @@ export default async function OnboardingPage({
                     defaultChecked={goal.mins === 15}
                     className="mb-2 h-4 w-4 text-primary focus:ring-primary"
                   />
-                  <span className="font-label-sm font-bold uppercase tracking-wider text-text-muted">
+                  <span className="font-label-xs md:font-label-sm font-bold uppercase tracking-wider text-text-muted text-xs md:text-sm">
                     {goal.label}
                   </span>
-                  <span className="mt-0.5 font-label-md font-semibold text-text-primary">{goal.time}</span>
+                  <span className="mt-0.5 font-label-sm md:font-label-md font-semibold text-text-primary text-xs md:text-sm">{goal.time}</span>
                 </label>
               ))}
             </div>
@@ -157,7 +157,7 @@ export default async function OnboardingPage({
 
           <button
             type="submit"
-            className="w-full rounded-full bg-primary text-text-primary py-3 font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all active:translate-y-[2px]"
+            className="w-full rounded-full bg-primary text-text-primary py-3 font-label-md md:font-label-lg font-bold uppercase tracking-wider shadow-clay-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all active:translate-y-[2px] text-sm md:text-base"
           >
             Start My Learning Journey →
           </button>

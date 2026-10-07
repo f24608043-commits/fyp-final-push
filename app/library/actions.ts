@@ -56,3 +56,39 @@ export async function recordLibraryView(lessonId: string) {
   revalidatePath("/library");
   return { success: true };
 }
+
+export async function enrollInCourse(courseId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error("You must be logged in");
+  }
+
+  // Check if already enrolled
+  const existingEnrollment = await db
+    .select()
+    .from(enrollments)
+    .where(and(eq(enrollments.userId, user.id), eq(enrollments.courseId, courseId)))
+    .limit(1);
+
+  if (existingEnrollment.length > 0) {
+    // Already enrolled, just make it active
+    await db
+      .update(enrollments)
+      .set({ isActive: true })
+      .where(and(eq(enrollments.userId, user.id), eq(enrollments.courseId, courseId)));
+  } else {
+    // Create new enrollment
+    await db.insert(enrollments).values({
+      userId: user.id,
+      courseId,
+      isActive: true,
+      placementAnswer: "beginner",
+    });
+  }
+
+  revalidatePath("/path");
+  revalidatePath("/library");
+  return { success: true };
+}

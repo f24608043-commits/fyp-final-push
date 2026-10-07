@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Realtime Messaging', () => {
   const TUTOR_EMAIL = process.env.TEST_TUTOR_EMAIL || 'orphix.itsolutions@gmail.com';
@@ -13,7 +13,7 @@ test.describe('Realtime Messaging', () => {
     const page1 = await context1.newPage();
 
     // First user (tutor)
-    await page1.goto('http://localhost:3000/sign-in');
+    await page1.goto('http://localhost:4005/sign-in');
     await page1.waitForLoadState('networkidle', { timeout: 30000 });
     await page1.fill('input[name="email"]', TUTOR_EMAIL);
     await page1.fill('input[name="password"]', TUTOR_PASSWORD);
@@ -22,14 +22,14 @@ test.describe('Realtime Messaging', () => {
     try {
       await page1.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
     } catch (error) {
-      console.log('⚠️ Tutor login timeout, continuing to messages page');
+      console.log('âš ï¸ Tutor login timeout, continuing to messages page');
     }
 
-    await page1.goto('http://localhost:3000/messages');
+    await page1.goto('http://localhost:4005/messages');
     try {
       await page1.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Messages page networkidle timeout, continuing');
+      console.log('âš ï¸ Messages page networkidle timeout, continuing');
     }
     await expect(page1.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
 
@@ -39,7 +39,7 @@ test.describe('Realtime Messaging', () => {
     const context2 = await browser.newContext();
     const page2 = await context2.newPage();
 
-    await page2.goto('http://localhost:3000/sign-in');
+    await page2.goto('http://localhost:4005/sign-in');
     await page2.waitForLoadState('networkidle', { timeout: 30000 });
     await page2.fill('input[name="email"]', ADMIN_EMAIL);
     await page2.fill('input[name="password"]', ADMIN_PASSWORD);
@@ -48,14 +48,14 @@ test.describe('Realtime Messaging', () => {
     try {
       await page2.waitForURL(/\/admin/, { timeout: 15000 });
     } catch (error) {
-      console.log('⚠️ Admin login timeout, continuing to messages page');
+      console.log('âš ï¸ Admin login timeout, continuing to messages page');
     }
 
-    await page2.goto('http://localhost:3000/messages');
+    await page2.goto('http://localhost:4005/messages');
     try {
       await page2.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Messages page networkidle timeout, continuing');
+      console.log('âš ï¸ Messages page networkidle timeout, continuing');
     }
     await expect(page2.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
 
@@ -73,7 +73,7 @@ test.describe('Realtime Messaging', () => {
     const page = await context.newPage();
 
     // Login as tutor
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('http://localhost:4005/sign-in');
     await page.waitForLoadState('networkidle', { timeout: 30000 });
     await page.fill('input[name="email"]', TUTOR_EMAIL);
     await page.fill('input[name="password"]', TUTOR_PASSWORD);
@@ -82,15 +82,15 @@ test.describe('Realtime Messaging', () => {
     try {
       await page.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
     } catch (error) {
-      console.log('⚠️ Login timeout, continuing');
+      console.log('âš ï¸ Login timeout, continuing');
     }
 
     // Navigate to messages page
-    await page.goto('http://localhost:3000/messages');
+    await page.goto('http://localhost:4005/messages');
     try {
       await page.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing');
+      console.log('âš ï¸ Networkidle timeout, continuing');
     }
 
     // Verify messages page loads and has structure
@@ -102,9 +102,9 @@ test.describe('Realtime Messaging', () => {
     console.log('Conversation/message elements found:', listCount);
 
     if (listCount > 0) {
-      console.log('✅ Messages page has conversation/message structure');
+      console.log('âœ… Messages page has conversation/message structure');
     } else {
-      console.log('⚠️ No conversations found (empty state is acceptable)');
+      console.log('âš ï¸ No conversations found (empty state is acceptable)');
     }
 
     await context.close();

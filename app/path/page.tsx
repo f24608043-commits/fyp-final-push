@@ -55,6 +55,16 @@ export default async function PathPage() {
 
   if (!activeEnrollment) {
     console.log("[PATH] No enrollment found, showing enrollment prompt");
+    
+    // Fetch published courses for enrollment
+    let publishedCourses: any[] = [];
+    try {
+      publishedCourses = await db.select().from(courses).where(eq(courses.isPublished, true));
+    } catch (error) {
+      console.error('[PATH] Error fetching courses:', error);
+      publishedCourses = [];
+    }
+    
     return (
       <div className="w-full px-6 py-6 bg-gradient-to-br from-background via-primary/5 to-secondary/5 min-h-screen">
         <div className="relative clay-card p-8 md:p-12 overflow-hidden">
@@ -69,13 +79,40 @@ export default async function PathPage() {
             <p className="font-body-lg text-body-lg text-text-muted mb-8">
               You need to enroll in a course to begin learning. Choose a course from our library to get started!
             </p>
-            <Link
-              href="/library"
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-[24px] bg-tertiary text-text-primary font-label-lg font-bold shadow-clay-surface border-2 border-surface/40 transform hover:scale-105 hover:shadow-clay-surface transition-all duration-300 active:scale-95 group"
-            >
-              <span className="material-symbols-outlined text-[28px] group-hover:rotate-12 transition-transform">school</span>
-              <span>Browse Courses</span>
-            </Link>
+            
+            {publishedCourses.length === 0 ? (
+              <div className="rounded-[24px] bg-surface p-8 text-center shadow-clay-surface border-4 border-surface/50">
+                <p className="font-body-md text-text-muted font-bold">No courses available yet. Check back later!</p>
+              </div>
+            ) : (
+              <div className="w-full space-y-4">
+                {publishedCourses.map((course) => (
+                  <form key={course.id} action={async () => {
+                    "use server";
+                    const { enrollInCourse } = await import("../library/actions");
+                    await enrollInCourse(course.id);
+                  }}>
+                    <button
+                      type="submit"
+                      className="w-full rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-surface/50 hover:border-primary hover:bg-surface-border transition-all text-left group"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex-1">
+                          <h3 className="font-headline-md text-text-primary font-bold mb-2 group-hover:text-primary transition-colors">
+                            {course.title}
+                          </h3>
+                          <p className="font-body-sm text-text-muted line-clamp-2">{course.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-text-primary font-label-sm font-bold shadow-clay-primary group-hover:scale-105 transition-transform">
+                          <span className="material-symbols-outlined text-[18px]">add</span>
+                          <span>Enroll</span>
+                        </div>
+                      </div>
+                    </button>
+                  </form>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

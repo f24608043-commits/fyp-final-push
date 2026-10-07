@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Live Tutor Profile Creation - Database Verification', () => {
   let tutorEmail: string;
@@ -14,7 +14,7 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
     test.setTimeout(90000);
 
     // Step 1: Login as tutor
-    await page.goto('http://localhost:3000/sign-in');
+    await page.goto('http://localhost:4005/sign-in');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
 
     await page.fill('input[type="email"]', tutorEmail);
@@ -25,18 +25,18 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
     try {
       await page.waitForURL(/\/(tutoring\/dashboard|path)/, { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Login timeout, checking current URL');
+      console.log('âš ï¸ Login timeout, checking current URL');
     }
 
     // Try to wait for networkidle, but continue if it fails
     try {
       await page.waitForLoadState('networkidle', { timeout: 30000 });
     } catch (error) {
-      console.log('⚠️ Networkidle timeout, continuing anyway');
+      console.log('âš ï¸ Networkidle timeout, continuing anyway');
     }
 
     // Step 2: Navigate to tutoring dashboard
-    await page.goto('http://localhost:3000/tutoring/dashboard');
+    await page.goto('http://localhost:4005/tutoring/dashboard');
     await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
 
     // Step 3: Check if "Create Profile" button exists
@@ -53,7 +53,7 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
       const createProfileButtonAfter = page.locator('button:has-text("Create Profile"), a:has-text("Create Profile")').first();
       const buttonCountAfter = await createProfileButtonAfter.count();
       expect(buttonCountAfter).toBe(0);
-      console.log('✅ Profile creation UI confirmed');
+      console.log('âœ… Profile creation UI confirmed');
     } else {
       // Profile already exists, verify it by checking for "Edit" link
       const editProfileLink = page.locator('a[href="/tutoring/dashboard/profile"]').first();
@@ -61,7 +61,7 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
       console.log('Edit profile links found:', editLinkCount);
 
       if (editLinkCount > 0) {
-        console.log('✅ Profile already exists (Edit link present)');
+        console.log('âœ… Profile already exists (Edit link present)');
         // Navigate to edit page to verify profile structure
         await editProfileLink.click();
         await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
@@ -70,7 +70,7 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
         // Check if page is still loading
         const loadingText = page.locator('text=Loading').first();
         if (await loadingText.count() > 0) {
-          console.log('⚠️ Page still loading, waiting...');
+          console.log('âš ï¸ Page still loading, waiting...');
           await page.waitForTimeout(5000);
         }
 
@@ -90,7 +90,7 @@ test.describe('Live Tutor Profile Creation - Database Verification', () => {
         expect(bioCount).toBeGreaterThan(0);
         expect(subjectsCount).toBeGreaterThan(0);
         expect(timezoneCount).toBeGreaterThan(0);
-        console.log('✅ Profile edit page structure verified');
+        console.log('âœ… Profile edit page structure verified');
       } else {
         test.skip(true, 'Neither Create nor Edit button found - UI may have changed');
       }

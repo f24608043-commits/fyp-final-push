@@ -4,7 +4,14 @@ import { test, expect } from '@playwright/test';
 
 test('COMPREHENSIVE - Verify all admin pages exist and load', async ({ page }) => {
   test.setTimeout(180000);
-  
+
+  // Login as admin first (admin pages redirect to /sign-in when unauthenticated)
+  await page.goto('/sign-in');
+  await page.fill('input[type="email"]', process.env.TEST_ADMIN_EMAIL || 'alexabraham587@gmail.com');
+  await page.fill('input[type="password"]', process.env.TEST_ADMIN_PASSWORD || 'Qasim.11');
+  await page.click('button[type="submit"]');
+  await page.waitForURL(/\/(admin|path|onboarding)/, { timeout: 60000 });
+
   const adminPages = [
     '/admin',
     '/admin/users',
@@ -16,19 +23,19 @@ test('COMPREHENSIVE - Verify all admin pages exist and load', async ({ page }) =
     '/admin/lessons/test-lesson-id',
     '/admin/courses/test-course-id'
   ];
-  
+
   for (const route of adminPages) {
     try {
       const response = await page.goto(route, { timeout: 15000 });
       console.log(`Admin page ${route}: ${response?.status()}`);
-      
+
       // Check if page loads (may redirect to sign-in if not authenticated)
       const url = page.url();
       if (url.includes('/sign-in')) {
         console.log(`  → Requires authentication`);
       } else {
         // Check for claymorphic layout elements
-        const clayElements = page.locator('[class*="shadow"], [class*="rounded"], [class*="surface"]').count();
+        const clayElements = await page.locator('[class*="shadow"], [class*="rounded"], [class*="surface"]').count();
         console.log(`  → Loaded with ${clayElements} claymorphic elements`);
       }
     } catch (error) {

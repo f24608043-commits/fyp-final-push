@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getMessages, sendMessage, markRead, leaveGroup } from "../../messaging/actions";
 import { createClient } from "@/utils/supabase/client";
-import { RealtimeChannel } from "@supabase/supabase-js";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -30,7 +29,6 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
   const [conversationType, setConversationType] = useState<"direct" | "group">("direct");
   const [jitsiRoomId, setJitsiRoomId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const channelRef = useRef<RealtimeChannel | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [otherParticipant, setOtherParticipant] = useState<{ displayName: string | null; avatarUrl: string | null; id: string } | null>(null);
 
@@ -151,78 +149,22 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
     };
   }, [params]);
 
-  // Separate useEffect for Realtime subscription with proper cleanup
+  // Polling for new messages instead of real-time subscription
   useEffect(() => {
     if (!conversationId || !currentUser) return;
 
-    const supabase = createClient();
-
-    // Clean up existing channel before creating new one
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-    }
-
-    // Correct chaining order: .channel() -> .on() -> .subscribe()
-    const channel = supabase
-      .channel(`messages:${conversationId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `conversation_id=eq.${conversationId}`,
-        },
-        async (payload) => {
-          const { data: { user: authUser } } = await supabase.auth.getUser();
-          if (authUser?.id === payload.new.sender_id) {
-            // Skip if it's our own message (optimistic update)
-            return;
-          }
-
-          // Fetch sender info
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id, display_name, avatar_url')
-            .eq('id', payload.new.sender_id)
-            .single();
-
-          const newMessage: Message = {
-            message: {
-              id: payload.new.id,
-              body: payload.new.body,
-              createdAt: new Date(payload.new.created_at),
-            },
-            sender: {
-              id: profile?.id || payload.new.sender_id,
-              displayName: profile?.display_name,
-              avatarUrl: profile?.avatar_url,
-            },
-          };
-
-          setMessages((prev) => [...prev, newMessage]);
-
-          await markRead(conversationId);
-        }
-      )
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          console.log(`Subscribed to conversation: ${conversationId}`);
-        } else if (status === 'CHANNEL_ERROR') {
-          console.error(`Failed to connect to real-time updates for conversation: ${conversationId}`);
-          console.error('This may be due to RLS policies or Realtime not being enabled for the messages table');
-        } else if (status === 'TIMED_OUT') {
-          console.warn(`Realtime subscription timed out for conversation: ${conversationId}`);
-        }
-      });
-
-    channelRef.current = channel;
+    const pollInterval = setInterval(async () => {
+      try {
+        const latestMessages = await getMessages(conversationId);
+        setMessages(latestMessages);
+        await markRead(conversationId);
+      } catch (error) {
+        console.error("Error polling for messages:", error);
+      }
+    }, 3000); // Poll every 3 seconds
 
     return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      clearInterval(pollInterval);
     };
   }, [conversationId, currentUser]);
 
@@ -290,38 +232,38 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
   return (
     <div className="w-full h-screen flex flex-col bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10">
       {/* Header */}
-      <div className="bg-surface border-b border-surface-border px-6 py-4 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
+      <div className="bg-surface border-b border-surface-border px-4 py-3 md:px-6 md:py-4 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2 md:gap-3">
           <Link href="/messages" className="text-text-muted hover:text-text-muted">
             <span className="material-symbols-outlined text-[24px]">arrow_back</span>
           </Link>
           {otherParticipant ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {otherParticipant.avatarUrl ? (
                 <Image
                   src={otherParticipant.avatarUrl}
                   alt={otherParticipant.displayName || "User"}
                   width={40}
                   height={40}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-surface-border"
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-surface-border"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-lg border-2 border-surface/30">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-lg border-2 border-surface/30">
                   {otherParticipant.displayName?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
-              <div>
-                <h1 className="font-headline-md text-headline-md text-text-primary font-extrabold">
+              <div className="min-w-0">
+                <h1 className="font-headline-sm md:font-headline-md text-text-primary font-extrabold truncate">
                   {otherParticipant.displayName || "Unknown User"}
                 </h1>
-                <p className="font-label-sm text-text-muted">
+                <p className="font-label-xs md:font-label-sm text-text-muted">
                   {conversationType === "group" ? "Group Chat" : "Direct Message"}
                 </p>
               </div>
             </div>
           ) : (
             <div>
-              <h1 className="font-headline-md text-headline-md text-text-primary font-extrabold">
+              <h1 className="font-headline-sm md:font-headline-md text-text-primary font-extrabold">
                 {conversationType === "group" ? "Group Chat" : "Direct Message"}
               </h1>
             </div>
@@ -333,7 +275,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
               href={`https://meet.jit.si/${jitsiRoomId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               <span className="material-symbols-outlined text-[18px]">videocam</span>
               Join Class
@@ -351,19 +293,19 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-3 md:p-6">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-text-primary">
-            <p className="font-body-md">No messages yet. Start the conversation!</p>
+          <div className="flex flex-col items-center justify-center h-full text-text-primary px-4">
+            <p className="font-body-md text-center">No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto space-y-4">
+          <div className="max-w-3xl mx-auto space-y-3 md:space-y-4">
             {messages.map((msg) => (
               <div
                 key={msg.message.id}
                 className={`flex ${msg.sender.id === currentUser?.id ? "justify-end" : "justify-start"}`}
               >
-                <div className={`max-w-[70%] rounded-[24px] px-4 py-3 ${
+                <div className={`max-w-[85%] md:max-w-[70%] rounded-[20px] px-3 py-2 md:px-4 md:py-3 ${
                   msg.sender.id === currentUser?.id
                     ? "bg-tertiary text-text-primary"
                     : "bg-surface border-2 border-surface-border shadow-clay-surface"
@@ -386,22 +328,22 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Input */}
-      <div className="bg-surface border-t border-surface-border px-6 py-4 shrink-0">
-        <div className="max-w-3xl mx-auto flex gap-3">
+      <div className="bg-surface border-t border-surface-border px-4 py-3 md:px-6 md:py-4 shrink-0 pb-safe">
+        <div className="max-w-3xl mx-auto flex gap-2 md:gap-3">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-3 rounded-full border-2 border-surface-border focus:border-tertiary focus:outline-none"
+            className="flex-1 px-4 py-2.5 md:py-3 rounded-full border-2 border-surface-border focus:border-tertiary focus:outline-none text-sm md:text-base"
             disabled={isSending}
             maxLength={2000}
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}
-            className="px-6 py-3 rounded-full bg-tertiary text-text-primary font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-4 md:px-6 py-2.5 md:py-3 rounded-full bg-tertiary text-text-primary font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <span className="material-symbols-outlined text-[20px]">send</span>
           </button>
