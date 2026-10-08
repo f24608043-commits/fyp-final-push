@@ -4,7 +4,7 @@ import { groups, groupMembers, profiles, assignments, submissions } from "@/db/s
 import { eq, and, count, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { deleteAssignment } from "@/app/tutoring/classes/actions";
+import DeleteAssignmentButton from "./DeleteAssignmentButton";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -187,22 +187,14 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
                     >
                       <span className="material-symbols-outlined text-[20px]">edit</span>
                     </Link>
-                    <form action={deleteAssignment}>
-                      <input type="hidden" name="assignmentId" value={assignment.id} />
-                      <input type="hidden" name="groupId" value={id} />
-                      <button
-                        type="submit"
-                        className="p-2 rounded-full bg-error/10 text-error hover:bg-error/10 transition-all"
-                        title="Delete assignment"
-                        onClick={(e) => {
-                          if (!confirm("Are you sure you want to delete this assignment? This action cannot be undone.")) {
-                            e.preventDefault();
-                          }
-                        }}
-                      >
-                        <span className="material-symbols-outlined text-[20px]">delete</span>
-                      </button>
-                    </form>
+                    <DeleteAssignmentButton
+                      assignmentId={assignment.id}
+                      groupId={id}
+                      onDelete={() => {
+                        // Refresh the page to show updated list
+                        window.location.reload();
+                      }}
+                    />
                   </div>
                 </div>
               </div>

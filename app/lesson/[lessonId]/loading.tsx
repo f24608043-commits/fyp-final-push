@@ -10,10 +10,10 @@ export default function Loading() {
             <Mascot pose="thinking" size={128} />
           </div>
           <h1 className="font-headline-2xl text-headline-2xl text-text-primary font-extrabold mb-4">
-            Loading Your Path...
+            Loading Lesson...
           </h1>
           <p className="font-body-lg text-body-lg text-text-muted mb-8">
-            Preparing your learning journey. Just a moment!
+            Preparing your video and quiz. Just a moment!
           </p>
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>

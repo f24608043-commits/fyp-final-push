@@ -3,7 +3,13 @@ import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import ShellChrome from "@/components/shell/ShellChrome";
+import dynamic from "next/dynamic";
+
+// Lazy load ShellChrome to reduce initial bundle size
+const ShellChrome = dynamic(() => import("@/components/shell/ShellChrome"), {
+  loading: () => null,
+  ssr: true,
+});
 
 export default async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();

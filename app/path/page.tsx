@@ -1,8 +1,9 @@
 ﻿import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { courses, enrollments, lessons, profiles, units, userProgress, tutorSessions } from "@/db/schema";
-import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { courses, enrollments, lessons, units, userProgress, profiles } from "@/db/schema";
+import { eq, and, inArray, asc, count } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import EnrollButton from "./EnrollButton";
 import Link from "next/link";
 import Mascot from "@/components/Mascot";
 import { getMySessions } from "@/app/tutoring/actions";
@@ -87,29 +88,12 @@ export default async function PathPage() {
             ) : (
               <div className="w-full space-y-4">
                 {publishedCourses.map((course) => (
-                  <form key={course.id} action={async () => {
-                    "use server";
-                    const { enrollInCourse } = await import("../library/actions");
-                    await enrollInCourse(course.id);
-                  }}>
-                    <button
-                      type="submit"
-                      className="w-full rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-surface/50 hover:border-primary hover:bg-surface-border transition-all text-left group"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-headline-md text-text-primary font-bold mb-2 group-hover:text-primary transition-colors">
-                            {course.title}
-                          </h3>
-                          <p className="font-body-sm text-text-muted line-clamp-2">{course.description}</p>
-                        </div>
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-text-primary font-label-sm font-bold shadow-clay-primary group-hover:scale-105 transition-transform">
-                          <span className="material-symbols-outlined text-[18px]">add</span>
-                          <span>Enroll</span>
-                        </div>
-                      </div>
-                    </button>
-                  </form>
+                  <EnrollButton
+                    key={course.id}
+                    courseId={course.id}
+                    courseTitle={course.title}
+                    courseDescription={course.description}
+                  />
                 ))}
               </div>
             )}
@@ -140,42 +124,40 @@ export default async function PathPage() {
 
   const unitIds = courseUnits.map((u) => u.id);
 
-  // 4. Fetch lessons and progress in parallel (they're independent)
+  // 4. Fetch lessons first, then progress using lesson IDs
   let courseLessons: any[] = [];
   let progressRows: any[] = [];
   try {
-    [courseLessons, progressRows] = await Promise.all([
-      unitIds.length > 0
-        ? db
-            .select()
-            .from(lessons)
-            .where(inArray(lessons.unitId, unitIds))
-            .orderBy(asc(lessons.orderIndex))
-        : Promise.resolve([]),
-      unitIds.length > 0
-        ? db
-            .select()
-            .from(userProgress)
-            .where(
-              and(
-                eq(userProgress.userId, user.id),
-                inArray(userProgress.lessonId, unitIds)
-              )
+    courseLessons = unitIds.length > 0
+      ? await db
+          .select()
+          .from(lessons)
+          .where(inArray(lessons.unitId, unitIds))
+          .orderBy(asc(lessons.orderIndex))
+      : [];
+
+    const lessonIds = courseLessons.map((l) => l.id);
+
+    progressRows = lessonIds.length > 0
+      ? await db
+          .select()
+          .from(userProgress)
+          .where(
+            and(
+              eq(userProgress.userId, user.id),
+              inArray(userProgress.lessonId, lessonIds)
             )
-        : Promise.resolve([])
-    ]);
+          )
+      : [];
   } catch (error) {
     console.error('[PATH] Error fetching lessons/progress:', error);
     courseLessons = [];
     progressRows = [];
   }
 
-  const lessonIds = courseLessons.map((l) => l.id);
-  const filteredProgressRows = progressRows.filter(p => lessonIds.includes(p.lessonId));
+  const progressMap = new Map(progressRows.map((p) => [p.lessonId, p.status]));
 
-  const progressMap = new Map(filteredProgressRows.map((p) => [p.lessonId, p.status]));
-
-  const completedLessons = filteredProgressRows.filter(p => p.status === "completed").length;
+  const completedLessons = progressRows.filter(p => p.status === "completed").length;
   const totalLessons = courseLessons.length;
 
   const endTime = Date.now();

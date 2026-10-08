@@ -11,6 +11,7 @@ import { eq, and, inArray } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import UserAvatar from "@/components/UserAvatar";
+import DeleteGroupButton from "./DeleteGroupButton";
 
 export default async function GroupDetailPage({
   params,
@@ -153,14 +154,12 @@ export default async function GroupDetailPage({
               <p className="font-body-lg text-body-lg text-text-muted">{group.description}</p>
             )}
           </div>
-          <form action={deleteGroup}>
-            <button
-              type="submit"
-              className="rounded-full border-2 border-error bg-error/10 text-error px-4 py-2 font-label-md font-semibold shadow-clay-secondary hover:from-error/10 hover:to-error/10 transition-all"
-            >
-              Delete Group
-            </button>
-          </form>
+          <DeleteGroupButton
+            groupId={groupId}
+            onDelete={() => {
+              window.location.href = "/tutoring/groups";
+            }}
+          />
         </div>
       </div>
 

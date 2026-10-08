@@ -25,25 +25,25 @@ export async function completeOnboarding(formData: FormData) {
     redirect("/onboarding?error=Please select at least one course");
   }
 
-  // 1. Create enrollments for selected courses
-  for (let i = 0; i < selectedCourseIds.length; i++) {
-    const courseId = selectedCourseIds[i];
-    await db
+  // 1. Create enrollments for selected courses in parallel for speed
+  const enrollmentPromises = selectedCourseIds.map((courseId, index) =>
+    db
       .insert(enrollments)
       .values({
         userId: user.id,
         courseId,
-        isActive: i === 0, // First selected course is active
+        isActive: index === 0, // First selected course is active
         placementAnswer,
       })
       .onConflictDoUpdate({
         target: [enrollments.userId, enrollments.courseId],
         set: {
-          isActive: i === 0,
+          isActive: index === 0,
           placementAnswer,
         },
-      });
-  }
+      })
+  );
+  await Promise.all(enrollmentPromises);
 
   // 2. Update profile with goal and set onboarding_done = true
   const result = await db

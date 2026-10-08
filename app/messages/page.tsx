@@ -61,7 +61,7 @@ export default async function MessagesPage() {
               </div>
             </div>
             <div className="w-12 h-12 md:w-16 md:h-16 shrink-0">
-              <Mascot pose="idle" size={48} mdSize={64} />
+              <Mascot pose="idle" size={64} />
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default async function MessagesPage() {
       {conversations.length === 0 ? (
         <div className="rounded-[20px] md:rounded-[24px] bg-surface p-6 md:p-8 text-center shadow-clay-surface border-4 border-surface/50">
           <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-clay-surface mx-auto mb-4 border-4 border-surface/30">
-            <Mascot pose="empty" size={48} mdSize={64} />
+            <Mascot pose="empty" size={64} />
           </div>
           <h3 className="font-headline-md text-headline-md text-text-primary font-extrabold mb-2">No conversations yet</h3>
           <p className="font-body-md text-text-muted">

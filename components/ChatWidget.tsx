@@ -113,6 +113,7 @@ export default function ChatWidget() {
             setCurrentPose("waving");
             setTimeout(() => setCurrentPose("idle"), 2000);
           }}
+          suppressHydrationWarning={true}
           className="bg-gradient-to-br from-primary to-success text-text-primary rounded-full shadow-clay-surface hover:shadow-clay-surface transition-all duration-300 hover:scale-105"
           style={{
             boxShadow: "0 8px 32px rgba(34, 197, 94, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2)",
