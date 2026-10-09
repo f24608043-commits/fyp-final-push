@@ -26,11 +26,15 @@ function getRelativeTime(date: Date): string {
 interface ConversationsRealtimeListProps {
   initialConversations: any[];
   currentUserId: string;
+  onSelectConversation?: (conversationId: string) => void;
+  selectedConversation?: string | null;
 }
 
 export default function ConversationsRealtimeList({
   initialConversations,
   currentUserId,
+  onSelectConversation,
+  selectedConversation,
 }: ConversationsRealtimeListProps) {
   const [conversations, setConversations] = useState<any[]>(initialConversations);
   const { isUserOnline } = usePresence({ id: currentUserId });
@@ -101,14 +105,16 @@ export default function ConversationsRealtimeList({
             key={item.conversation.id}
             role="button"
             tabIndex={0}
-            onClick={() => router.push(`/messages/${item.conversation.id}`)}
+            onClick={() => onSelectConversation?.(item.conversation.id)}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                router.push(`/messages/${item.conversation.id}`);
+                onSelectConversation?.(item.conversation.id);
               }
             }}
-            className="conversation-item block text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-tertiary/40 rounded-[20px] md:rounded-[24px]"
+            className={`conversation-item block text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-tertiary/40 rounded-[20px] md:rounded-[24px] ${
+              selectedConversation === item.conversation.id ? "bg-tertiary/10" : ""
+            }`}
           >
             <div
               className={`rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-clay-surface border-4 transform hover:scale-[1.01] transition-transform duration-150 active:scale-[0.99] ${
