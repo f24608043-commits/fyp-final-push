@@ -20,7 +20,26 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
   ]);
 
   if (!tutorProfile) {
-    redirect("/tutoring");
+    return (
+      <div className="w-full px-6 py-12 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div className="bg-surface rounded-3xl p-8 max-w-md shadow-clay-surface border-4 border-surface/50">
+          <Mascot pose="thinking" size={96} className="mx-auto mb-4" />
+          <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary mb-2">
+            Tutor Not Found
+          </h2>
+          <p className="font-body-md text-text-muted mb-6">
+            The tutor profile could not be found or is currently inactive.
+          </p>
+          <Link
+            href="/tutoring"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-tertiary text-text-primary font-label-md font-bold shadow-clay-surface border-2 border-surface/30 hover:scale-105 transition-all"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            Back to Tutors
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -77,6 +96,8 @@ export default async function BookSessionPage({ params }: { params: Promise<{ tu
                         required
                         className="sr-only peer"
                       />
+                      <input type="hidden" name="startTime" value={slot.startTime} disabled />
+                      <input type="hidden" name="endTime" value={slot.endTime} disabled />
                       <div className="p-4 rounded-xl border-2 border-surface-border peer-checked:border-tertiary peer-checked:bg-tertiary/10 transition-all">
                         <p className="font-label-sm font-semibold text-text-primary">
                           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][slot.dayOfWeek]}

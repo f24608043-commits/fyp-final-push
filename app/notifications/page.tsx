@@ -1,7 +1,8 @@
-import { getNotifications, getUnreadCount, markAsRead, markAllAsRead, deleteNotification } from "./actions";
+import { getNotifications, getUnreadCount } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Mascot from "@/components/Mascot";
+import NotificationsRealtimeList from "./NotificationsRealtimeList";
 
 export default async function NotificationsPage() {
   const supabase = await createClient();
@@ -58,105 +59,12 @@ export default async function NotificationsPage() {
         </div>
       </div>
 
-      {/* Header Actions */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-[24px]">notifications</span>
-          <h2 className="font-headline-md text-headline-md text-text-primary font-extrabold">All Notifications</h2>
-        </div>
-        {unreadCount > 0 && (
-          <div className="flex items-center gap-4">
-            <span className="bg-error text-text-error px-3 py-1 rounded-full font-label-sm font-bold">
-              {unreadCount} unread
-            </span>
-            <form action={async (formData: FormData) => {
-              "use server";
-              await markAllAsRead();
-            }}>
-              <button className="font-label-sm text-primary hover:underline font-bold">
-                Mark all as read
-              </button>
-            </form>
-          </div>
-        )}
-      </div>
-
-      {notifications.length === 0 ? (
-        <div className="rounded-[24px] bg-surface p-12 text-center shadow-clay-surface">
-          <div className="relative w-20 h-20 rounded-xl bg-surface-border flex items-center justify-center overflow-hidden shadow-inner mx-auto mb-4">
-            <Mascot pose="empty" size={64} />
-          </div>
-          <h2 className="font-headline-xl text-headline-xl text-text-primary font-extrabold mb-2">No notifications yet</h2>
-          <p className="font-body-md text-text-muted">You're all caught up! Check back later for updates.</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {notifications.map((notification: any) => (
-            <div
-              key={notification.id}
-              className={`rounded-[24px] bg-surface p-4 shadow-clay-surface ${
-                !notification.isRead ? "border-l-4 border-l-primary" : ""
-              }`}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">
-                      {getNotificationIcon(notification.type)}
-                    </span>
-                    <h3 className={`font-label-md font-semibold ${!notification.isRead ? "text-primary" : "text-text-primary"}`}>
-                      {notification.title}
-                    </h3>
-                  </div>
-                  <p className="font-body-sm text-text-muted mb-2">{notification.message}</p>
-                  <p className="font-body-sm text-text-muted opacity-75">
-                    {new Date(notification.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  {!notification.isRead && (
-                    <form action={async (formData: FormData) => {
-                      "use server";
-                      await markAsRead(notification.id);
-                    }}>
-                      <button className="font-label-sm text-primary hover:underline font-bold">
-                        Mark read
-                      </button>
-                    </form>
-                  )}
-                  <form action={async (formData: FormData) => {
-                    "use server";
-                    await deleteNotification(notification.id);
-                  }}>
-                    <button className="font-label-sm text-error hover:text-error/80 font-medium">
-                      Delete
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Realtime Notifications List */}
+      <NotificationsRealtimeList
+        initialNotifications={notifications}
+        initialUnreadCount={unreadCount}
+        userId={user.id}
+      />
     </div>
   );
-}
-
-function getNotificationIcon(type: string): string {
-  switch (type) {
-    case "friend_request":
-      return "👋";
-    case "friend_accepted":
-      return "🤝";
-    case "badge_earned":
-      return "🏆";
-    case "streak_milestone":
-      return "🔥";
-    case "lesson_completed":
-      return "✅";
-    case "leaderboard_rank":
-      return "📊";
-    default:
-      return "🔔";
-  }
 }

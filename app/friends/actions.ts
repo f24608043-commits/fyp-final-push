@@ -140,17 +140,22 @@ export async function acceptFriendRequest(friendshipId: string) {
     // Send notification to requester
     await notifyFriendAccepted(friendship[0].requesterId, userId);
 
-    // Automatically create a conversation between the two friends
-    const { startDirectConversation } = await import("../messaging/actions");
-    await startDirectConversation(friendship[0].requesterId);
+    // Automatically create a direct conversation between the two friends without redirect
+    try {
+      const { getOrCreateDirectConversation } = await import("../messaging/actions");
+      await getOrCreateDirectConversation(friendship[0].requesterId);
+    } catch (convoError) {
+      console.warn("Could not auto-create direct conversation:", convoError);
+      // Non-fatal, continuing
+    }
 
     revalidatePath("/friends");
     revalidatePath("/profile/[userId]");
     revalidatePath("/messages");
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error accepting friend request:", error);
-    throw new Error("Failed to accept friend request. Please try again.");
+    throw new Error(error.message || "Failed to accept friend request. Please try again.");
   }
 }
 

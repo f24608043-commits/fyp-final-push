@@ -98,6 +98,7 @@ export async function updateTutorProfile(data: {
 }
 
 export async function getTutorProfile(tutorId: string) {
+  // Try inner join first
   const [profile] = await db
     .select({
       tutorId: tutorProfiles.tutorId,
@@ -118,7 +119,56 @@ export async function getTutorProfile(tutorId: string) {
     .where(eq(tutorProfiles.tutorId, tutorId))
     .limit(1);
 
-  return profile;
+  if (profile) return profile;
+
+  // Fallback: look up by tutorProfiles.id if tutorId is an integer/row id
+  const numId = parseInt(tutorId, 10);
+  if (!isNaN(numId)) {
+    const [byRowId] = await db
+      .select({
+        tutorId: tutorProfiles.tutorId,
+        bio: tutorProfiles.bio,
+        subjects: tutorProfiles.subjects,
+        hourlyRate: tutorProfiles.hourlyRate,
+        timezone: tutorProfiles.timezone,
+        isActive: tutorProfiles.isActive,
+        rating: tutorProfiles.rating,
+        totalSessions: tutorProfiles.totalSessions,
+        createdAt: tutorProfiles.createdAt,
+        updatedAt: tutorProfiles.updatedAt,
+        displayName: profiles.displayName,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(tutorProfiles)
+      .innerJoin(profiles, eq(tutorProfiles.tutorId, profiles.id))
+      .where(eq(sql`tutor_profiles.id`, numId))
+      .limit(1);
+
+    if (byRowId) return byRowId;
+  }
+
+  // Fallback: if profile innerJoin failed, try left join
+  const [standaloneTutor] = await db
+    .select({
+      tutorId: tutorProfiles.tutorId,
+      bio: tutorProfiles.bio,
+      subjects: tutorProfiles.subjects,
+      hourlyRate: tutorProfiles.hourlyRate,
+      timezone: tutorProfiles.timezone,
+      isActive: tutorProfiles.isActive,
+      rating: tutorProfiles.rating,
+      totalSessions: tutorProfiles.totalSessions,
+      createdAt: tutorProfiles.createdAt,
+      updatedAt: tutorProfiles.updatedAt,
+      displayName: profiles.displayName,
+      avatarUrl: profiles.avatarUrl,
+    })
+    .from(tutorProfiles)
+    .leftJoin(profiles, eq(tutorProfiles.tutorId, profiles.id))
+    .where(eq(tutorProfiles.tutorId, tutorId))
+    .limit(1);
+
+  return standaloneTutor;
 }
 
 // Tutor Availability Actions
@@ -569,26 +619,31 @@ export async function getPendingRequests() {
     return [];
   }
 
-  const requests = await db
-    .select({
-      id: sessionRequests.id,
-      requestedSlots: sessionRequests.requestedSlots,
-      message: sessionRequests.message,
-      status: sessionRequests.status,
-      createdAt: sessionRequests.createdAt,
-      learner: {
-        id: profiles.id,
-        displayName: profiles.displayName,
-        avatarUrl: profiles.avatarUrl,
-      },
-    })
-    .from(sessionRequests)
-    .innerJoin(profiles, eq(sessionRequests.learnerId, profiles.id))
-    .where(and(eq(sessionRequests.tutorId, user.id), eq(sessionRequests.status, "pending")))
-    .orderBy(desc(sessionRequests.createdAt))
-    .limit(50);
+  try {
+    const requests = await db
+      .select({
+        id: sessionRequests.id,
+        requestedSlots: sessionRequests.requestedSlots,
+        message: sessionRequests.message,
+        status: sessionRequests.status,
+        createdAt: sessionRequests.createdAt,
+        learner: {
+          id: profiles.id,
+          displayName: profiles.displayName,
+          avatarUrl: profiles.avatarUrl,
+        },
+      })
+      .from(sessionRequests)
+      .innerJoin(profiles, eq(sessionRequests.learnerId, profiles.id))
+      .where(and(eq(sessionRequests.tutorId, user.id), eq(sessionRequests.status, "pending")))
+      .orderBy(desc(sessionRequests.createdAt))
+      .limit(50);
 
-  return requests;
+    return requests;
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+    return [];
+  }
 }
 
 // Tutor Enrollment Actions

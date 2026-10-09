@@ -1,17 +1,18 @@
 "use server";
 
 import { db } from "@/db";
-import { 
-  conversations, 
-  conversationMembers, 
-  messages, 
-  profiles, 
-  friendships, 
+import {
+  conversations,
+  conversationMembers,
+  messages,
+  profiles,
+  friendships,
   sessionRequests,
   tutorProfiles,
   blocks,
   messageReports,
-  tutorEnrollments
+  tutorEnrollments,
+  notifications
 } from "@/db/schema";
 import { eq, and, or, desc, asc, sql, lt, isNull, inArray } from "drizzle-orm";
 import { createClient } from "@/utils/supabase/server";
@@ -121,8 +122,8 @@ async function isBlocked(blockerId: string, blockedId: string): Promise<boolean>
   return !!block;
 }
 
-// Start a direct conversation with rules enforcement
-export async function startDirectConversation(otherUserId: string) {
+// Get or create a direct conversation with rules enforcement (does not redirect)
+export async function getOrCreateDirectConversation(otherUserId: string) {
   const user = await getCurrentUser();
   
   if (user.id === otherUserId) {
@@ -176,16 +177,23 @@ export async function startDirectConversation(otherUserId: string) {
     .limit(1);
 
   if (existing) {
-    return { success: true, conversationId: existing.id };
+    // Ensure jitsiRoomId exists for direct call support
+    if (!existing.jitsiRoomId) {
+      const jitsiRoomId = `lego-direct-${existing.id}-${randomUUID().slice(0, 8)}`;
+      await db.update(conversations).set({ jitsiRoomId }).where(eq(conversations.id, existing.id));
+      existing.jitsiRoomId = jitsiRoomId;
+    }
+    return { success: true, conversationId: existing.id, conversation: existing };
   }
 
-  // Create new conversation
+  // Create new conversation with Jitsi room ID for direct video calls
   const [conversation] = await db
     .insert(conversations)
     .values({
       type: "direct",
       createdBy: user.id,
       directKey,
+      jitsiRoomId: `lego-direct-${randomUUID().slice(0, 8)}`,
     })
     .returning();
 
@@ -195,8 +203,14 @@ export async function startDirectConversation(otherUserId: string) {
     { conversationId: conversation.id, userId: otherUserId, role: "member" },
   ]);
 
+  return { success: true, conversationId: conversation.id, conversation };
+}
+
+// Start a direct conversation with rules enforcement (redirects to the conversation)
+export async function startDirectConversation(otherUserId: string) {
+  const result = await getOrCreateDirectConversation(otherUserId);
   revalidatePath("/messages");
-  redirect(`/messages/${conversation.id}`);
+  redirect(`/messages/${result.conversationId}`);
 }
 
 // Create a group conversation (tutor only, max 30 members)
@@ -502,46 +516,72 @@ export async function sendMessage(conversationId: string, body: string) {
     }
   }
 
-  // Insert message using SECURITY DEFINER function to bypass RLS
-  // (server actions already validate permissions)
+  // Insert message with fallback
   try {
-    console.log("Attempting to insert message:", {
-      conversationId,
-      senderId: user.id,
-      body: body.trim(),
-    });
+    let fullMessage: any = null;
 
-    const [message] = await db.execute(
-      sql`SELECT insert_message(${conversationId}, ${user.id}, ${body.trim()}) as id`
-    );
+    try {
+      // Primary: Direct database insert via Drizzle
+      const [newMsg] = await db
+        .insert(messages)
+        .values({
+          conversationId,
+          senderId: user.id,
+          body: body.trim(),
+        })
+        .returning();
 
-    // Fetch the full message record
-    const [fullMessage] = await db
-      .select()
-      .from(messages)
-      .where(eq(messages.id, message.id as string))
-      .limit(1);
+      fullMessage = newMsg;
+    } catch (insertError: any) {
+      console.warn("Direct message insert fallback to RPC:", insertError.message);
+      // Fallback: try RPC insert_message
+      const [msg] = await db.execute(
+        sql`SELECT insert_message(${conversationId}, ${user.id}, ${body.trim()}) as id`
+      );
 
-    console.log("Message inserted successfully:", fullMessage);
+      const [fetchedMsg] = await db
+        .select()
+        .from(messages)
+        .where(eq(messages.id, msg.id as string))
+        .limit(1);
+
+      fullMessage = fetchedMsg;
+    }
+
+    // Update conversation lastMessageAt
+    await db
+      .update(conversations)
+      .set({ 
+        lastMessageAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(conversations.id, conversationId));
+
+    // Notify other members of new message
+    for (const mId of memberIds) {
+      if (mId !== user.id) {
+        try {
+          await db.insert(notifications).values({
+            userId: mId,
+            type: "lesson_completed", // Reusing system notification type
+            title: "New Message",
+            message: `${user.email?.split("@")[0] || "Someone"}: ${body.trim().slice(0, 50)}`,
+            data: { conversationId, messageId: fullMessage?.id },
+          });
+        } catch (notifErr) {
+          console.warn("Failed to create message notification:", notifErr);
+        }
+      }
+    }
+
     revalidatePath("/messages");
     return { success: true, message: fullMessage };
   } catch (error: any) {
     console.error("Database error inserting message:", error);
-    console.error("Error details:", {
-      code: error.code,
-      message: error.message,
-      constraint: error.constraint,
-      table: error.table,
-      column: error.column,
-      detail: error.detail,
-      hint: error.hint,
-      cause: error.cause,
-    });
-    if (error.code === '23505') {
+    if (error.code === "23505") {
       throw new Error("Rate limit exceeded: Please wait before sending another message");
     }
-    if (error.code === '23503') {
-      console.error("Foreign key violation - conversation_id or sender_id not found");
+    if (error.code === "23503") {
       throw new Error("Conversation not found or you are not a member");
     }
     throw new Error(`Failed to send message: ${error.message || "Please try again."}`);
@@ -841,13 +881,14 @@ export async function createGroupConversation(learnerIds: string[], name: string
     throw new Error("Duplicate learner IDs provided");
   }
 
-  // Create group conversation
+  // Create group conversation with Jitsi room ID
   const [conversation] = await db
     .insert(conversations)
     .values({
       type: "group",
       title: name || "Study Group",
       createdBy: user.id,
+      jitsiRoomId: `lego-class-${randomUUID().slice(0, 8)}`,
     })
     .returning();
 
@@ -867,7 +908,24 @@ export async function createGroupConversation(learnerIds: string[], name: string
     }))
   );
 
+  // Notify each added learner in realtime
+  const { notifications: notifsTable } = await import("@/db/schema");
+  for (const learnerId of uniqueLearnerIds) {
+    try {
+      await db.insert(notifsTable).values({
+        userId: learnerId,
+        type: "lesson_completed",
+        title: "Added to Study Group",
+        message: `Your tutor added you to "${name || "Study Group"}"`,
+        data: { conversationId: conversation.id },
+      });
+    } catch (notifErr) {
+      console.warn("Failed to notify group member:", notifErr);
+    }
+  }
+
   revalidatePath("/messages");
+  revalidatePath("/tutoring/dashboard");
   redirect(`/messages/${conversation.id}`);
 }
 

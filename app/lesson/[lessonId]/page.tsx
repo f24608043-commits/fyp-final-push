@@ -1,4 +1,4 @@
-﻿import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import {
   challengeOptions,
@@ -55,21 +55,22 @@ export default async function LessonPage({
     notFound();
   }
 
-  // 2. Fetch unit first (needed to get courseId)
-  const unitResult = await db.select().from(units).where(eq(units.id, lesson.unitId)).limit(1);
-  const unit = unitResult[0];
+  // 2. Fetch unit and course in a single query via innerJoin
+  const [unitCourseResult] = await db
+    .select({
+      unit: units,
+      course: courses,
+    })
+    .from(units)
+    .innerJoin(courses, eq(units.courseId, courses.id))
+    .where(eq(units.id, lesson.unitId))
+    .limit(1);
 
-  if (!unit) {
+  if (!unitCourseResult || !unitCourseResult.unit || !unitCourseResult.course) {
     notFound();
   }
 
-  // 3. Fetch course using unit.courseId
-  const courseResult = await db.select().from(courses).where(eq(courses.id, unit.courseId)).limit(1);
-  const course = courseResult[0];
-
-  if (!course) {
-    notFound();
-  }
+  const { unit, course } = unitCourseResult;
 
   // 4. Server-Side Progression Gating: Verify lesson is unlocked for this learner
   // Fetch course units, progress, and challenges in parallel for speed

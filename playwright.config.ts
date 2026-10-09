@@ -14,7 +14,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4005',
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
   },
 
@@ -24,13 +24,4 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-
-  webServer: {
-    command: 'echo "Using existing server on port 4005"',
-    url: 'http://localhost:4005',
-    reuseExistingServer: true,
-    timeout: 120 * 1000,
-    stdout: 'pipe',
-    stderr: 'pipe',
-  },
 });

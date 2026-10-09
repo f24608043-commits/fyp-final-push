@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { groups, assignments, quizzes } from "@/db/schema";
+import { groups, assignments, quizzes, notifications } from "@/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
@@ -138,8 +138,39 @@ export async function createAssignment(formData: FormData) {
       .returning();
 
     assignmentId = assignment.id;
+
+    // Send notifications to enrolled students if assignment is published
+    if (assignment.status === "published") {
+      try {
+        const members = await db.query.groupMembers.findMany({
+          where: (gm, { eq }) => eq(gm.groupId, groupId),
+        });
+
+        for (const member of members) {
+          if (member.userId !== user.id) {
+            await db.insert(notifications).values({
+              userId: member.userId,
+              type: "lesson_completed", // Using valid notification type
+              title: "New Assignment Posted",
+              message: `A new assignment "${assignment.title}" has been published.`,
+              data: {
+                assignmentId: assignment.id,
+                groupId,
+                actionUrl: `/classes/${groupId}/assignments/${assignment.id}`,
+              },
+            });
+          }
+        }
+      } catch (notifyErr) {
+        console.error("Failed to notify students of new assignment:", notifyErr);
+      }
+    }
+
     revalidatePath(`/tutoring/classes/${groupId}`);
   } catch (error: any) {
+    if (error?.digest?.startsWith?.("NEXT_REDIRECT")) {
+      throw error;
+    }
     console.error("Error creating assignment:", error);
     throw new Error("Failed to create assignment. Please try again.");
   }

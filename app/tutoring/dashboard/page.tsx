@@ -67,7 +67,10 @@ async function createGroup(formData: FormData) {
     const name = formData.get("groupName") as string;
     const selectedLearners = formData.getAll("learners") as string[];
     await createGroupConversation(selectedLearners, name);
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
     console.error("Create group error:", error);
     throw error;
   }

@@ -38,12 +38,11 @@ export default async function SessionPage({ params }: { params: Promise<{ sessio
   const sessionStart = new Date(session.scheduledAt);
   const sessionEnd = new Date(sessionStart.getTime() + session.durationMins * 60000);
   
-  // Check if session can be joined (10 minutes before start until end)
-  const canJoin = now >= new Date(sessionStart.getTime() - 10 * 60000) && now <= sessionEnd;
-  const isPast = now > sessionEnd;
-  const isFuture = now < new Date(sessionStart.getTime() - 10 * 60000);
-
+  // Check if session can be joined (Tutor anytime, learner 15 minutes before start until end)
   const isTutor = session.tutorId === user.id;
+  const canJoin = isTutor || (now >= new Date(sessionStart.getTime() - 15 * 60000) && now <= sessionEnd);
+  const isPast = now > sessionEnd;
+  const isFuture = !isTutor && now < new Date(sessionStart.getTime() - 15 * 60000);
 
   return (
     <div className="w-full px-6 py-6">
@@ -121,12 +120,25 @@ export default async function SessionPage({ params }: { params: Promise<{ sessio
           )}
 
           {canJoin && (
-            <div className="aspect-video bg-text-primary rounded-[24px] overflow-hidden">
-              <iframe
-                src={`https://meet.jit.si/${session.jitsiRoomId}`}
-                allow="camera; microphone; fullscreen; display-capture; autoplay"
-                style={{ width: '100%', height: '100%', border: 'none' }}
-              />
+            <div className="space-y-3">
+              <div className="flex justify-end">
+                <a
+                  href={`https://meet.jit.si/${session.jitsiRoomId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface hover:scale-105 transition-all text-xs"
+                >
+                  <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                  <span>Open Video in Dedicated Tab</span>
+                </a>
+              </div>
+              <div className="aspect-video bg-text-primary rounded-[24px] overflow-hidden border-2 border-surface-border shadow-clay-surface">
+                <iframe
+                  src={`https://meet.jit.si/${session.jitsiRoomId}`}
+                  allow="camera; microphone; fullscreen; display-capture; autoplay"
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                />
+              </div>
             </div>
           )}
         </div>

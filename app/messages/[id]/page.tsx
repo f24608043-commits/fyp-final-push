@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getMessages, sendMessage, markRead, leaveGroup } from "../../messaging/actions";
 import { createClient } from "@/utils/supabase/client";
+import { subscribeToConversation, broadcastTyping } from "@/lib/realtime";
+import { usePresence } from "@/hooks/usePresence";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -12,6 +14,7 @@ interface Message {
     id: string;
     body: string;
     createdAt: Date;
+    status?: "sending" | "sent" | "error";
   };
   sender: {
     id: string;
@@ -28,9 +31,15 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [conversationType, setConversationType] = useState<"direct" | "group">("direct");
   const [jitsiRoomId, setJitsiRoomId] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [conversationId, setConversationId] = useState<string | null>(null);
   const [otherParticipant, setOtherParticipant] = useState<{ displayName: string | null; avatarUrl: string | null; id: string } | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const channelRef = useRef<any>(null);
+
+  // Presence hook
+  const { isUserOnline } = usePresence(currentUser);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,6 +49,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
     scrollToBottom();
   }, [messages]);
 
+  // Initial load
   useEffect(() => {
     let mounted = true;
 
@@ -56,7 +66,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
           return;
         }
 
-        setCurrentUser(user);
+        if (mounted) setCurrentUser(user);
 
         // Load messages
         const initialMessages = await getMessages(resolvedParams.id);
@@ -65,73 +75,48 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
           setIsLoading(false);
         }
 
-        // Fetch conversation participants to show who we're messaging
-        const { data: members, error: membersError } = await supabase
+        // Fetch conversation details (type, jitsiRoomId)
+        const { data: convData } = await supabase
+          .from("conversations")
+          .select("type, jitsi_room_id, title")
+          .eq("id", resolvedParams.id)
+          .single();
+
+        if (convData && mounted) {
+          setConversationType(convData.type || "direct");
+          setJitsiRoomId(convData.jitsi_room_id || null);
+        }
+
+        // Fetch conversation participants
+        const { data: members } = await supabase
           .from("conversation_members")
           .select("user_id")
           .eq("conversation_id", resolvedParams.id);
 
-        console.log("Conversation members:", members);
-        console.log("Members error:", membersError);
-        console.log("Current user ID:", user.id);
-
-        if (membersError) {
-          console.error("Error fetching conversation members:", membersError);
-        }
-
         if (members && members.length > 0 && mounted) {
           const otherUserId = members.find((m: any) => m.user_id !== user.id)?.user_id;
-          console.log("Other user ID:", otherUserId);
           
           if (otherUserId) {
-            const { data: profile, error: profileError } = await supabase
+            const { data: profile } = await supabase
               .from("profiles")
               .select("id, display_name, avatar_url")
               .eq("id", otherUserId)
               .single();
             
-            console.log("Other user profile:", profile);
-            console.log("Profile error:", profileError);
-            
             if (profile && mounted) {
               setOtherParticipant({
-                displayName: profile.display_name || "Unknown User",
+                displayName: profile.display_name || "User",
                 avatarUrl: profile.avatar_url,
                 id: profile.id,
               });
-            } else if (mounted) {
-              console.error("Failed to load profile for user:", otherUserId, profileError);
-              setOtherParticipant({
-                displayName: "Unknown User",
-                avatarUrl: null,
-                id: otherUserId,
-              });
             }
           } else if (mounted) {
-            // No other participant found (group chat or self-conversation)
-            console.warn("No other participant found in conversation");
-            // For group chats, show conversation name instead
-            const { data: conversation } = await supabase
-              .from("conversations")
-              .select("name, type")
-              .eq("id", resolvedParams.id)
-              .single();
-            
-            if (conversation && mounted) {
-              setOtherParticipant({
-                displayName: conversation.name || conversation.type === "group" ? "Group Chat" : "Unknown User",
-                avatarUrl: null,
-                id: resolvedParams.id,
-              });
-            }
+            setOtherParticipant({
+              displayName: convData?.title || (convData?.type === "group" ? "Group Chat" : "Chat"),
+              avatarUrl: null,
+              id: resolvedParams.id,
+            });
           }
-        } else if (mounted) {
-          console.error("No members found for conversation:", resolvedParams.id);
-          setOtherParticipant({
-            displayName: "Unknown User",
-            avatarUrl: null,
-            id: resolvedParams.id,
-          });
         }
 
         // Mark as read
@@ -149,56 +134,163 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
     };
   }, [params]);
 
-  // Polling for new messages instead of real-time subscription
+  // Real-time message subscription & typing events
   useEffect(() => {
-    if (!conversationId || !currentUser) return;
+    if (!conversationId || !currentUser?.id) return;
 
-    const pollInterval = setInterval(async () => {
-      try {
-        const latestMessages = await getMessages(conversationId);
-        setMessages(latestMessages);
-        await markRead(conversationId);
-      } catch (error) {
-        console.error("Error polling for messages:", error);
+    const { channel, unsubscribe } = subscribeToConversation(
+      conversationId,
+      (newMsgPayload) => {
+        // When real-time message inserted
+        setMessages((prev) => {
+          // Deduplicate if already present
+          if (prev.some((m) => m.message.id === newMsgPayload.id)) {
+            return prev;
+          }
+
+          // If this message was our optimistic one, replace it
+          const isFromSelf = newMsgPayload.sender_id === currentUser.id;
+          const filtered = prev.filter((m) => !(m.message.id.startsWith("temp-") && isFromSelf && m.message.body === newMsgPayload.body));
+
+          const incomingMsg: Message = {
+            message: {
+              id: newMsgPayload.id,
+              body: newMsgPayload.body,
+              createdAt: new Date(newMsgPayload.created_at),
+              status: "sent",
+            },
+            sender: {
+              id: newMsgPayload.sender_id,
+              displayName: isFromSelf
+                ? (currentUser.user_metadata?.display_name || currentUser.email)
+                : (otherParticipant?.displayName || "Participant"),
+              avatarUrl: isFromSelf
+                ? currentUser.user_metadata?.avatar_url
+                : (otherParticipant?.avatarUrl || null),
+            },
+          };
+
+          return [...filtered, incomingMsg];
+        });
+
+        // Mark as read if from someone else
+        if (newMsgPayload.sender_id !== currentUser.id) {
+          markRead(conversationId).catch(() => {});
+        }
+      },
+      ({ userId, isTyping: typingStatus }) => {
+        if (userId !== currentUser.id) {
+          setIsTyping(typingStatus);
+        }
       }
-    }, 3000); // Poll every 3 seconds
+    );
+
+    channelRef.current = channel;
+
+    // Background sync safety net (every 10s)
+    const syncInterval = setInterval(async () => {
+      try {
+        const latest = await getMessages(conversationId);
+        setMessages((prev) => {
+          // If message counts match and no temporary messages, avoid re-render
+          if (latest.length === prev.length && !prev.some(m => m.message.id.startsWith("temp-"))) {
+            return prev;
+          }
+          return latest;
+        });
+      } catch (e) {
+        // Ignore background polling errors
+      }
+    }, 10000);
 
     return () => {
-      clearInterval(pollInterval);
+      unsubscribe();
+      clearInterval(syncInterval);
+      channelRef.current = null;
     };
-  }, [conversationId, currentUser]);
+  }, [conversationId, currentUser?.id, otherParticipant?.displayName, otherParticipant?.avatarUrl]);
+
+  // Handle typing status broadcast
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+
+    if (channelRef.current && currentUser?.id) {
+      broadcastTyping(channelRef.current, currentUser.id, true);
+
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => {
+        if (channelRef.current && currentUser?.id) {
+          broadcastTyping(channelRef.current, currentUser.id, false);
+        }
+      }, 2000);
+    }
+  };
 
   const handleSend = async () => {
     if (!newMessage.trim() || isSending || !conversationId) return;
 
-    setIsSending(true);
-    const tempMessage = newMessage;
+    const tempId = `temp-${Date.now()}`;
+    const textToSend = newMessage.trim();
     setNewMessage("");
+    setIsSending(true);
 
+    if (channelRef.current && currentUser?.id) {
+      broadcastTyping(channelRef.current, currentUser.id, false);
+    }
+
+    // Optimistic message update
     const optimisticMessage: Message = {
       message: {
-        id: "temp",
-        body: tempMessage,
+        id: tempId,
+        body: textToSend,
         createdAt: new Date(),
+        status: "sending",
       },
       sender: {
         id: currentUser.id,
-        displayName: currentUser.user_metadata.display_name || currentUser.email,
-        avatarUrl: currentUser.user_metadata.avatar_url,
+        displayName: currentUser.user_metadata?.display_name || currentUser.email,
+        avatarUrl: currentUser.user_metadata?.avatar_url,
       },
     };
 
     setMessages((prev) => [...prev, optimisticMessage]);
 
     try {
-      const result = await sendMessage(conversationId, tempMessage);
-      console.log("Message sent successfully:", result);
-      // Remove optimistic message and let Realtime handle the real one
-      setMessages((prev) => prev.filter((m) => m.message.id !== "temp"));
+      const result = await sendMessage(conversationId, textToSend);
+
+      // Upgrade optimistic message to confirmed
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.message.id === tempId
+            ? {
+                ...m,
+                message: {
+                  ...m.message,
+                  id: result.message?.id || m.message.id,
+                  status: "sent",
+                },
+              }
+            : m
+        )
+      );
     } catch (error: any) {
       console.error("Error sending message:", error);
-      setMessages((prev) => prev.filter((m) => m.message.id !== "temp"));
-      setNewMessage(tempMessage); // Restore the message so user can try again
+      // Mark optimistic message with error
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.message.id === tempId
+            ? {
+                ...m,
+                message: {
+                  ...m.message,
+                  status: "error",
+                },
+              }
+            : m
+        )
+      );
+      // Restore draft input so user doesn't lose text
+      setNewMessage(textToSend);
       alert(error.message || "Failed to send message. Please try again.");
     } finally {
       setIsSending(false);
@@ -218,6 +310,9 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
     }
   };
 
+  const isOtherOnline = otherParticipant ? isUserOnline(otherParticipant.id) : false;
+  const effectiveJitsiRoom = jitsiRoomId || `lego-chat-${conversationId}`;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -232,32 +327,56 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
   return (
     <div className="w-full h-screen flex flex-col bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10">
       {/* Header */}
-      <div className="bg-surface border-b border-surface-border px-4 py-3 md:px-6 md:py-4 flex items-center justify-between shrink-0">
+      <div className="bg-surface border-b border-surface-border px-4 py-3 md:px-6 md:py-4 flex items-center justify-between shrink-0 shadow-clay-surface">
         <div className="flex items-center gap-2 md:gap-3">
-          <Link href="/messages" className="text-text-muted hover:text-text-muted">
+          <Link href="/messages" className="text-text-muted hover:text-text-primary transition-colors">
             <span className="material-symbols-outlined text-[24px]">arrow_back</span>
           </Link>
+
           {otherParticipant ? (
-            <div className="flex items-center gap-2 md:gap-3">
-              {otherParticipant.avatarUrl ? (
-                <Image
-                  src={otherParticipant.avatarUrl}
-                  alt={otherParticipant.displayName || "User"}
-                  width={40}
-                  height={40}
-                  className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-surface-border"
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                {otherParticipant.avatarUrl ? (
+                  <Image
+                    src={otherParticipant.avatarUrl}
+                    alt={otherParticipant.displayName || "User"}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-surface-border shadow-clay-surface"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-lg border-2 border-surface/30 shadow-clay-surface">
+                    {otherParticipant.displayName?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                )}
+                {/* Live Online Badge */}
+                <span
+                  className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-surface ${
+                    isOtherOnline ? "bg-success" : "bg-text-muted/40"
+                  }`}
+                  title={isOtherOnline ? "Online" : "Offline"}
                 />
-              ) : (
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-tertiary flex items-center justify-center text-text-primary font-bold text-lg border-2 border-surface/30">
-                  {otherParticipant.displayName?.charAt(0).toUpperCase() || "U"}
-                </div>
-              )}
+              </div>
+
               <div className="min-w-0">
-                <h1 className="font-headline-sm md:font-headline-md text-text-primary font-extrabold truncate">
-                  {otherParticipant.displayName || "Unknown User"}
-                </h1>
-                <p className="font-label-xs md:font-label-sm text-text-muted">
-                  {conversationType === "group" ? "Group Chat" : "Direct Message"}
+                <div className="flex items-center gap-2">
+                  <h1 className="font-headline-sm md:font-headline-md text-text-primary font-extrabold truncate">
+                    {otherParticipant.displayName || "User"}
+                  </h1>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    isOtherOnline ? "bg-success/20 text-success" : "bg-surface-border text-text-muted"
+                  }`}>
+                    {isOtherOnline ? "Online" : "Offline"}
+                  </span>
+                </div>
+                <p className="font-label-xs text-text-muted">
+                  {isTyping ? (
+                    <span className="text-primary font-bold animate-pulse">Typing...</span>
+                  ) : conversationType === "group" ? (
+                    "Group Chat"
+                  ) : (
+                    "Direct Message"
+                  )}
                 </p>
               </div>
             </div>
@@ -269,22 +388,24 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
             </div>
           )}
         </div>
+
+        {/* Action Buttons: Video Call & Group Leave */}
         <div className="flex items-center gap-2">
-          {conversationType === "group" && jitsiRoomId && (
-            <a
-              href={`https://meet.jit.si/${jitsiRoomId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
-            >
-              <span className="material-symbols-outlined text-[18px]">videocam</span>
-              Join Class
-            </a>
-          )}
+          {/* Video Call Integration for both Direct & Group */}
+          <a
+            href={`https://meet.jit.si/${effectiveJitsiRoom}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-success to-primary text-text-primary px-3.5 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95 text-xs sm:text-sm"
+          >
+            <span className="material-symbols-outlined text-[18px]">videocam</span>
+            <span>{conversationType === "group" ? "Join Class" : "Start Video Call"}</span>
+          </a>
+
           {conversationType === "group" && (
             <button
               onClick={handleLeaveGroup}
-              className="text-error hover:text-error font-label-sm font-semibold"
+              className="text-error hover:text-error/80 font-label-sm font-semibold px-2 py-1 transition-colors"
             >
               Leave
             </button>
@@ -292,60 +413,96 @@ export default function MessageThreadPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      {/* Messages */}
+      {/* Messages Feed */}
       <div className="flex-1 overflow-y-auto p-3 md:p-6">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-text-primary px-4">
-            <p className="font-body-md text-center">No messages yet. Start the conversation!</p>
+            <p className="font-body-md text-center text-text-muted">No messages yet. Say hello to get started!</p>
           </div>
         ) : (
           <div className="max-w-3xl mx-auto space-y-3 md:space-y-4">
-            {messages.map((msg) => (
-              <div
-                key={msg.message.id}
-                className={`flex ${msg.sender.id === currentUser?.id ? "justify-end" : "justify-start"}`}
-              >
-                <div className={`max-w-[85%] md:max-w-[70%] rounded-[20px] px-3 py-2 md:px-4 md:py-3 ${
-                  msg.sender.id === currentUser?.id
-                    ? "bg-tertiary text-text-primary"
-                    : "bg-surface border-2 border-surface-border shadow-clay-surface"
-                }`}>
-                  {msg.sender.id !== currentUser?.id && (
-                    <p className="font-label-sm font-semibold mb-1">
-                      {msg.sender.displayName || "Unknown"}
-                    </p>
-                  )}
-                  <p className="font-body-sm">{msg.message.body}</p>
-                  <p className="font-body-xs mt-1 opacity-70">
-                    {new Date(msg.message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                  </p>
+            {messages.map((msg) => {
+              const isSelf = msg.sender.id === currentUser?.id;
+              return (
+                <div
+                  key={msg.message.id}
+                  className={`flex ${isSelf ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[85%] md:max-w-[70%] rounded-[20px] px-3.5 py-2.5 md:px-4 md:py-3 shadow-clay-surface ${
+                      isSelf
+                        ? "bg-tertiary text-text-primary rounded-tr-sm"
+                        : "bg-surface border-2 border-surface-border rounded-tl-sm"
+                    }`}
+                  >
+                    {!isSelf && (
+                      <p className="font-label-sm font-semibold mb-1 text-primary">
+                        {msg.sender.displayName || "Participant"}
+                      </p>
+                    )}
+                    <p className="font-body-sm whitespace-pre-wrap break-words">{msg.message.body}</p>
+                    <div className="flex items-center justify-end gap-1 mt-1 opacity-70">
+                      <span className="font-body-xs text-[10px]">
+                        {new Date(msg.message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                      {isSelf && (
+                        <span>
+                          {msg.message.status === "sending" ? (
+                            <span className="text-[10px]">⏳</span>
+                          ) : msg.message.status === "error" ? (
+                            <span className="text-[10px] text-error font-bold">⚠️</span>
+                          ) : (
+                            <span className="material-symbols-outlined text-[13px]">check</span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="rounded-[20px] px-3 py-1.5 bg-surface border-2 border-surface-border text-text-muted text-xs italic">
+                  {otherParticipant?.displayName || "Participant"} is typing...
                 </div>
               </div>
-            ))}
+            )}
+
             <div ref={messagesEndRef} />
           </div>
         )}
       </div>
 
-      {/* Input */}
+      {/* Message Input */}
       <div className="bg-surface border-t border-surface-border px-4 py-3 md:px-6 md:py-4 shrink-0 pb-safe">
         <div className="max-w-3xl mx-auto flex gap-2 md:gap-3">
           <input
             type="text"
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSend()}
+            onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2.5 md:py-3 rounded-full border-2 border-surface-border focus:border-tertiary focus:outline-none text-sm md:text-base"
+            className="flex-1 px-4 py-2.5 md:py-3 rounded-full border-2 border-surface-border focus:border-tertiary focus:outline-none text-sm md:text-base bg-background"
             disabled={isSending}
             maxLength={2000}
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}
-            className="px-4 md:px-6 py-2.5 md:py-3 rounded-full bg-tertiary text-text-primary font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-4 md:px-6 py-2.5 md:py-3 rounded-full bg-tertiary text-text-primary font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-clay-surface hover:scale-105 active:scale-95 flex items-center justify-center"
           >
-            <span className="material-symbols-outlined text-[20px]">send</span>
+            {isSending ? (
+              <span className="animate-spin text-sm">⏳</span>
+            ) : (
+              <span className="material-symbols-outlined text-[20px]">send</span>
+            )}
           </button>
         </div>
       </div>

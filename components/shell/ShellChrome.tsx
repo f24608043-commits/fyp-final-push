@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePresence } from "@/hooks/usePresence";
+import { subscribeToUserNotifications } from "@/lib/realtime";
 
 type Role = "learner" | "tutor" | "admin";
 
@@ -149,6 +151,42 @@ export default function ShellChrome({
   const [xp, setXp] = useState(0);
   const [streak, setStreak] = useState(0);
   const [resolvedName, setResolvedName] = useState(displayName);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  // Global presence tracking
+  usePresence({
+    id: userId,
+    displayName: resolvedName || displayName,
+    avatarUrl,
+    role,
+  });
+
+  // Real-time unread notification listener
+  useEffect(() => {
+    if (!userId) return;
+
+    let mounted = true;
+    async function fetchUnread() {
+      try {
+        const res = await fetch("/api/notifications/unread");
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted) setUnreadNotifications(data.unreadCount || 0);
+        }
+      } catch (err) {}
+    }
+
+    fetchUnread();
+
+    const unsubscribe = subscribeToUserNotifications(userId, () => {
+      setUnreadNotifications((prev) => prev + 1);
+    });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [userId]);
 
   // Derived, not effect-driven: any navigation invalidates the open drawer,
   // which also covers browser back/forward without a setState-in-effect.
@@ -383,12 +421,14 @@ export default function ShellChrome({
                 <span className="material-symbols-outlined text-[22px]">
                   notifications
                 </span>
-                <span
-                  id="notification-badge"
-                  className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full border-2 border-surface bg-error text-[10px] font-bold text-text-primary"
-                >
-                  0
-                </span>
+                {unreadNotifications > 0 && (
+                  <span
+                    id="notification-badge"
+                    className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-surface bg-error text-[10px] font-bold text-text-primary animate-pulse"
+                  >
+                    {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                  </span>
+                )}
               </div>
             </Link>
 

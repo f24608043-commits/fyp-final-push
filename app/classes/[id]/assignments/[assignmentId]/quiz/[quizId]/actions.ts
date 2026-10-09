@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { quizAttempts, quizAnswers, quizOptions } from "@/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -35,29 +35,37 @@ export async function submitQuiz(formData: FormData) {
       })
       .returning();
 
-    // Process answers
-    const answerKeys = Array.from(formData.keys()).filter(key => key.startsWith("answer_"));
-    const textKeys = Array.from(formData.keys()).filter(key => key.startsWith("text_"));
+    // Process answers in batch
+    const answerKeys = Array.from(formData.keys()).filter((key) => key.startsWith("answer_"));
+    const textKeys = Array.from(formData.keys()).filter((key) => key.startsWith("text_"));
+
+    const optionIds = answerKeys
+      .map((k) => formData.get(k) as string)
+      .filter(Boolean);
+
+    // Fetch all chosen options in a single batch query
+    let optionsMap = new Map<string, boolean>();
+    if (optionIds.length > 0) {
+      const fetchedOptions = await db
+        .select({ id: quizOptions.id, isCorrect: quizOptions.isCorrect })
+        .from(quizOptions)
+        .where(inArray(quizOptions.id, optionIds));
+
+      fetchedOptions.forEach((opt) => optionsMap.set(opt.id, opt.isCorrect));
+    }
 
     let correctCount = 0;
-    let totalPoints = 0;
+    const answersToInsert: any[] = [];
 
     for (const key of answerKeys) {
       const questionId = key.replace("answer_", "");
       const selectedOptionId = formData.get(key) as string;
 
       if (selectedOptionId) {
-        // Fetch the option to check if it's correct
-        const [option] = await db
-          .select({ isCorrect: quizOptions.isCorrect, points: quizOptions.id })
-          .from(quizOptions)
-          .where(eq(quizOptions.id, selectedOptionId))
-          .limit(1);
-
-        const isCorrect = option?.isCorrect || false;
+        const isCorrect = optionsMap.get(selectedOptionId) || false;
         if (isCorrect) correctCount++;
 
-        await db.insert(quizAnswers).values({
+        answersToInsert.push({
           attemptId: attempt.id,
           questionId,
           selectedOptionId,
@@ -72,7 +80,7 @@ export async function submitQuiz(formData: FormData) {
       const textAnswer = formData.get(key) as string;
 
       if (textAnswer) {
-        await db.insert(quizAnswers).values({
+        answersToInsert.push({
           attemptId: attempt.id,
           questionId,
           textAnswer,
@@ -80,6 +88,10 @@ export async function submitQuiz(formData: FormData) {
           pointsEarned: null,
         });
       }
+    }
+
+    if (answersToInsert.length > 0) {
+      await db.insert(quizAnswers).values(answersToInsert);
     }
 
     // Calculate score (simple percentage for now)
@@ -93,6 +105,9 @@ export async function submitQuiz(formData: FormData) {
     revalidatePath(`/classes/${groupId}`);
     redirect(`/classes/${groupId}`);
   } catch (error: any) {
+    if (error?.digest?.startsWith?.("NEXT_REDIRECT")) {
+      throw error;
+    }
     console.error("Error submitting quiz:", error);
     throw new Error("Failed to submit quiz. Please try again.");
   }
