@@ -1,27 +1,43 @@
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, or, like } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { sendFriendRequest } from "../actions";
 
 async function sendFriendRequestAction(formData: FormData) {
-  const email = formData.get("email") as string;
+  "use server";
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   
-  // Look up user by email or username using profiles table
+  if (!user) {
+    throw new Error("You must be logged in");
+  }
+
+  const emailOrUsername = formData.get("email") as string;
+  
+  if (!emailOrUsername || emailOrUsername.trim().length === 0) {
+    throw new Error("Email or username is required");
+  }
+  
+  // Try to find user by displayName (username) or partial match
   const [userProfile] = await db
     .select({ id: profiles.id })
     .from(profiles)
-    .where(eq(profiles.displayName, email))
+    .where(
+      or(
+        eq(profiles.displayName, emailOrUsername),
+        like(profiles.displayName, `%${emailOrUsername}%`)
+      )
+    )
     .limit(1);
   
   if (!userProfile) {
-    throw new Error("User not found");
+    throw new Error("User not found. Please check the username.");
   }
   
   await sendFriendRequest(userProfile.id);
-  redirect("/friends");
 }
 
 export default async function AddFriendPage() {

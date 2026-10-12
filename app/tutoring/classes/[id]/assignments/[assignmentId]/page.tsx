@@ -123,6 +123,23 @@ export default async function TutorAssignmentDetailPage({ params }: PageProps) {
         </div>
       )}
 
+      {/* Quiz Section */}
+      <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-headline-lg text-headline-lg text-text-primary font-bold">Quiz</h2>
+          <Link
+            href={`/tutoring/classes/${id}/assignments/${assignmentId}/quiz/create`}
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            Create Quiz
+          </Link>
+        </div>
+        <p className="font-body-md text-text-muted">
+          Create a quiz for this assignment to assess student understanding
+        </p>
+      </div>
+
       {/* Submissions */}
       <div>
         <div className="flex items-center justify-between mb-6">

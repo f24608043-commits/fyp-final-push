@@ -29,11 +29,14 @@ export async function POST(request: NextRequest) {
           
           if (!startTime || !endTime) break;
           
-          slots.push({
-            dayOfWeek: day,
-            startTime,
-            endTime,
-          });
+          // Validate time format
+          if (startTime && endTime && startTime < endTime) {
+            slots.push({
+              dayOfWeek: day,
+              startTime,
+              endTime,
+            });
+          }
           
           slotIndex++;
         }

@@ -45,7 +45,7 @@ export async function submitAssignment(formData: FormData) {
         const { createNotification } = await import("@/app/notifications/actions");
         await createNotification({
           userId: assignment.tutorId,
-          type: "lesson_completed",
+          type: "assignment_submitted",
           title: "New Assignment Submission",
           message: `${user.email?.split("@")[0] || "A student"} submitted "${assignment.title}"`,
           data: { assignmentId, submissionId: submission.id, groupId },

@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { groups, groupMembers, profiles, assignments, groupAnnouncements as groupAnnouncementsTable, submissions } from "@/db/schema";
+import { groups, groupMembers, profiles, assignments, groupAnnouncements as groupAnnouncementsTable, submissions, tutorGroupSessions } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -102,6 +102,13 @@ export default async function LearnerGroupDetailPage({ params }: PageProps) {
     .orderBy(desc(groupAnnouncementsTable.createdAt))
     .limit(5);
 
+  // Fetch group sessions
+  const groupSessions = await db
+    .select()
+    .from(tutorGroupSessions)
+    .where(eq(tutorGroupSessions.groupId, id))
+    .orderBy(desc(tutorGroupSessions.startTime));
+
   return (
     <div className="w-full px-8 py-8 bg-gradient-to-br from-primary/10 via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
@@ -172,6 +179,58 @@ export default async function LearnerGroupDetailPage({ params }: PageProps) {
 
       {/* Stream Tab Content */}
       <div className="space-y-6">
+        {/* Scheduled Sessions */}
+        <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-primary text-[24px]">event</span>
+            <h3 className="font-headline-md text-headline-md text-text-muted font-bold">
+              Scheduled Sessions
+            </h3>
+          </div>
+          
+          {groupSessions.length === 0 ? (
+            <p className="font-body-md text-text-muted text-center py-4">No sessions scheduled yet</p>
+          ) : (
+            <div className="space-y-3">
+              {groupSessions.map((session) => (
+                <div key={session.id} className="rounded-xl bg-surface-border p-4 border border-surface-border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-label-md font-semibold text-text-muted">
+                        {new Date(session.startTime).toLocaleString()}
+                      </p>
+                      {session.endTime && (
+                        <p className="font-body-sm text-text-muted">
+                          to {new Date(session.endTime).toLocaleString()}
+                        </p>
+                      )}
+                      <span className={`inline-block px-2 py-1 rounded-full font-label-sm font-bold mt-2 ${
+                        session.status === "scheduled" ? "bg-primary/20 text-primary" :
+                        session.status === "ongoing" ? "bg-success/20 text-success" :
+                        session.status === "completed" ? "bg-tertiary/20 text-tertiary" :
+                        "bg-error/20 text-error"
+                      }`}>
+                        {session.status}
+                      </span>
+                    </div>
+                    {session.status === "scheduled" && session.jitsiRoomId && (
+                      <a
+                        href={`https://meet.jit.si/${session.jitsiRoomId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-primary to-tertiary text-text-primary px-3 py-1.5 font-label-sm font-bold hover:scale-105 transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">videocam</span>
+                        Join
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Announcements */}
         {groupAnnouncementsData.length > 0 && (
           <div className="space-y-4">

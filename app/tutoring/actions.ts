@@ -286,7 +286,7 @@ export async function requestSession(data: {
   // Notify tutor
   await createNotification({
     userId: data.tutorId,
-    type: "lesson_completed", // Reusing existing type for now
+    type: "session_request",
     title: "New Session Request",
     message: "You have a new tutoring session request",
     data: { requestId: request.id },
@@ -347,7 +347,7 @@ export async function acceptSessionRequest(requestId: string, selectedSlotIndex:
     // Notify learner
     await createNotification({
       userId: request.learnerId,
-      type: "lesson_completed",
+      type: "session_confirmed",
       title: "Session Request Accepted",
       message: "Your tutoring session has been confirmed",
       data: { sessionId: session.id },
@@ -390,7 +390,7 @@ export async function declineSessionRequest(requestId: string) {
   // Notify learner
   await createNotification({
     userId: request.learnerId,
-    type: "lesson_completed",
+    type: "session_declined",
     title: "Session Request Declined",
     message: "Your tutoring session request was declined",
     data: { requestId },
@@ -687,7 +687,7 @@ export async function requestTutorEnrollment(data: {
       // Notify tutor
       await createNotification({
         userId: data.tutorId,
-        type: "lesson_completed",
+        type: "enrollment_request",
         title: "New Enrollment Request",
         message: "You have a new enrollment request",
         data: { enrollmentId: existing.id },
@@ -712,7 +712,7 @@ export async function requestTutorEnrollment(data: {
   // Notify tutor
   await createNotification({
     userId: data.tutorId,
-    type: "lesson_completed",
+    type: "enrollment_request",
     title: "New Enrollment Request",
     message: "You have a new enrollment request",
     data: { enrollmentId: enrollment.id },
@@ -790,7 +790,7 @@ export async function acceptTutorEnrollment(enrollmentId: string) {
   // Notify learner
   await createNotification({
     userId: enrollment.learnerId,
-    type: "lesson_completed",
+    type: "enrollment_accepted",
     title: "Enrollment Accepted",
     message: "Your enrollment request has been accepted",
     data: { enrollmentId },
@@ -836,7 +836,7 @@ export async function declineTutorEnrollment(enrollmentId: string) {
   // Notify learner
   await createNotification({
     userId: enrollment.learnerId,
-    type: "lesson_completed",
+    type: "enrollment_declined",
     title: "Enrollment Declined",
     message: "Your enrollment request has been declined",
     data: { enrollmentId },
@@ -974,7 +974,7 @@ export async function createTask(data: {
   if (data.targetType === "learner") {
     await createNotification({
       userId: data.targetId,
-      type: "lesson_completed",
+      type: "task_assigned",
       title: "New Task Assigned",
       message: `You have been assigned a new task: ${data.title}`,
       data: { taskId: task.id },
@@ -1118,7 +1118,7 @@ export async function submitTask(data: {
   // Notify tutor
   await createNotification({
     userId: task.tutorId,
-    type: "lesson_completed",
+    type: "task_submitted",
     title: "Task Submitted",
     message: "A learner has submitted a task",
     data: { taskId: data.taskId },
@@ -1201,7 +1201,7 @@ export async function gradeTask(data: {
   // Notify learner
   await createNotification({
     userId: data.learnerId,
-    type: "lesson_completed",
+    type: "task_graded",
     title: "Task Graded",
     message: "Your task has been graded",
     data: { taskId: data.taskId },
@@ -1333,7 +1333,7 @@ export async function awardBadge(data: {
   // Notify learner
   await createNotification({
     userId: data.learnerId,
-    type: "lesson_completed",
+    type: "badge_earned",
     title: "Badge Awarded!",
     message: `You have been awarded the ${badge.name} badge!`,
     data: { badgeId: data.badgeId },
@@ -1471,7 +1471,7 @@ export async function awardRankPoints(data: {
       // Notify user of level up
       await createNotification({
         userId: data.userId,
-        type: "lesson_completed",
+        type: "level_up",
         title: "Level Up!",
         message: `Congratulations! You've reached Level ${newLevel}!`,
         data: { newLevel, reason: data.reason },
@@ -1525,7 +1525,7 @@ export async function awardTutorRankPoints(data: {
       // Notify tutor of level up
       await createNotification({
         userId: data.tutorId,
-        type: "lesson_completed",
+        type: "level_up",
         title: "Tutor Level Up!",
         message: `Congratulations! You've reached Tutor Level ${newLevel}!`,
         data: { newLevel, reason: data.reason },

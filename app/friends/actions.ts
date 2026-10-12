@@ -403,8 +403,8 @@ export async function getSuggestedFriends() {
     }
   });
 
-  // Get suggested users - filter by same role as current user (learner with learners, tutor with tutors)
-  const userRole = currentUser[0]?.role || 'learner';
+  // Get suggested users - show all users except those in existing friendships
+  // Learners can see both learners and tutors for networking
   const suggestedUsers = await db
     .select({
       id: profiles.id,
@@ -415,7 +415,10 @@ export async function getSuggestedFriends() {
       role: profiles.role,
     })
     .from(profiles)
-    .where(eq(profiles.role, userRole as "learner" | "tutor" | "admin"))
+    .where(and(
+      sql`${profiles.id} != ${userId}`,
+      sql`${profiles.id} NOT IN (SELECT CASE WHEN requester_id = ${userId} THEN addressee_id ELSE requester_id END FROM friendships WHERE requester_id = ${userId} OR addressee_id = ${userId})`
+    ))
     .orderBy(desc(profiles.xp))
     .limit(20); // Get more to filter
 

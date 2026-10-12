@@ -150,14 +150,10 @@ export async function createAssignment(formData: FormData) {
           if (member.userId !== user.id) {
             await db.insert(notifications).values({
               userId: member.userId,
-              type: "lesson_completed", // Using valid notification type
+              type: "assignment_posted",
               title: "New Assignment Posted",
-              message: `A new assignment "${assignment.title}" has been published.`,
-              data: {
-                assignmentId: assignment.id,
-                groupId,
-                actionUrl: `/classes/${groupId}/assignments/${assignment.id}`,
-              },
+              message: `Your tutor posted a new assignment: ${title}`,
+              data: { assignmentId: assignment.id, groupId },
             });
           }
         }
@@ -308,7 +304,6 @@ export async function createQuiz(formData: FormData) {
     throw new Error("Assignment ID is required");
   }
 
-  let quizId: string;
   try {
     const [quiz] = await db
       .insert(quizzes)
@@ -322,12 +317,11 @@ export async function createQuiz(formData: FormData) {
       })
       .returning();
 
-    quizId = quiz.id;
     revalidatePath(`/tutoring/classes/${groupId}`);
+    revalidatePath(`/tutoring/classes/${groupId}/assignments/${assignmentId}`);
+    redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quiz.id}`);
   } catch (error: any) {
     console.error("Error creating quiz:", error);
     throw new Error("Failed to create quiz. Please try again.");
   }
-
-  redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quizId}/questions`);
 }

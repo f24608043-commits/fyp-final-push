@@ -563,7 +563,7 @@ export async function sendMessage(conversationId: string, body: string) {
         try {
           await db.insert(notifications).values({
             userId: mId,
-            type: "lesson_completed", // Reusing system notification type
+            type: "message_received",
             title: "New Message",
             message: `${user.email?.split("@")[0] || "Someone"}: ${body.trim().slice(0, 50)}`,
             data: { conversationId, messageId: fullMessage?.id },
@@ -914,7 +914,7 @@ export async function createGroupConversation(learnerIds: string[], name: string
     try {
       await db.insert(notifsTable).values({
         userId: learnerId,
-        type: "lesson_completed",
+        type: "group_added",
         title: "Added to Study Group",
         message: `Your tutor added you to "${name || "Study Group"}"`,
         data: { conversationId: conversation.id },

@@ -14,7 +14,7 @@ export async function createNotification({
   data,
 }: {
   userId: string;
-  type: "friend_request" | "friend_accepted" | "badge_earned" | "streak_milestone" | "lesson_completed" | "leaderboard_rank";
+  type: "friend_request" | "friend_accepted" | "badge_earned" | "streak_milestone" | "lesson_completed" | "leaderboard_rank" | "message_received" | "assignment_posted" | "assignment_submitted" | "session_request" | "session_confirmed" | "session_declined" | "enrollment_request" | "enrollment_accepted" | "enrollment_declined" | "task_assigned" | "task_submitted" | "task_graded" | "level_up" | "group_added";
   title: string;
   message: string;
   data?: any;

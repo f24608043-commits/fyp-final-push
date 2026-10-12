@@ -3,111 +3,152 @@
 test.describe('Realtime Messaging', () => {
   const TUTOR_EMAIL = process.env.TEST_TUTOR_EMAIL || 'orphix.itsolutions@gmail.com';
   const TUTOR_PASSWORD = process.env.TEST_TUTOR_PASSWORD || 'Qasim.11';
-  const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || 'alexabraham587@gmail.com';
-  const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'Qasim.11';
+  const LEARNER_EMAIL = process.env.TEST_LEARNER_EMAIL || 'alexabraham587@gmail.com';
+  const LEARNER_PASSWORD = process.env.TEST_LEARNER_PASSWORD || 'Qasim.11';
 
-  test('messages page loads for both users', async ({ browser }) => {
-    test.setTimeout(90000);
+  test('learner sends message, tutor sees it without refresh', async ({ browser }) => {
+    test.setTimeout(120000);
 
-    const context1 = await browser.newContext();
-    const page1 = await context1.newPage();
+    // Create two browser contexts for learner and tutor
+    const learnerContext = await browser.newContext();
+    const tutorContext = await browser.newContext();
 
-    // First user (tutor)
-    await page1.goto('http://localhost:4005/sign-in');
-    await page1.waitForLoadState('networkidle', { timeout: 30000 });
-    await page1.fill('input[name="email"]', TUTOR_EMAIL);
-    await page1.fill('input[name="password"]', TUTOR_PASSWORD);
-    await page1.click('button[type="submit"]');
+    const learnerPage = await learnerContext.newPage();
+    const tutorPage = await tutorContext.newPage();
 
-    try {
-      await page1.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
-    } catch (error) {
-      console.log('âš ï¸ Tutor login timeout, continuing to messages page');
-    }
-
-    await page1.goto('http://localhost:4005/messages');
-    try {
-      await page1.waitForLoadState('networkidle', { timeout: 30000 });
-    } catch (error) {
-      console.log('âš ï¸ Messages page networkidle timeout, continuing');
-    }
-    await expect(page1.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
-
-    await context1.close();
-
-    // Second user (admin)
-    const context2 = await browser.newContext();
-    const page2 = await context2.newPage();
-
-    await page2.goto('http://localhost:4005/sign-in');
-    await page2.waitForLoadState('networkidle', { timeout: 30000 });
-    await page2.fill('input[name="email"]', ADMIN_EMAIL);
-    await page2.fill('input[name="password"]', ADMIN_PASSWORD);
-    await page2.click('button[type="submit"]');
+    // Login as learner
+    await learnerPage.goto('http://localhost:3000/sign-in');
+    await learnerPage.waitForLoadState('networkidle', { timeout: 30000 });
+    await learnerPage.fill('input[name="email"]', LEARNER_EMAIL);
+    await learnerPage.fill('input[name="password"]', LEARNER_PASSWORD);
+    await learnerPage.click('button[type="submit"]');
 
     try {
-      await page2.waitForURL(/\/admin/, { timeout: 15000 });
+      await learnerPage.waitForURL(/\/(dashboard|path|tutoring)/, { timeout: 15000 });
     } catch (error) {
-      console.log('âš ï¸ Admin login timeout, continuing to messages page');
+      console.log('Learner login timeout, continuing');
     }
-
-    await page2.goto('http://localhost:4005/messages');
-    try {
-      await page2.waitForLoadState('networkidle', { timeout: 30000 });
-    } catch (error) {
-      console.log('âš ï¸ Messages page networkidle timeout, continuing');
-    }
-    await expect(page2.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
-
-    await context2.close();
-  });
-
-  test('realtime subscription is active on message thread', async ({ browser }) => {
-    // This test verifies that the realtime subscription is set up
-    // For now, we'll verify the messages page structure and that it can load
-    // Full realtime testing requires creating test conversation data
-
-    test.setTimeout(90000);
-
-    const context = await browser.newContext();
-    const page = await context.newPage();
 
     // Login as tutor
-    await page.goto('http://localhost:4005/sign-in');
+    await tutorPage.goto('http://localhost:3000/sign-in');
+    await tutorPage.waitForLoadState('networkidle', { timeout: 30000 });
+    await tutorPage.fill('input[name="email"]', TUTOR_EMAIL);
+    await tutorPage.fill('input[name="password"]', TUTOR_PASSWORD);
+    await tutorPage.click('button[type="submit"]');
+
+    try {
+      await tutorPage.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
+    } catch (error) {
+      console.log('Tutor login timeout, continuing');
+    }
+
+    // Navigate both to messages page
+    await learnerPage.goto('http://localhost:3000/messages');
+    await learnerPage.waitForLoadState('networkidle', { timeout: 30000 });
+
+    await tutorPage.goto('http://localhost:3000/messages');
+    await tutorPage.waitForLoadState('networkidle', { timeout: 30000 });
+
+    // Check if learner has conversations
+    const learnerConversations = learnerPage.locator('[role="button"].conversation-item');
+    const learnerHasConversations = await learnerConversations.count() > 0;
+
+    if (!learnerHasConversations) {
+      console.log('No conversations found for learner - skipping real-time test');
+      await learnerContext.close();
+      await tutorContext.close();
+      test.skip(true, 'No test conversations available');
+      return;
+    }
+
+    // Select first conversation on learner side
+    await learnerConversations.first().click();
+    await learnerPage.waitForLoadState('networkidle', { timeout: 10000 });
+
+    // Get conversation ID from URL
+    const learnerUrl = learnerPage.url();
+    const conversationId = learnerUrl.split('/').pop();
+
+    // Navigate tutor to same conversation
+    await tutorPage.goto(`http://localhost:3000/messages/${conversationId}`);
+    await tutorPage.waitForLoadState('networkidle', { timeout: 10000 });
+
+    // Count messages before sending
+    const messagesBefore = await tutorPage.locator('.message, [class*="message"]').count();
+
+    // Learner sends a message
+    const testMessage = `Test message ${Date.now()}`;
+    await learnerPage.fill('input[type="text"]', testMessage);
+    await learnerPage.click('button[type="submit"]');
+
+    // Wait for message to appear on learner side
+    await learnerPage.waitForTimeout(2000);
+
+    // Check if message appears on tutor side without refresh
+    await tutorPage.waitForTimeout(3000);
+
+    const messagesAfter = await tutorPage.locator('.message, [class*="message"]').count();
+    const messageText = await tutorPage.textContent('body');
+
+    console.log('Messages before:', messagesBefore);
+    console.log('Messages after:', messagesAfter);
+    console.log('Message text includes test message:', messageText?.includes(testMessage));
+
+    // Assert that tutor sees the new message
+    expect(messagesAfter).toBeGreaterThan(messagesBefore);
+    expect(messageText).toContain(testMessage);
+
+    await learnerContext.close();
+    await tutorContext.close();
+  });
+
+  test('friends page does not crash', async ({ page }) => {
+    test.setTimeout(90000);
+
+    // Login as learner
+    await page.goto('http://localhost:3000/sign-in');
     await page.waitForLoadState('networkidle', { timeout: 30000 });
-    await page.fill('input[name="email"]', TUTOR_EMAIL);
-    await page.fill('input[name="password"]', TUTOR_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
 
     try {
-      await page.waitForURL(/\/(tutoring\/dashboard|path|admin)/, { timeout: 15000 });
+      await page.waitForURL(/\/(dashboard|path|tutoring)/, { timeout: 15000 });
     } catch (error) {
-      console.log('âš ï¸ Login timeout, continuing');
+      console.log('Login timeout, continuing');
     }
 
-    // Navigate to messages page
-    await page.goto('http://localhost:4005/messages');
-    try {
-      await page.waitForLoadState('networkidle', { timeout: 30000 });
-    } catch (error) {
-      console.log('âš ï¸ Networkidle timeout, continuing');
+    // Navigate to friends page
+    await page.goto('http://localhost:3000/friends');
+    await page.waitForLoadState('networkidle', { timeout: 30000 });
+
+    // Check for console errors
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text());
+      }
+    });
+
+    // Verify page loads without crashing
+    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('text=Runtime Error')).not.toBeVisible();
+
+    // Wait a bit for any async errors
+    await page.waitForTimeout(2000);
+
+    // Log any errors found
+    if (errors.length > 0) {
+      console.log('Console errors on /friends:', errors);
     }
 
-    // Verify messages page loads and has structure
-    await expect(page.locator('h1').first()).toContainText('Messages', { timeout: 10000 });
-
-    // Check if there's a conversation list or empty state
-    const conversationList = page.locator('[class*="conversation"], [class*="message"]').first();
-    const listCount = await conversationList.count();
-    console.log('Conversation/message elements found:', listCount);
-
-    if (listCount > 0) {
-      console.log('âœ… Messages page has conversation/message structure');
-    } else {
-      console.log('âš ï¸ No conversations found (empty state is acceptable)');
-    }
-
-    await context.close();
+    // Assert no critical errors
+    const criticalErrors = errors.filter(e => 
+      e.includes('500') || 
+      e.includes('crash') ||
+      e.includes('Cannot read')
+    );
+    expect(criticalErrors.length).toBe(0);
   });
 
   test('messages table is in realtime publication', async ({ page }) => {

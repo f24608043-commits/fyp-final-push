@@ -458,6 +458,20 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "streak_milestone",
   "lesson_completed",
   "leaderboard_rank",
+  "message_received",
+  "assignment_posted",
+  "assignment_submitted",
+  "session_request",
+  "session_confirmed",
+  "session_declined",
+  "enrollment_request",
+  "enrollment_accepted",
+  "enrollment_declined",
+  "task_assigned",
+  "task_submitted",
+  "task_graded",
+  "level_up",
+  "group_added",
 ]);
 
 export const notifications = pgTable(
