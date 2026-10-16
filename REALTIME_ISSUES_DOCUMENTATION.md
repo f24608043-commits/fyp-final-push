@@ -1,5 +1,26 @@
 # Real-Time Errors and Failures Documentation
 
+## ⚠️ HISTORICAL DOCUMENT - OUTDATED
+
+**This document was created on commit `c9b3514` (Oct 2024) to document issues that existed at that time.**
+
+**Status: MOST ISSUES RESOLVED**
+
+Since this document was created, the following fixes have been implemented:
+- ✅ Messages table added to `supabase_realtime` publication (migration 0009)
+- ✅ `insert_message` function created and properly implemented (migration 20241009_create_insert_message.sql)
+- ✅ Messaging uses direct Drizzle insert as primary with RPC fallback
+- ✅ Realtime infrastructure is functional
+- ✅ Playwright tests for realtime messaging passing
+
+**Current State:** The claims in this document about missing realtime infrastructure are FALSE. This document is preserved for historical reference only.
+
+---
+
+## Original Content (Historical Reference Only)
+
+The following content describes the state of the application BEFORE the fixes listed above were implemented. Do NOT use this as a current status report.
+
 ## Overview
 This document outlines the real-time errors, connectivity issues, and failures identified in the LEGO Learning web application. The application lacks proper real-time infrastructure, causing significant user experience issues across messaging, tutoring, social features, and performance.
 
