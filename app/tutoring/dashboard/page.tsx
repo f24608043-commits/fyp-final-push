@@ -377,12 +377,12 @@ export default async function TutorDashboard() {
                 )}
                 <div className="flex gap-2">
                   <form action={acceptEnrollment.bind(null, request.id)}>
-                    <button className="shrink-0 rounded-full bg-primary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
+                    <button suppressHydrationWarning className="shrink-0 rounded-full bg-primary text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
                       Accept
                     </button>
                   </form>
                   <form action={rejectEnrollment.bind(null, request.id)}>
-                    <button className="shrink-0 rounded-full bg-error text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
+                    <button suppressHydrationWarning className="shrink-0 rounded-full bg-error text-text-primary px-4 py-2 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95">
                       Reject
                     </button>
                   </form>
@@ -613,6 +613,7 @@ export default async function TutorDashboard() {
             </div>
             <button
               type="submit"
+              suppressHydrationWarning
               className="w-full rounded-full bg-tertiary text-text-primary py-3 font-label-lg font-bold shadow-clay-surface border-4 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               Create Group
