@@ -190,10 +190,6 @@ export default async function TutorAssignmentsPage({ params }: PageProps) {
                     <DeleteAssignmentButton
                       assignmentId={assignment.id}
                       groupId={id}
-                      onDelete={() => {
-                        // Refresh the page to show updated list
-                        window.location.reload();
-                      }}
                     />
                   </div>
                 </div>

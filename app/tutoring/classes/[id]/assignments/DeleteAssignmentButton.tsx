@@ -5,15 +5,14 @@ import { useState } from "react";
 interface DeleteAssignmentButtonProps {
   assignmentId: string;
   groupId: string;
-  onDelete: () => void;
 }
 
-export default function DeleteAssignmentButton({ assignmentId, groupId, onDelete }: DeleteAssignmentButtonProps) {
+export default function DeleteAssignmentButton({ assignmentId, groupId }: DeleteAssignmentButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!confirm("Are you sure you want to delete this assignment? This action cannot be undone.")) {
       return;
     }
@@ -31,7 +30,7 @@ export default function DeleteAssignmentButton({ assignmentId, groupId, onDelete
       });
 
       if (response.ok) {
-        onDelete();
+        window.location.reload();
       } else {
         throw new Error("Failed to delete assignment");
       }
