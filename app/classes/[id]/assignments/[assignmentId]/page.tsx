@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { groups, groupMembers, profiles, assignments, submissions } from "@/db/schema";
+import { groups, groupMembers, profiles, assignments, submissions, quizzes } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -71,6 +71,13 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
     )
     .limit(1);
 
+  // Fetch quiz for this assignment
+  const [quiz] = await db
+    .select()
+    .from(quizzes)
+    .where(eq(quizzes.assignmentId, params.assignmentId))
+    .limit(1);
+
   return (
     <div className="w-full px-8 py-8 bg-gradient-to-br from-background via-tertiary/10 to-tertiary/10 min-h-screen">
       {/* Header */}
@@ -126,23 +133,25 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
       )}
 
       {/* Quiz Link */}
-      <div className="rounded-[24px] bg-tertiary/10 p-6 shadow-clay-surface border border-tertiary/30 mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-headline-lg text-headline-lg text-tertiary font-bold mb-2">Quiz</h2>
-            <p className="font-body-md text-text-muted">
-              Take the quiz for this assignment
-            </p>
+      {quiz && (
+        <div className="rounded-[24px] bg-tertiary/10 p-6 shadow-clay-surface border border-tertiary/30 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-headline-lg text-headline-lg text-tertiary font-bold mb-2">Quiz</h2>
+              <p className="font-body-md text-text-muted">
+                Take the quiz for this assignment
+              </p>
+            </div>
+            <Link
+              href={`/classes/${params.id}/assignments/${params.assignmentId}/quiz/${quiz.id}`}
+              className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[18px]">quiz</span>
+              Take Quiz
+            </Link>
           </div>
-          <Link
-            href={`/classes/${params.id}/assignments/${params.assignmentId}/quiz`}
-            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
-          >
-            <span className="material-symbols-outlined text-[18px]">quiz</span>
-            Take Quiz
-          </Link>
         </div>
-      </div>
+      )}
 
       {/* Submission Status */}
       {existingSubmission ? (
