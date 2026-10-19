@@ -47,8 +47,14 @@ export default async function CreateQuizPage({ params }: PageProps) {
     redirect(`/tutoring/classes/${id}`);
   }
 
-  // Verify user is the tutor of this group
-  if (assignment.tutorId !== user.id) {
+  // Fetch group to verify tutor ownership
+  const [group] = await db
+    .select()
+    .from(groups)
+    .where(eq(groups.id, id))
+    .limit(1);
+
+  if (!group || group.tutorId !== user.id) {
     redirect(`/tutoring/classes/${id}`);
   }
 
@@ -84,7 +90,7 @@ export default async function CreateQuizPage({ params }: PageProps) {
       </div>
 
       {/* Quiz Settings Form */}
-      <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border max-w-3xl">
+      <div className="rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border max-w-4xl">
         <form action={createQuiz} className="space-y-6">
           <input type="hidden" name="assignmentId" value={assignmentId} />
           <input type="hidden" name="groupId" value={id} />
@@ -168,10 +174,10 @@ export default async function CreateQuizPage({ params }: PageProps) {
               className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">add</span>
-              Create Quiz & Add Questions
+              Create Quiz
             </button>
             <Link
-              href={`/tutoring/classes/${id}`}
+              href={`/tutoring/classes/${id}/assignments/${assignmentId}`}
               className="inline-flex items-center gap-2 rounded-full bg-surface border-2 border-surface-border text-text-muted px-6 py-3 font-label-md font-semibold shadow-clay-surface hover:shadow-clay-primary transition-all"
             >
               Cancel
@@ -180,12 +186,12 @@ export default async function CreateQuizPage({ params }: PageProps) {
         </form>
       </div>
 
-      {/* Questions Section - Placeholder for adding questions */}
+      {/* Questions Section - Info about adding questions after quiz creation */}
       <div className="mt-6 rounded-[24px] bg-surface p-8 shadow-clay-surface border border-surface-border">
         <h2 className="font-headline-lg text-headline-lg text-text-muted font-bold mb-4">
-          Quiz Questions
+          Next Steps
         </h2>
-        <p className="font-body-md text-text-muted">
+        <p className="font-body-md text-text-muted mb-4">
           After creating the quiz, you'll be able to add questions. Question types include:
         </p>
         <ul className="mt-4 space-y-2 font-body-md text-text-muted">

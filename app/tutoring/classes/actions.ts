@@ -319,7 +319,7 @@ export async function createQuiz(formData: FormData) {
 
     revalidatePath(`/tutoring/classes/${groupId}`);
     revalidatePath(`/tutoring/classes/${groupId}/assignments/${assignmentId}`);
-    redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quiz.id}`);
+    redirect(`/tutoring/classes/${groupId}/assignments/${assignmentId}/quiz/${quiz.id}/questions`);
   } catch (error: any) {
     console.error("Error creating quiz:", error);
     throw new Error("Failed to create quiz. Please try again.");

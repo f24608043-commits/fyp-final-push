@@ -125,6 +125,25 @@ export default async function AssignmentDetailPage({ params }: { params: { id: s
         </div>
       )}
 
+      {/* Quiz Link */}
+      <div className="rounded-[24px] bg-tertiary/10 p-6 shadow-clay-surface border border-tertiary/30 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-headline-lg text-headline-lg text-tertiary font-bold mb-2">Quiz</h2>
+            <p className="font-body-md text-text-muted">
+              Take the quiz for this assignment
+            </p>
+          </div>
+          <Link
+            href={`/classes/${params.id}/assignments/${params.assignmentId}/quiz`}
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-4 py-2 font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">quiz</span>
+            Take Quiz
+          </Link>
+        </div>
+      </div>
+
       {/* Submission Status */}
       {existingSubmission ? (
         <div className="rounded-[24px] bg-primary/10 p-6 shadow-clay-surface border-4 border-primary/30 mb-6">
