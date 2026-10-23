@@ -31,6 +31,7 @@ const NAV_CONFIG: Record<
       { path: "/path", label: "Path", icon: "home" },
       { path: "/library", label: "Library", icon: "menu_book" },
       { path: "/classes", label: "My Classes", icon: "school" },
+      { path: "/feed", label: "Feed", icon: "feed" },
       { path: "/tutoring", label: "Tutoring", icon: "groups" },
       { path: "/friends", label: "Friends", icon: "diversity_3" },
       { path: "/messages", label: "Messages", icon: "chat" },
@@ -39,6 +40,7 @@ const NAV_CONFIG: Record<
       { path: "/path", label: "Path", icon: "home" },
       { path: "/library", label: "Library", icon: "menu_book" },
       { path: "/classes", label: "Classes", icon: "school" },
+      { path: "/feed", label: "Feed", icon: "feed" },
       { path: "/tutoring", label: "Tutoring", icon: "groups" },
       { path: "/profile", label: "Profile", icon: "person" },
     ],
@@ -52,12 +54,14 @@ const NAV_CONFIG: Record<
     sidebar: [
       { path: "/tutoring/classes", label: "My Classes", icon: "school" },
       { path: "/tutoring/dashboard", label: "Dashboard", icon: "dashboard" },
+      { path: "/feed", label: "Feed", icon: "feed" },
       { path: "/tutoring/history", label: "History", icon: "history" },
       { path: "/messages", label: "Messages", icon: "chat" },
     ],
     bottom: [
       { path: "/tutoring/classes", label: "Classes", icon: "school" },
       { path: "/tutoring/dashboard", label: "Dashboard", icon: "dashboard" },
+      { path: "/feed", label: "Feed", icon: "feed" },
       {
         path: "/tutoring/learner-dashboard",
         label: "Learners",

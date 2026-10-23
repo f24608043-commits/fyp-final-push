@@ -857,6 +857,8 @@ export const tutorReviews = pgTable(
 // ── 42. ENROLLMENT_REQUESTS ───────────────────────────────
 export const enrollmentRequestStatusEnum = pgEnum("enrollment_request_status", ["pending", "approved", "rejected"]);
 
+export const postTypeEnum = pgEnum("post_type", ["general", "achievement", "resource", "milestone", "question"]);
+
 export const enrollmentRequests = pgTable(
   "enrollment_requests",
   {
@@ -874,3 +876,57 @@ export const enrollmentRequests = pgTable(
   },
   (t) => [unique().on(t.groupId, t.studentId)]
 );
+
+// ── 43. POSTS ──────────────────────────────────────────────────
+export const posts = pgTable("posts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  authorId: uuid("author_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  mediaUrls: text("media_urls").array(),
+  postType: postTypeEnum("post_type").notNull().default("general"),
+  referenceBadgeId: uuid("reference_badge_id").references(() => userBadges.id, { onDelete: "set null" }),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 44. POST_LIKES ─────────────────────────────────────────────
+export const postLikes = pgTable(
+  "post_likes",
+  {
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [unique().on(t.postId, t.userId)]
+);
+
+// ── 45. POST_COMMENTS ─────────────────────────────────────────
+export const postComments = pgTable("post_comments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  postId: uuid("post_id")
+    .notNull()
+    .references(() => posts.id, { onDelete: "cascade" }),
+  authorId: uuid("author_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  parentCommentId: uuid("parent_comment_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 46. POST_HASHTAGS ─────────────────────────────────────────
+export const postHashtags = pgTable("post_hashtags", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  postId: uuid("post_id")
+    .notNull()
+    .references(() => posts.id, { onDelete: "cascade" }),
+  tag: text("tag").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

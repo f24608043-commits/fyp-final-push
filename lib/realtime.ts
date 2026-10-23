@@ -192,3 +192,54 @@ export function subscribeToUserSessions(
     supabase.removeChannel(channel);
   };
 }
+
+/**
+ * Subscribes to post likes and comments for real-time updates
+ */
+export function subscribeToPostEngagement(
+  postId: string,
+  onLikeChange: (like: any) => void,
+  onCommentChange: (comment: any) => void
+): () => void {
+  const supabase = createClient();
+  const channel = supabase.channel(`post-engagement-${postId}`);
+
+  // Listen to post_likes changes (INSERT, DELETE)
+  channel
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "post_likes",
+        filter: `post_id=eq.${postId}`,
+      },
+      (payload) => {
+        if (payload.new || payload.old) {
+          onLikeChange(payload.new || payload.old);
+        }
+      }
+    )
+    // Listen to post_comments changes (INSERT, DELETE)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "post_comments",
+        filter: `post_id=eq.${postId}`,
+      },
+      (payload) => {
+        if (payload.new || payload.old) {
+          onCommentChange(payload.new || payload.old);
+        }
+      }
+    )
+    .subscribe((status) => {
+      console.log(`[Realtime] Post engagement ${postId} status:`, status);
+    });
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
