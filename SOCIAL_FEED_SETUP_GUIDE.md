@@ -98,12 +98,16 @@ Run these SQL queries in Supabase Dashboard → SQL Editor:
 ### 4.1 Enable RLS on Storage
 
 ```sql
+-- Enable RLS (ignore if already enabled)
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 ```
 
 ### 4.2 Allow authenticated users to upload to post-media bucket
 
 ```sql
+-- Drop policy if exists, then create
+DROP POLICY IF EXISTS "Authenticated users can upload to post-media" ON storage.objects;
+
 CREATE POLICY "Authenticated users can upload to post-media"
 ON storage.objects
 FOR INSERT
@@ -117,6 +121,9 @@ WITH CHECK (
 ### 4.3 Allow authenticated users to read from post-media bucket
 
 ```sql
+-- Drop policy if exists, then create
+DROP POLICY IF EXISTS "Anyone can read from post-media" ON storage.objects;
+
 CREATE POLICY "Anyone can read from post-media"
 ON storage.objects
 FOR SELECT
@@ -127,6 +134,9 @@ USING (bucket_id = 'post-media');
 ### 4.4 Allow users to delete their own uploads
 
 ```sql
+-- Drop policy if exists, then create
+DROP POLICY IF EXISTS "Users can delete their own uploads" ON storage.objects;
+
 CREATE POLICY "Users can delete their own uploads"
 ON storage.objects
 FOR DELETE
