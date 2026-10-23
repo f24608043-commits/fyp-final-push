@@ -114,21 +114,15 @@ supabase storage update-bucket post-media --public
 - Name: `Authenticated Upload`
 - Allowed operations: `INSERT`
 - Target roles: `authenticated`
-- WITH CHECK expression: 
-  ```sql
-  bucket_id = 'post-media' 
-  AND auth.uid()::text = (storage.foldername(name))[1]
-  ```
+- WITH CHECK expression: `bucket_id = 'post-media'`
 
 **Policy 3: Authenticated Delete Own Files**
 - Name: `Authenticated Delete Own Files`
 - Allowed operations: `DELETE`
 - Target roles: `authenticated`
-- USING expression:
-  ```sql
-  bucket_id = 'post-media' 
-  AND auth.uid()::text = (storage.foldername(name))[1]
-  ```
+- USING expression: `bucket_id = 'post-media'`
+
+**Note:** For MVP simplicity, we're allowing all authenticated users to upload/delete to this bucket. For production, you can add more granular permissions using the `auth.uid()` check in a migration file instead of the Dashboard UI.
 
 ### Option B: Via Supabase CLI (Alternative)
 
