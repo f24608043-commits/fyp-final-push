@@ -93,58 +93,52 @@ supabase storage update-bucket post-media --public
 
 ## Step 4: Configure Storage Policies (RLS for Storage)
 
-Run these SQL queries in Supabase Dashboard → SQL Editor:
+**Important:** The `storage.objects` table is owned by Supabase's storage system and cannot be modified via SQL editor. Use the Supabase Dashboard UI instead.
 
-### 4.1 Enable RLS on Storage
+### Option A: Via Supabase Dashboard (Recommended)
 
-```sql
--- Enable RLS (ignore if already enabled)
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-```
+1. Go to https://supabase.com/dashboard
+2. Select your project
+3. Go to **Storage**
+4. Click on the **post-media** bucket
+5. Click **Policies** tab
+6. Create the following policies:
 
-### 4.2 Allow authenticated users to upload to post-media bucket
+**Policy 1: Public Read Access**
+- Name: `Public Read Access`
+- Allowed operations: `SELECT`
+- Target roles: `anon`, `authenticated`
+- USING expression: `bucket_id = 'post-media'`
 
-```sql
--- Drop policy if exists, then create
-DROP POLICY IF EXISTS "Authenticated users can upload to post-media" ON storage.objects;
-
-CREATE POLICY "Authenticated users can upload to post-media"
-ON storage.objects
-FOR INSERT
-TO authenticated
-WITH CHECK (
-  bucket_id = 'post-media'
+**Policy 2: Authenticated Upload**
+- Name: `Authenticated Upload`
+- Allowed operations: `INSERT`
+- Target roles: `authenticated`
+- WITH CHECK expression: 
+  ```sql
+  bucket_id = 'post-media' 
   AND auth.uid()::text = (storage.foldername(name))[1]
-);
-```
+  ```
 
-### 4.3 Allow authenticated users to read from post-media bucket
-
-```sql
--- Drop policy if exists, then create
-DROP POLICY IF EXISTS "Anyone can read from post-media" ON storage.objects;
-
-CREATE POLICY "Anyone can read from post-media"
-ON storage.objects
-FOR SELECT
-TO anon, authenticated
-USING (bucket_id = 'post-media');
-```
-
-### 4.4 Allow users to delete their own uploads
-
-```sql
--- Drop policy if exists, then create
-DROP POLICY IF EXISTS "Users can delete their own uploads" ON storage.objects;
-
-CREATE POLICY "Users can delete their own uploads"
-ON storage.objects
-FOR DELETE
-TO authenticated
-USING (
-  bucket_id = 'post-media'
+**Policy 3: Authenticated Delete Own Files**
+- Name: `Authenticated Delete Own Files`
+- Allowed operations: `DELETE`
+- Target roles: `authenticated`
+- USING expression:
+  ```sql
+  bucket_id = 'post-media' 
   AND auth.uid()::text = (storage.foldername(name))[1]
-);
+  ```
+
+### Option B: Via Supabase CLI (Alternative)
+
+```bash
+# Create a migration file for storage policies
+supabase migration new storage_policies
+
+# Add the policies to the migration file
+# Then apply
+supabase db push
 ```
 
 ---
