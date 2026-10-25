@@ -388,6 +388,28 @@ This structure:
 
 ## Troubleshooting
 
+### Issue: "relation does not exist" error during migration
+
+**Cause:** Migration was partially run before - some tables exist, some don't.
+
+**Solution:** Check what exists and clean up first:
+
+```sql
+-- Check what tables exist
+SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'post%';
+
+-- If any exist, drop them (run in order)
+DROP TABLE IF EXISTS post_hashtags CASCADE;
+DROP TABLE IF EXISTS post_comments CASCADE;
+DROP TABLE IF EXISTS post_likes CASCADE;
+DROP TABLE IF EXISTS posts CASCADE;
+
+-- Drop the enum
+DROP TYPE IF EXISTS post_type CASCADE;
+```
+
+Then re-run the full migration from `supabase/migrations/20241023_add_social_feed.sql`.
+
 ### Issue: "Bucket not found" error
 
 **Solution:** Create the bucket:

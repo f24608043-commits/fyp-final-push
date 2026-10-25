@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { deletePost, toggleLike, addComment, deleteComment } from "./actions";
 import { createClient } from "@/utils/supabase/client";
 import { subscribeToPostEngagement } from "@/lib/realtime";
 
@@ -56,33 +55,17 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
       post.id,
       // onLikeChange
       async (like) => {
-        // Refresh like count from server
-        const supabase = createClient();
+        const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Fetch new like count
-        const { db } = await import("@/db");
-        const { postLikes, eq, sql } = await import("@/db/schema");
-        const [countResult] = await db
-          .select({ count: sql<number>`count(*)` })
-          .from(postLikes)
-          .where(eq(postLikes.postId, post.id));
+        // Increment/decrement based on like event type
+        const isLikedByMe = like.user_id === user.id;
+        const newCount = like.eventType === 'INSERT' 
+          ? post.likeCount + 1 
+          : post.likeCount - 1;
 
-        // Check if current user liked
-        const { and, eq } = await import("drizzle-orm");
-        const [userLike] = await db
-          .select()
-          .from(postLikes)
-          .where(
-            and(
-              eq(postLikes.postId, post.id),
-              eq(postLikes.userId, user.id)
-            )
-          )
-          .limit(1);
-
-        onLikeToggle(post.id, countResult?.count || 0, !!userLike);
+        onLikeToggle(post.id, newCount, isLikedByMe);
       },
       // onCommentChange
       async (comment) => {
@@ -104,7 +87,14 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
   const handleLike = async () => {
     try {
-      const result = await toggleLike(post.id);
+      const formData = new FormData();
+      formData.append('postId', post.id);
+      formData.append('action', 'toggleLike');
+      const response = await fetch('/feed/actions', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
       onLikeToggle(post.id, result.count, result.liked);
     } catch (error: any) {
       console.error("Error toggling like:", error);
@@ -117,7 +107,13 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
     setIsDeleting(true);
     try {
-      await deletePost(post.id);
+      const formData = new FormData();
+      formData.append('postId', post.id);
+      formData.append('action', 'deletePost');
+      await fetch('/feed/actions', {
+        method: 'POST',
+        body: formData,
+      });
       onDeleted(post.id);
     } catch (error: any) {
       console.error("Error deleting post:", error);
@@ -132,7 +128,14 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
     setIsSubmittingComment(true);
     try {
-      await addComment(post.id, commentBody);
+      const formData = new FormData();
+      formData.append('postId', post.id);
+      formData.append('body', commentBody);
+      formData.append('action', 'addComment');
+      await fetch('/feed/actions', {
+        method: 'POST',
+        body: formData,
+      });
       setCommentBody("");
       onCommentCountChange(post.id, post.commentCount + 1);
 
@@ -150,8 +153,14 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
   const loadComments = async () => {
     try {
-      const { getPostComments } = await import("./actions");
-      const result = await getPostComments(post.id);
+      const formData = new FormData();
+      formData.append('postId', post.id);
+      formData.append('action', 'getPostComments');
+      const response = await fetch('/feed/actions', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
       setComments(result.comments);
     } catch (error) {
       console.error("Error loading comments:", error);
