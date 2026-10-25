@@ -279,14 +279,14 @@ export async function getFeed(cursor?: string, limit: number = 20) {
     const friendIds = await db
       .select({
         friendId: sql<string>`CASE
-          WHEN user_id_1 = ${user.id} THEN user_id_2
-          ELSE user_id_1
+          WHEN requester_id = ${user.id} THEN addressee_id
+          ELSE requester_id
         END`,
       })
       .from(friendships)
       .where(
         and(
-          or(eq(friendships.user_id_1, user.id), eq(friendships.user_id_2, user.id)),
+          or(eq(friendships.requesterId, user.id), eq(friendships.addresseeId, user.id)),
           eq(friendships.status, "accepted")
         )
       );
