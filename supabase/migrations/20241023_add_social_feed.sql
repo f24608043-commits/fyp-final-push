@@ -53,6 +53,9 @@ CREATE INDEX idx_post_comments_created_at ON post_comments(created_at DESC);
 
 -- Add foreign key constraint for parent_comment_id separately
 ALTER TABLE post_comments
+DROP CONSTRAINT IF EXISTS post_comments_parent_comment_id_fkey;
+
+ALTER TABLE post_comments
 ADD CONSTRAINT post_comments_parent_comment_id_fkey
 FOREIGN KEY (parent_comment_id) REFERENCES post_comments(id) ON DELETE CASCADE;
 
@@ -85,11 +88,11 @@ CREATE POLICY "Users can read friends posts"
   ON posts FOR SELECT
   USING (
     author_id IN (
-      SELECT user_id_2 FROM friendships
-      WHERE user_id_1 = auth.uid() AND status = 'accepted'
+      SELECT addressee_id FROM friendships
+      WHERE requester_id = auth.uid() AND status = 'accepted'
       UNION
-      SELECT user_id_1 FROM friendships
-      WHERE user_id_2 = auth.uid() AND status = 'accepted'
+      SELECT requester_id FROM friendships
+      WHERE addressee_id = auth.uid() AND status = 'accepted'
     )
   );
 
@@ -132,11 +135,11 @@ CREATE POLICY "Users can read likes on visible posts"
       AND (
         posts.author_id = auth.uid()
         OR posts.author_id IN (
-          SELECT user_id_2 FROM friendships
-          WHERE user_id_1 = auth.uid() AND status = 'accepted'
+          SELECT addressee_id FROM friendships
+          WHERE requester_id = auth.uid() AND status = 'accepted'
           UNION
-          SELECT user_id_1 FROM friendships
-          WHERE user_id_2 = auth.uid() AND status = 'accepted'
+          SELECT requester_id FROM friendships
+          WHERE addressee_id = auth.uid() AND status = 'accepted'
         )
         OR EXISTS (
           SELECT 1 FROM group_members gm1
@@ -168,11 +171,11 @@ CREATE POLICY "Users can read comments on visible posts"
       AND (
         posts.author_id = auth.uid()
         OR posts.author_id IN (
-          SELECT user_id_2 FROM friendships
-          WHERE user_id_1 = auth.uid() AND status = 'accepted'
+          SELECT addressee_id FROM friendships
+          WHERE requester_id = auth.uid() AND status = 'accepted'
           UNION
-          SELECT user_id_1 FROM friendships
-          WHERE user_id_2 = auth.uid() AND status = 'accepted'
+          SELECT requester_id FROM friendships
+          WHERE addressee_id = auth.uid() AND status = 'accepted'
         )
         OR EXISTS (
           SELECT 1 FROM group_members gm1
@@ -204,11 +207,11 @@ CREATE POLICY "Users can read hashtags on visible posts"
       AND (
         posts.author_id = auth.uid()
         OR posts.author_id IN (
-          SELECT user_id_2 FROM friendships
-          WHERE user_id_1 = auth.uid() AND status = 'accepted'
+          SELECT addressee_id FROM friendships
+          WHERE requester_id = auth.uid() AND status = 'accepted'
           UNION
-          SELECT user_id_1 FROM friendships
-          WHERE user_id_2 = auth.uid() AND status = 'accepted'
+          SELECT requester_id FROM friendships
+          WHERE addressee_id = auth.uid() AND status = 'accepted'
         )
         OR EXISTS (
           SELECT 1 FROM group_members gm1
