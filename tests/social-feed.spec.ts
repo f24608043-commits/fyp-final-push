@@ -8,8 +8,7 @@ test.describe('Social Feed - MVP', () => {
   const TUTOR_PASSWORD = 'password123';
 
   test.beforeEach(async ({ page }) => {
-    // Skip tests if migration hasn't been applied
-    test.skip(true, 'Database migration not yet applied - run: supabase db push');
+    // Migration has been applied
   });
 
   test('feed page loads and displays empty state', async ({ page }) => {
