@@ -69,7 +69,7 @@ export default function PostComposer({}: PostComposerProps) {
   const remainingChars = 3000 - body.length;
 
   return (
-    <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border mb-6">
+    <div className="relative rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-surface/50 mb-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Post Type Selector */}
         <div className="flex flex-wrap gap-2">
@@ -78,13 +78,13 @@ export default function PostComposer({}: PostComposerProps) {
               key={option.value}
               type="button"
               onClick={() => setPostType(option.value as any)}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-label-sm font-semibold transition-all ${
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-label-sm font-semibold transition-all shadow-clay-surface ${
                 postType === option.value
-                  ? "bg-tertiary text-text-primary shadow-clay-primary border-2 border-surface/30"
-                  : "bg-surface-border text-text-muted border-2 border-surface-border hover:border-tertiary/50"
+                  ? "bg-tertiary text-text-primary border-2 border-surface/30"
+                  : "bg-surface-border text-text-muted border-2 border-surface-border hover:border-tertiary/50 hover:bg-tertiary/10"
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">{option.icon}</span>
+              <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: postType === option.value ? 'FILL 1' : 'FILL 0' }}>{option.icon}</span>
               {option.label}
             </button>
           ))}
@@ -95,10 +95,10 @@ export default function PostComposer({}: PostComposerProps) {
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="What's on your mind?"
+            placeholder="What's on your mind? Share your learning journey..."
             rows={4}
             maxLength={3000}
-            className="w-full rounded-xl border-2 border-surface-border px-4 py-3 font-body-md text-text-primary focus:border-tertiary focus:outline-none focus:ring-2 focus:ring-tertiary/20 transition-all resize-none bg-surface"
+            className="w-full rounded-xl border-2 border-surface/50 px-4 py-3 font-body-md text-text-primary focus:border-tertiary focus:outline-none focus:ring-2 focus:ring-tertiary/20 transition-all resize-none bg-surface"
           />
           <div className="flex justify-between items-center mt-2">
             <span className={`font-label-sm font-semibold ${
@@ -121,7 +121,7 @@ export default function PostComposer({}: PostComposerProps) {
           />
           <label
             htmlFor="media-upload"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-border text-text-muted font-label-sm font-semibold border-2 border-surface-border hover:border-tertiary/50 cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-border text-text-muted font-label-sm font-semibold border-2 border-surface-border hover:border-tertiary/50 hover:bg-tertiary/10 cursor-pointer transition-all shadow-clay-surface"
           >
             <span className="material-symbols-outlined text-[18px]">add_photo_alternate</span>
             {mediaFile ? mediaFile.name : "Add media"}
@@ -133,7 +133,7 @@ export default function PostComposer({}: PostComposerProps) {
                 setMediaFile(null);
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
-              className="ml-2 text-error font-label-sm font-semibold hover:underline"
+              className="ml-2 px-3 py-1 rounded-full bg-error/10 text-error font-label-sm font-semibold border-2 border-error/20 hover:bg-error/20 transition-all"
             >
               Remove
             </button>
@@ -145,7 +145,7 @@ export default function PostComposer({}: PostComposerProps) {
           <button
             type="submit"
             disabled={!body.trim() || isSubmitting}
-            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-primary border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary text-text-primary px-6 py-3 font-label-md font-bold shadow-clay-surface border-2 border-surface/30 transform hover:scale-105 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isSubmitting ? (
               <>
@@ -154,7 +154,7 @@ export default function PostComposer({}: PostComposerProps) {
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[20px]">send</span>
+                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: 'FILL 1' }}>send</span>
                 Post
               </>
             )}

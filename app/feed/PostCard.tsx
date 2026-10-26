@@ -216,29 +216,32 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
   const isOwnPost = currentUser?.id === post.authorId;
 
   return (
-    <div className="rounded-[24px] bg-surface p-6 shadow-clay-surface border border-surface-border">
+    <div className="relative rounded-[24px] bg-surface p-6 shadow-clay-surface border-4 border-surface/50 overflow-hidden">
       {/* Post Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           {post.author.avatarUrl ? (
-            <Image
-              src={post.author.avatarUrl}
-              alt={post.author.displayName || "User"}
-              width={48}
-              height={48}
-              className="rounded-full object-cover"
-            />
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full border-2 border-surface/30"></div>
+              <Image
+                src={post.author.avatarUrl}
+                alt={post.author.displayName || "User"}
+                width={48}
+                height={48}
+                className="rounded-full object-cover relative"
+              />
+            </div>
           ) : (
-            <div className="w-12 h-12 rounded-full bg-surface-border flex items-center justify-center">
+            <div className="relative w-12 h-12 rounded-full bg-surface-border flex items-center justify-center border-2 border-surface/30">
               <span className="material-symbols-outlined text-text-muted text-[24px]">person</span>
             </div>
           )}
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-label-md font-bold text-text-primary">
                 {post.author.displayName || "Anonymous"}
               </h3>
-              <span className={`px-2 py-0.5 rounded-full font-label-xs font-semibold border ${getPostTypeColor()}`}>
+              <span className={`px-2 py-0.5 rounded-full font-label-xs font-semibold border-2 shadow-clay-surface ${getPostTypeColor()}`}>
                 <span className="material-symbols-outlined text-[14px] align-middle mr-1">
                   {getPostTypeIcon()}
                 </span>
@@ -254,7 +257,7 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="p-2 rounded-full bg-error/10 text-error hover:bg-error/20 transition-all disabled:opacity-50"
+            className="p-2 rounded-full bg-error/10 text-error hover:bg-error/20 transition-all disabled:opacity-50 border-2 border-error/20"
             title="Delete post"
           >
             {isDeleting ? (
@@ -268,7 +271,7 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
       {/* Post Body */}
       <div
-        className="font-body-md text-text-primary mb-4 whitespace-pre-wrap"
+        className="font-body-md text-text-primary mb-4 whitespace-pre-wrap leading-relaxed"
         dangerouslySetInnerHTML={{ __html: formatBody(post.body) }}
       />
 
@@ -276,7 +279,7 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
       {post.mediaUrls && post.mediaUrls.length > 0 && (
         <div className="mb-4 space-y-2">
           {post.mediaUrls.map((url, idx) => (
-            <div key={idx} className="rounded-xl overflow-hidden border-2 border-surface-border">
+            <div key={idx} className="rounded-xl overflow-hidden border-2 border-surface/30 shadow-clay-surface">
               {url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
                 <Image
                   src={url}
@@ -297,16 +300,16 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
       )}
 
       {/* Engagement Actions */}
-      <div className="flex items-center gap-4 pt-4 border-t border-surface-border">
+      <div className="flex items-center gap-3 pt-4 border-t-2 border-surface/50">
         <button
           onClick={handleLike}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-label-sm font-semibold transition-all ${
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-label-sm font-semibold transition-all shadow-clay-surface ${
             post.likedByMe
-              ? "bg-tertiary text-text-primary shadow-clay-surface border-2 border-surface/30"
-              : "bg-surface-border text-text-muted border-2 border-surface-border hover:border-tertiary/50"
+              ? "bg-tertiary text-text-primary border-2 border-surface/30"
+              : "bg-surface-border text-text-muted border-2 border-surface-border hover:border-tertiary/50 hover:bg-tertiary/10"
           }`}
         >
-          <span className="material-symbols-outlined text-[18px]">
+          <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: post.likedByMe ? 'FILL 1' : 'FILL 0' }}>
             {post.likedByMe ? "favorite" : "favorite_border"}
           </span>
           {post.likeCount}
@@ -314,7 +317,7 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
         <button
           onClick={toggleComments}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-border text-text-muted font-label-sm font-semibold border-2 border-surface-border hover:border-tertiary/50 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-border text-text-muted font-label-sm font-semibold border-2 border-surface-border hover:border-tertiary/50 hover:bg-tertiary/10 transition-all shadow-clay-surface"
         >
           <span className="material-symbols-outlined text-[18px]">chat_bubble</span>
           {post.commentCount}
@@ -323,7 +326,7 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
 
       {/* Comments Section */}
       {showComments && (
-        <div className="mt-4 pt-4 border-t border-surface-border">
+        <div className="mt-4 pt-4 border-t-2 border-surface/50">
           {/* Comment Form */}
           <form onSubmit={handleSubmitComment} className="mb-4">
             <div className="flex gap-2">
@@ -333,12 +336,12 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
                 onChange={(e) => setCommentBody(e.target.value)}
                 placeholder="Write a comment..."
                 maxLength={1000}
-                className="flex-1 rounded-xl border-2 border-surface-border px-4 py-2 font-body-md text-text-primary focus:border-tertiary focus:outline-none bg-surface"
+                className="flex-1 rounded-xl border-2 border-surface/50 px-4 py-2 font-body-md text-text-primary focus:border-tertiary focus:outline-none focus:ring-2 focus:ring-tertiary/20 transition-all bg-surface"
               />
               <button
                 type="submit"
                 disabled={!commentBody.trim() || isSubmittingComment}
-                className="px-4 py-2 rounded-full bg-tertiary text-text-primary font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-full bg-tertiary text-text-primary font-label-sm font-bold shadow-clay-surface border-2 border-surface/30 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-tertiary/90 transition-all"
               >
                 {isSubmittingComment ? "..." : "Post"}
               </button>
@@ -351,15 +354,18 @@ export default function PostCard({ post, onDeleted, onLikeToggle, onCommentCount
               {comments.map((comment) => (
                 <div key={comment.id} className="flex gap-3">
                   {comment.author?.avatarUrl ? (
-                    <Image
-                      src={comment.author.avatarUrl}
-                      alt={comment.author.displayName || "User"}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full border-2 border-surface/30"></div>
+                      <Image
+                        src={comment.author.avatarUrl}
+                        alt={comment.author.displayName || "User"}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover relative"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-surface-border flex items-center justify-center flex-shrink-0">
+                    <div className="relative w-8 h-8 rounded-full bg-surface-border flex items-center justify-center flex-shrink-0 border-2 border-surface/30">
                       <span className="material-symbols-outlined text-text-muted text-[16px]">person</span>
                     </div>
                   )}
