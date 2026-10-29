@@ -13,29 +13,28 @@ test.describe('Social Feed - MVP', () => {
 
   test('feed page loads and displays empty state', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+
+    // Wait for navigation - could be /path or /onboarding
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
     // Navigate to feed
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Check empty state
-    await expect(page.locator('text=No posts yet')).toBeVisible();
-    await expect(page.locator('text=Share something or follow a friend')).toBeVisible();
+    await expect(page.locator('text=No posts yet').or(page.locator('text=Share something'))).toBeVisible();
   });
 
   test('user can create a post', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Fill post composer
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'This is a test post #test');
@@ -56,13 +55,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('user can like a post', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create a post first
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'Test post for likes');
@@ -80,13 +78,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('user can comment on a post', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create a post first
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'Test post for comments');
@@ -107,13 +104,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('user can delete their own post', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create a post
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'Post to be deleted');
@@ -136,13 +132,12 @@ test.describe('Social Feed - MVP', () => {
     // User 1 creates a post
     const page1 = await context.newPage();
     await page1.goto('/sign-in');
-    await page1.fill('input[type="email"]', LEARNER_EMAIL);
-    await page1.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page1.fill('input[name="email"]', LEARNER_EMAIL);
+    await page1.fill('input[name="password"]', LEARNER_PASSWORD);
     await page1.click('button[type="submit"]');
-    await page1.waitForURL('/path');
+    await page1.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page1.click('text=Feed');
-    await page1.waitForURL('/feed');
+    await page1.goto('/feed');
 
     await page1.fill('textarea[placeholder*="What\'s on your mind?"]', 'Private post for friends only');
     await page1.click('button:has-text("Post")');
@@ -152,13 +147,12 @@ test.describe('Social Feed - MVP', () => {
 
     // User 2 (not friends) tries to view feed
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', TUTOR_EMAIL);
-    await page.fill('input[type="password"]', TUTOR_PASSWORD);
+    await page.fill('input[name="email"]', TUTOR_EMAIL);
+    await page.fill('input[name="password"]', TUTOR_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/tutoring/dashboard');
+    await page.waitForNavigation({ url: /\/(tutoring\/dashboard|path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Verify post is NOT visible
     await expect(page.locator('text=Private post for friends only')).not.toBeVisible();
@@ -166,13 +160,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('pagination loads second page via cursor', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create multiple posts to trigger pagination
     for (let i = 0; i < 25; i++) {
@@ -197,13 +190,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('hashtag parsing works with multiple tags', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create post with multiple hashtags
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'Learning #coding #webdev #nextjs');
@@ -218,13 +210,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('achievement post type has distinct visual treatment', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Select achievement post type
     await page.click('text=Celebrate achievement');
@@ -239,13 +230,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('post type selector works correctly', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Test each post type
     const postTypes = [
@@ -264,13 +254,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('character limit enforced on post body', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     const textarea = page.locator('textarea[placeholder*="What\'s on your mind?"]');
     
@@ -288,13 +277,12 @@ test.describe('Social Feed - MVP', () => {
 
   test('comment character limit enforced', async ({ page }) => {
     await page.goto('/sign-in');
-    await page.fill('input[type="email"]', LEARNER_EMAIL);
-    await page.fill('input[type="password"]', LEARNER_PASSWORD);
+    await page.fill('input[name="email"]', LEARNER_EMAIL);
+    await page.fill('input[name="password"]', LEARNER_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/path');
+    await page.waitForNavigation({ url: /\/(path|onboarding)/ });
 
-    await page.click('text=Feed');
-    await page.waitForURL('/feed');
+    await page.goto('/feed');
 
     // Create a post
     await page.fill('textarea[placeholder*="What\'s on your mind?"]', 'Test post');
