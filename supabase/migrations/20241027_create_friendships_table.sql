@@ -52,28 +52,28 @@ ALTER TABLE friend_streaks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE daily_activity_log ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for friendships
--- Users can view friendships they are part of
+DROP POLICY IF EXISTS "Users can view own friendships" ON friendships;
 CREATE POLICY "Users can view own friendships"
   ON friendships FOR SELECT
   USING (requester_id = auth.uid() OR addressee_id = auth.uid());
 
--- Users can insert friendships where they are the requester
+DROP POLICY IF EXISTS "Users can create friendships" ON friendships;
 CREATE POLICY "Users can create friendships"
   ON friendships FOR INSERT
   WITH CHECK (requester_id = auth.uid());
 
--- Users can update friendships they are part of
+DROP POLICY IF EXISTS "Users can update own friendships" ON friendships;
 CREATE POLICY "Users can update own friendships"
   ON friendships FOR UPDATE
   USING (requester_id = auth.uid() OR addressee_id = auth.uid());
 
--- Users can delete friendships they are part of
+DROP POLICY IF EXISTS "Users can delete own friendships" ON friendships;
 CREATE POLICY "Users can delete own friendships"
   ON friendships FOR DELETE
   USING (requester_id = auth.uid() OR addressee_id = auth.uid());
 
 -- RLS Policies for friend_streaks
--- Users can view streaks for their friendships
+DROP POLICY IF EXISTS "Users can view friend streaks" ON friend_streaks;
 CREATE POLICY "Users can view friend streaks"
   ON friend_streaks FOR SELECT
   USING (
@@ -85,17 +85,18 @@ CREATE POLICY "Users can view friend streaks"
   );
 
 -- RLS Policies for daily_activity_log
--- Users can view their own activity
+DROP POLICY IF EXISTS "Users can view own activity" ON daily_activity_log;
 CREATE POLICY "Users can view own activity"
   ON daily_activity_log FOR SELECT
   USING (user_id = auth.uid());
 
--- Users can insert their own activity
+DROP POLICY IF EXISTS "Users can insert own activity" ON daily_activity_log;
 CREATE POLICY "Users can insert own activity"
   ON daily_activity_log FOR INSERT
   WITH CHECK (user_id = auth.uid());
 
--- Users can update their own activity
+DROP POLICY IF EXISTS "Users can update own activity" ON daily_activity_log;
 CREATE POLICY "Users can update own activity"
   ON daily_activity_log FOR UPDATE
   USING (user_id = auth.uid());
+

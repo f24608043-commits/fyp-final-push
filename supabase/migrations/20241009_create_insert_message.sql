@@ -1,7 +1,9 @@
 -- Migration: create insert_message function for messages
 -- This function inserts a message and returns its id. It uses SECURITY DEFINER to bypass RLS for server actions.
 
-CREATE OR REPLACE FUNCTION public.insert_message(conversation_id uuid, sender_id uuid, body text)
+DROP FUNCTION IF EXISTS public.insert_message(uuid, uuid, text);
+
+CREATE FUNCTION public.insert_message(conversation_id uuid, sender_id uuid, body text)
 RETURNS uuid AS $$
 DECLARE
     new_id uuid;

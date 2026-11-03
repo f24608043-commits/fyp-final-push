@@ -62,7 +62,7 @@ export async function submitQuiz(formData: FormData) {
         const { createNotification } = await import("@/app/notifications/actions");
         await createNotification({
           userId: assignment.tutorId,
-          type: "quiz_submitted",
+          type: "assignment_submitted",
           title: "Quiz Submitted",
           message: `${user.email?.split("@")[0] || "A student"} submitted the quiz for "${assignment.title}"`,
           data: { assignmentId, submissionId: submission.id, groupId, quizId },

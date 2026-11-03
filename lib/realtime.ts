@@ -215,8 +215,9 @@ export function subscribeToPostEngagement(
         filter: `post_id=eq.${postId}`,
       },
       (payload) => {
-        if (payload.new || payload.old) {
-          onLikeChange(payload.new || payload.old);
+        const row = (payload.new && Object.keys(payload.new).length > 0) ? payload.new : payload.old;
+        if (row) {
+          onLikeChange({ ...(row as object), eventType: payload.eventType });
         }
       }
     )
@@ -230,8 +231,9 @@ export function subscribeToPostEngagement(
         filter: `post_id=eq.${postId}`,
       },
       (payload) => {
-        if (payload.new || payload.old) {
-          onCommentChange(payload.new || payload.old);
+        const row = (payload.new && Object.keys(payload.new).length > 0) ? payload.new : payload.old;
+        if (row) {
+          onCommentChange({ ...(row as object), eventType: payload.eventType });
         }
       }
     )

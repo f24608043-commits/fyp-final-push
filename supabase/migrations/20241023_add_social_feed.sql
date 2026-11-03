@@ -1,11 +1,15 @@
 -- Migration: Add Social Feed Tables
 -- Created: October 23, 2026
 
--- Create post_type enum
-CREATE TYPE post_type AS ENUM ('general', 'achievement', 'resource', 'milestone', 'question');
+-- Create post_type enum if it doesn't exist
+DO $$ BEGIN
+  CREATE TYPE post_type AS ENUM ('general', 'achievement', 'resource', 'milestone', 'question');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Create posts table
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   author_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   body TEXT NOT NULL CHECK (char_length(body) <= 3000),
@@ -18,13 +22,13 @@ CREATE TABLE posts (
 );
 
 -- Create indexes for posts
-CREATE INDEX idx_posts_author_id ON posts(author_id);
-CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
-CREATE INDEX idx_posts_post_type ON posts(post_type);
-CREATE INDEX idx_posts_is_deleted ON posts(is_deleted) WHERE is_deleted = FALSE;
+CREATE INDEX IF NOT EXISTS idx_posts_author_id ON posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_post_type ON posts(post_type);
+CREATE INDEX IF NOT EXISTS idx_posts_is_deleted ON posts(is_deleted) WHERE is_deleted = FALSE;
 
 -- Create post_likes table
-CREATE TABLE post_likes (
+CREATE TABLE IF NOT EXISTS post_likes (
   post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -32,11 +36,11 @@ CREATE TABLE post_likes (
 );
 
 -- Create indexes for post_likes
-CREATE INDEX idx_post_likes_user_id ON post_likes(user_id);
-CREATE INDEX idx_post_likes_created_at ON post_likes(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_post_likes_user_id ON post_likes(user_id);
+CREATE INDEX IF NOT EXISTS idx_post_likes_created_at ON post_likes(created_at DESC);
 
 -- Create post_comments table
-CREATE TABLE post_comments (
+CREATE TABLE IF NOT EXISTS post_comments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   author_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
@@ -46,44 +50,80 @@ CREATE TABLE post_comments (
 );
 
 -- Create indexes for post_comments
-CREATE INDEX idx_post_comments_post_id ON post_comments(post_id);
-CREATE INDEX idx_post_comments_author_id ON post_comments(author_id);
-CREATE INDEX idx_post_comments_parent_id ON post_comments(parent_comment_id);
-CREATE INDEX idx_post_comments_created_at ON post_comments(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_post_comments_post_id ON post_comments(post_id);
+CREATE INDEX IF NOT EXISTS idx_post_comments_author_id ON post_comments(author_id);
+CREATE INDEX IF NOT EXISTS idx_post_comments_parent_id ON post_comments(parent_comment_id);
+CREATE INDEX IF NOT EXISTS idx_post_comments_created_at ON post_comments(created_at DESC);
 
 -- Add foreign key constraint for parent_comment_id separately
-ALTER TABLE post_comments
-DROP CONSTRAINT IF EXISTS post_comments_parent_comment_id_fkey;
-
-ALTER TABLE post_comments
-ADD CONSTRAINT post_comments_parent_comment_id_fkey
-FOREIGN KEY (parent_comment_id) REFERENCES post_comments(id) ON DELETE CASCADE;
+DO $$
+BEGIN
+  ALTER TABLE post_comments DROP CONSTRAINT IF EXISTS post_comments_parent_comment_id_fkey;
+  ALTER TABLE post_comments ADD CONSTRAINT post_comments_parent_comment_id_fkey
+    FOREIGN KEY (parent_comment_id) REFERENCES post_comments(id) ON DELETE CASCADE;
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Create post_hashtags table
-CREATE TABLE post_hashtags (
+CREATE TABLE IF NOT EXISTS post_hashtags (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-  tag TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  hashtag TEXT NOT NULL,
+  UNIQUE(post_id, hashtag)
 );
 
 -- Create indexes for post_hashtags
-CREATE INDEX idx_post_hashtags_tag ON post_hashtags(tag);
-CREATE INDEX idx_post_hashtags_post_id ON post_hashtags(post_id);
+CREATE INDEX IF NOT EXISTS idx_post_hashtags_post_id ON post_hashtags(post_id);
+DO $$
+BEGIN
+  -- Try creating index on 'hashtag' column
+  BEGIN
+    CREATE INDEX IF NOT EXISTS idx_post_hashtags_hashtag ON post_hashtags(hashtag);
+  EXCEPTION WHEN undefined_column THEN
+    -- If 'hashtag' doesn't exist, try 'tag' column
+    CREATE INDEX IF NOT EXISTS idx_post_hashtags_tag ON post_hashtags(tag);
+  END;
+END $$;
 
 -- Enable Row Level Security
-ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE post_likes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE post_comments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE post_hashtags ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+EXCEPTION
+  WHEN others THEN null;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TABLE post_likes ENABLE ROW LEVEL SECURITY;
+EXCEPTION
+  WHEN others THEN null;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TABLE post_comments ENABLE ROW LEVEL SECURITY;
+EXCEPTION
+  WHEN others THEN null;
+END $$;
+
+DO $$
+BEGIN
+  ALTER TABLE post_hashtags ENABLE ROW LEVEL SECURITY;
+EXCEPTION
+  WHEN others THEN null;
+END $$;
 
 -- RLS Policies for posts
 -- Users can read their own posts
+DROP POLICY IF EXISTS "Users can read own posts" ON posts;
 CREATE POLICY "Users can read own posts"
   ON posts FOR SELECT
   USING (auth.uid() = author_id);
 
 -- Users can read posts from friends (accepted friendships)
+DROP POLICY IF EXISTS "Users can read friends posts" ON posts;
 CREATE POLICY "Users can read friends posts"
   ON posts FOR SELECT
   USING (
@@ -97,6 +137,7 @@ CREATE POLICY "Users can read friends posts"
   );
 
 -- Users can read posts from groups they're members of
+DROP POLICY IF EXISTS "Users can read group posts" ON posts;
 CREATE POLICY "Users can read group posts"
   ON posts FOR SELECT
   USING (
@@ -110,22 +151,26 @@ CREATE POLICY "Users can read group posts"
   );
 
 -- Users can insert their own posts
+DROP POLICY IF EXISTS "Users can create own posts" ON posts;
 CREATE POLICY "Users can create own posts"
   ON posts FOR INSERT
   WITH CHECK (auth.uid() = author_id);
 
 -- Users can update their own posts
+DROP POLICY IF EXISTS "Users can update own posts" ON posts;
 CREATE POLICY "Users can update own posts"
   ON posts FOR UPDATE
   USING (auth.uid() = author_id);
 
 -- Users can soft-delete their own posts
+DROP POLICY IF EXISTS "Users can delete own posts" ON posts;
 CREATE POLICY "Users can delete own posts"
   ON posts FOR UPDATE
   USING (auth.uid() = author_id);
 
 -- RLS Policies for post_likes
 -- Users can read likes on posts they can see
+DROP POLICY IF EXISTS "Users can read likes on visible posts" ON post_likes;
 CREATE POLICY "Users can read likes on visible posts"
   ON post_likes FOR SELECT
   USING (
@@ -151,17 +196,20 @@ CREATE POLICY "Users can read likes on visible posts"
   );
 
 -- Users can insert their own likes
+DROP POLICY IF EXISTS "Users can create own likes" ON post_likes;
 CREATE POLICY "Users can create own likes"
   ON post_likes FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
 -- Users can delete their own likes
+DROP POLICY IF EXISTS "Users can delete own likes" ON post_likes;
 CREATE POLICY "Users can delete own likes"
   ON post_likes FOR DELETE
   USING (auth.uid() = user_id);
 
 -- RLS Policies for post_comments
 -- Users can read comments on posts they can see
+DROP POLICY IF EXISTS "Users can read comments on visible posts" ON post_comments;
 CREATE POLICY "Users can read comments on visible posts"
   ON post_comments FOR SELECT
   USING (
@@ -187,17 +235,20 @@ CREATE POLICY "Users can read comments on visible posts"
   );
 
 -- Users can insert their own comments
+DROP POLICY IF EXISTS "Users can create own comments" ON post_comments;
 CREATE POLICY "Users can create own comments"
   ON post_comments FOR INSERT
   WITH CHECK (auth.uid() = author_id);
 
 -- Users can delete their own comments
+DROP POLICY IF EXISTS "Users can delete own comments" ON post_comments;
 CREATE POLICY "Users can delete own comments"
   ON post_comments FOR DELETE
   USING (auth.uid() = author_id);
 
 -- RLS Policies for post_hashtags
 -- Users can read hashtags on posts they can see
+DROP POLICY IF EXISTS "Users can read hashtags on visible posts" ON post_hashtags;
 CREATE POLICY "Users can read hashtags on visible posts"
   ON post_hashtags FOR SELECT
   USING (
@@ -222,12 +273,13 @@ CREATE POLICY "Users can read hashtags on visible posts"
     )
   );
 
--- Users can insert hashtags for their own posts
+DROP POLICY IF EXISTS "Users can create hashtags for own posts" ON post_hashtags;
 CREATE POLICY "Users can create hashtags for own posts"
   ON post_hashtags FOR INSERT
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM posts
-      WHERE posts.id = post_hashtags.post_id AND posts.author_id = auth.uid()
+      WHERE posts.id = post_hashtags.post_id
+      AND posts.author_id = auth.uid()
     )
   );

@@ -26,14 +26,21 @@ interface FeedPost {
 interface FeedListClientProps {
   initialPosts: FeedPost[];
   nextCursor: string | null;
+  tag?: string;
 }
 
-export default function FeedListClient({ initialPosts, nextCursor }: FeedListClientProps) {
+export default function FeedListClient({ initialPosts, nextCursor, tag }: FeedListClientProps) {
   const [posts, setPosts] = useState<FeedPost[]>(initialPosts);
   const [cursor, setCursor] = useState<string | null>(nextCursor);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(!!nextCursor);
   const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setPosts(initialPosts);
+    setCursor(nextCursor);
+    setHasMore(!!nextCursor);
+  }, [initialPosts, nextCursor]);
 
   const loadMore = async () => {
     if (isLoading || !cursor || !hasMore) return;
@@ -43,14 +50,21 @@ export default function FeedListClient({ initialPosts, nextCursor }: FeedListCli
       const formData = new FormData();
       formData.append('cursor', cursor);
       formData.append('action', 'getFeed');
+      if (tag) {
+        formData.append('tag', tag);
+      }
       const response = await fetch('/feed/actions', {
         method: 'POST',
         body: formData,
       });
-      const result = await response.json();
-      setPosts((prev) => [...prev, ...result.posts]);
-      setCursor(result.nextCursor);
-      setHasMore(result.hasMore);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.posts && Array.isArray(result.posts)) {
+          setPosts((prev) => [...prev, ...result.posts]);
+        }
+        setCursor(result.nextCursor || null);
+        setHasMore(!!result.hasMore);
+      }
     } catch (error) {
       console.error("Error loading more posts:", error);
     } finally {
