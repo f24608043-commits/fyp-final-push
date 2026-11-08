@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
       case 'getFeed': {
         const cursor = formData.get('cursor') as string | null;
         const tag = formData.get('tag') as string | null;
-        const result = await getFeed(cursor || undefined, 20, tag || undefined);
+        const limit = formData.get('limit') as string | null;
+        const result = await getFeed(cursor || undefined, limit ? parseInt(limit) : 20, tag || undefined);
         return NextResponse.json(result);
       }
       default:

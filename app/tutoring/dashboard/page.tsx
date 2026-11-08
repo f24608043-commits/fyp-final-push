@@ -588,6 +588,7 @@ export default async function TutorDashboard() {
                 required
                 placeholder="e.g., Python Study Group"
                 className="w-full rounded-xl border-2 border-tertiary/30 p-3 focus:border-tertiary focus:outline-none"
+                suppressHydrationWarning
               />
             </div>
             <div>

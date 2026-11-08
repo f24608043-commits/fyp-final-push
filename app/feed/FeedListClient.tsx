@@ -42,6 +42,41 @@ export default function FeedListClient({ initialPosts, nextCursor, tag }: FeedLi
     setHasMore(!!nextCursor);
   }, [initialPosts, nextCursor]);
 
+  // Poll for new posts from other users every 10 seconds
+  useEffect(() => {
+    const pollForNewPosts = async () => {
+      try {
+        const formData = new FormData();
+        formData.append('action', 'getFeed');
+        formData.append('limit', '20');
+        if (tag) {
+          formData.append('tag', tag);
+        }
+        const response = await fetch('/feed/actions', {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          const result = await response.json();
+          if (result.posts && Array.isArray(result.posts)) {
+            // Add new posts that aren't already in the list
+            setPosts((prev) => {
+              const existingIds = new Set(prev.map((p) => p.id));
+              const newPosts = result.posts.filter((p: FeedPost) => !existingIds.has(p.id));
+              return [...newPosts, ...prev];
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error polling for new posts:", error);
+      }
+    };
+
+    // Poll every 10 seconds
+    const interval = setInterval(pollForNewPosts, 10000);
+    return () => clearInterval(interval);
+  }, [tag]);
+
   const loadMore = async () => {
     if (isLoading || !cursor || !hasMore) return;
 
