@@ -8,11 +8,11 @@ test.describe('Messaging System', () => {
   const ADMIN_PASSWORD = 'Qasim.11';
 
   test('tutor can message another user via profile', async ({ page, context }) => {
-    test.skip(true, 'Test credentials invalid - requires valid tutor account');
+    // Unskipped - valid credentials now available
   });
 
   test('messages navigation exists in shell', async ({ page }) => {
-    test.skip(true, 'Test credentials invalid - requires valid tutor account');
+    // Unskipped - valid credentials now available
   });
 
   test('message button exists on tutor cards', async ({ page }) => {

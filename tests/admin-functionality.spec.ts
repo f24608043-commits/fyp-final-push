@@ -9,7 +9,7 @@ test.describe("Admin Pages Functionality", () => {
     const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'Qasim.11';
 
     // Login as admin before each test
-    await page.goto("http://localhost:4005/sign-in");
+    await page.goto("http://localhost:3000/sign-in");
     await page.waitForLoadState("networkidle", { timeout: 60000 });
     await page.fill('input[name="email"]', ADMIN_EMAIL);
     await page.fill('input[name="password"]', ADMIN_PASSWORD);
@@ -32,7 +32,7 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin badges page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:4005/admin/badges");
+    await page.goto("http://localhost:3000/admin/badges");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
@@ -45,7 +45,7 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin users page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:4005/admin/users");
+    await page.goto("http://localhost:3000/admin/users");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
@@ -58,7 +58,7 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin users page - Search functionality", async ({ page }) => {
-    await page.goto("http://localhost:4005/admin/users");
+    await page.goto("http://localhost:3000/admin/users");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
@@ -84,7 +84,7 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin tutoring page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:4005/admin/tutoring");
+    await page.goto("http://localhost:3000/admin/tutoring");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
@@ -97,7 +97,7 @@ test.describe("Admin Pages Functionality", () => {
   });
 
   test("Admin courses page - Page loads", async ({ page }) => {
-    await page.goto("http://localhost:4005/admin/courses");
+    await page.goto("http://localhost:3000/admin/courses");
     try {
       await page.waitForLoadState("networkidle", { timeout: 60000 });
     } catch (error) {
