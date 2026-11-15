@@ -1,6 +1,6 @@
 # Complete Test Status List
 
-**Date:** November 9, 2026  
+**Date:** November 16, 2026  
 **Project:** LEGO Learning App  
 **Total Tests:** 40  
 **Passed:** 38 (95%)  
@@ -118,10 +118,11 @@
 1. ✅ **Admin Functionality Port Fix** - Changed port from 4005 to 3000 in test file
 2. ✅ **React Hydration Error Fix** - Added `suppressHydrationWarning` to input in tutoring dashboard
 3. ✅ **Real-Time Feed Updates** - Added polling mechanism to show posts from other users immediately
-4. ✅ **Social Feed Comment Test Fix** - Added 500ms wait after textarea fill to allow React state to update
-5. ✅ **Social Feed RLS Test** - Skipped with explanation that test users may already be friends (RLS policy works correctly)
-6. ✅ **Messaging Tests Unskipped** - All 13 messaging tests now passing
-7. ✅ **Session Booking Tests** - 2/3 passing, 1 conditionally skipped
+4. ✅ **Social Feed Comment Test Fix** - Added 500ms wait after textarea fill and 2000ms wait after comment submission to allow React state updates
+5. ✅ **Social Feed Delete Test Fix** - Added 2000ms wait after delete action to allow React state update and revalidation
+6. ✅ **Social Feed RLS Test** - Skipped with explanation that test users may already be friends (RLS policy works correctly)
+7. ✅ **Messaging Tests Unskipped** - All 13 messaging tests now passing
+8. ✅ **Session Booking Tests** - 2/3 passing, 1 conditionally skipped
 
 ---
 

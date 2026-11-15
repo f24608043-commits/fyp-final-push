@@ -113,6 +113,8 @@ test.describe('Social Feed - MVP', () => {
     await expect(commentSubmitBtn).toBeEnabled();
     await commentSubmitBtn.click();
 
+    // Wait for comment to appear (allow React state update and revalidation)
+    await page.waitForTimeout(2000);
     // Verify comment appears
     await expect(postContainer.locator(`text=${uniqueComment}`).first()).toBeVisible({ timeout: 15000 });
   });
@@ -140,6 +142,8 @@ test.describe('Social Feed - MVP', () => {
     const deleteButton = postContainer.locator('button[title="Delete post"]');
     await deleteButton.click();
 
+    // Wait for delete to complete (allow React state update and revalidation)
+    await page.waitForTimeout(2000);
     // Verify post is removed
     await expect(page.locator(`text=${uniqueText}`)).not.toBeVisible({ timeout: 10000 });
   });
